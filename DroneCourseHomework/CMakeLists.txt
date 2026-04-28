@@ -9,6 +9,16 @@ add_executable(droneSeekTarget DroneCourseHomework.cpp)
 target_include_directories(
     droneSeekTarget 
     PRIVATE 
-    ThirdParty/NlohmannJson/single_include/nlohmann)
+    ThirdParty/NlohmannJson/single_include)
+target_include_directories(
+    droneSeekTarget 
+    PRIVATE 
+    FILES_H)
+target_include_directories(
+    droneSeekTarget 
+    PRIVATE 
+    FILES_CPP)
+
+
 
 target_compile_options(droneSeekTarget PRIVATE -Wall -Wextra -pedantic)
