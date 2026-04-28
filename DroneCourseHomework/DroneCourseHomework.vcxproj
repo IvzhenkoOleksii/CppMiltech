@@ -105,7 +105,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)\ThirdParty\NlohmannJson\single_include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\ThirdParty\NlohmannJson\single_include;$(ProjectDir)\FILES_H;$(ProjectDir)\FILES_CPP;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -129,33 +129,33 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ArmamentController.cpp" />
-    <ClCompile Include="ArmamentDatabase.cpp" />
-    <ClCompile Include="ArmamentFallCalculator.cpp" />
-    <ClCompile Include="DataStructs.cpp" />
-    <ClCompile Include="DroneCalculator.cpp" />
-    <ClCompile Include="DroneController.cpp" />
     <ClCompile Include="DroneCourseHomework.cpp" />
-    <ClCompile Include="InputFile.cpp" />
-    <ClCompile Include="OutputFile.cpp" />
-    <ClCompile Include="SimulationController.cpp" />
-    <ClCompile Include="TargetController.cpp" />
-    <ClCompile Include="TargetFile.cpp" />
-    <ClCompile Include="TargetsManager.cpp" />
+    <ClCompile Include="FILES_CPP\ArmamentController.cpp" />
+    <ClCompile Include="FILES_CPP\ArmamentDatabase.cpp" />
+    <ClCompile Include="FILES_CPP\ArmamentFallCalculator.cpp" />
+    <ClCompile Include="FILES_CPP\DataStructs.cpp" />
+    <ClCompile Include="FILES_CPP\DroneCalculator.cpp" />
+    <ClCompile Include="FILES_CPP\DroneController.cpp" />
+    <ClCompile Include="FILES_CPP\InputFile.cpp" />
+    <ClCompile Include="FILES_CPP\OutputFile.cpp" />
+    <ClCompile Include="FILES_CPP\SimulationController.cpp" />
+    <ClCompile Include="FILES_CPP\TargetController.cpp" />
+    <ClCompile Include="FILES_CPP\TargetFile.cpp" />
+    <ClCompile Include="FILES_CPP\TargetsManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ArmamentController.h" />
-    <ClInclude Include="ArmamentDatabase.h" />
-    <ClInclude Include="ArmamentFallCalculator.h" />
-    <ClInclude Include="DataStructs.h" />
-    <ClInclude Include="DroneCalculator.h" />
-    <ClInclude Include="DroneController.h" />
-    <ClInclude Include="InputFile.h" />
-    <ClInclude Include="OutputFile.h" />
-    <ClInclude Include="SimulationController.h" />
-    <ClInclude Include="TargetController.h" />
-    <ClInclude Include="TargetFile.h" />
-    <ClInclude Include="TargetsManager.h" />
+    <ClInclude Include="FILES_H\ArmamentController.h" />
+    <ClInclude Include="FILES_H\ArmamentDatabase.h" />
+    <ClInclude Include="FILES_H\ArmamentFallCalculator.h" />
+    <ClInclude Include="FILES_H\DataStructs.h" />
+    <ClInclude Include="FILES_H\DroneCalculator.h" />
+    <ClInclude Include="FILES_H\DroneController.h" />
+    <ClInclude Include="FILES_H\InputFile.h" />
+    <ClInclude Include="FILES_H\OutputFile.h" />
+    <ClInclude Include="FILES_H\SimulationController.h" />
+    <ClInclude Include="FILES_H\TargetController.h" />
+    <ClInclude Include="FILES_H\TargetFile.h" />
+    <ClInclude Include="FILES_H\TargetsManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

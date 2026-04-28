@@ -24,79 +24,79 @@
     <ClCompile Include="DroneCourseHomework.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DataStructs.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DroneCalculator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DroneController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="InputFile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="OutputFile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SimulationController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TargetController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TargetFile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TargetsManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ArmamentDatabase.cpp">
+    <ClCompile Include="FILES_CPP\ArmamentController.cpp">
       <Filter>Source Files\Armament</Filter>
     </ClCompile>
-    <ClCompile Include="ArmamentFallCalculator.cpp">
+    <ClCompile Include="FILES_CPP\ArmamentDatabase.cpp">
       <Filter>Source Files\Armament</Filter>
     </ClCompile>
-    <ClCompile Include="ArmamentController.cpp">
+    <ClCompile Include="FILES_CPP\ArmamentFallCalculator.cpp">
       <Filter>Source Files\Armament</Filter>
+    </ClCompile>
+    <ClCompile Include="FILES_CPP\DataStructs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FILES_CPP\DroneCalculator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FILES_CPP\DroneController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FILES_CPP\InputFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FILES_CPP\OutputFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FILES_CPP\SimulationController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FILES_CPP\TargetController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FILES_CPP\TargetFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FILES_CPP\TargetsManager.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DataStructs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DroneCalculator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DroneController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="InputFile.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OutputFile.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SimulationController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TargetController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TargetFile.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TargetsManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ArmamentDatabase.h">
+    <ClInclude Include="FILES_H\ArmamentController.h">
       <Filter>Header Files\Armament</Filter>
     </ClInclude>
-    <ClInclude Include="ArmamentFallCalculator.h">
+    <ClInclude Include="FILES_H\ArmamentDatabase.h">
       <Filter>Header Files\Armament</Filter>
     </ClInclude>
-    <ClInclude Include="ArmamentController.h">
+    <ClInclude Include="FILES_H\ArmamentFallCalculator.h">
       <Filter>Header Files\Armament</Filter>
+    </ClInclude>
+    <ClInclude Include="FILES_H\DataStructs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FILES_H\DroneCalculator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FILES_H\DroneController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FILES_H\InputFile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FILES_H\OutputFile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FILES_H\SimulationController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FILES_H\TargetController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FILES_H\TargetFile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FILES_H\TargetsManager.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
