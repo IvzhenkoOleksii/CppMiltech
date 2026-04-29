@@ -9,7 +9,7 @@ TargetController::TargetController()
 
 }
 
-TargetController::TargetController(const const std::vector<DataStructs::Position2D> positionsData, const float& stepTimeData)
+TargetController::TargetController(const std::vector<DataStructs::Position2D> positionsData, const float& stepTimeData)
 {
 	positions = positionsData;
 	stepTime = stepTimeData;

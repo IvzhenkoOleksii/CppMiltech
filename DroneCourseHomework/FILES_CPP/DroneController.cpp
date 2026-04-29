@@ -242,7 +242,7 @@ void DroneController::RecalculateDroneVelocity()
 		}
 		else
 		{
-			operationalData.State == DataStructs::MOVING;
+			operationalData.State = DataStructs::MOVING;
 		}
 
 		return;
@@ -256,7 +256,7 @@ void DroneController::RecalculateDroneVelocity()
 		}
 		else
 		{
-			operationalData.State == DataStructs::STOPPED;
+			operationalData.State = DataStructs::STOPPED;
 		}
 
 		return;

@@ -6,7 +6,7 @@
 #include <cmath>
 #include <iostream>
 
-const float GRAVITY = 9.80665;
+const float GRAVITY = 9.80665f;
 
 float ArmamentFallCalculator::CalculateFallTime(const ArmamentDatabase::Data& armData, float droneAttackSpeed, float droneZPosition)
 {
@@ -33,7 +33,7 @@ float ArmamentFallCalculator::CalculateFallTime(const ArmamentDatabase::Data& ar
 float ArmamentFallCalculator::CalculateCoefficientA(const ArmamentDatabase::Data& armData, float droneAttackSpeed)
 {
 	float leftPart = armData.Drag * GRAVITY * armData.Mass;
-	float rightPart = 2 * pow(armData.Drag, 2) * armData.Lift * droneAttackSpeed;
+	float rightPart = 2 * powf(armData.Drag, 2) * armData.Lift * droneAttackSpeed;
 	float coefA = leftPart - rightPart;
 	std::cout << "ArmamentFallCalculator coefA: " << coefA << std::endl;
 
@@ -42,7 +42,7 @@ float ArmamentFallCalculator::CalculateCoefficientA(const ArmamentDatabase::Data
 
 float ArmamentFallCalculator::CalculateCoefficientB(const ArmamentDatabase::Data& armData, float droneAttackSpeed)
 {
-	float leftPart = 3 * GRAVITY * pow(armData.Mass, 2);
+	float leftPart = 3 * GRAVITY * powf(armData.Mass, 2);
 	float rightPart = 3 * armData.Drag * armData.Lift * armData.Mass * droneAttackSpeed;
 	float coefB = -leftPart + rightPart;
 	std::cout << "ArmamentFallCalculator coefB: " << coefB << std::endl;
@@ -52,7 +52,7 @@ float ArmamentFallCalculator::CalculateCoefficientB(const ArmamentDatabase::Data
 
 float ArmamentFallCalculator::CalculateCoefficientC(const ArmamentDatabase::Data& armData, float droneZPosition)
 {
-	float coefC = 6 * pow(armData.Mass, 2) * droneZPosition;
+	float coefC = 6 * powf(armData.Mass, 2) * droneZPosition;
 	std::cout << "ArmamentFallCalculator coefC: " << coefC << std::endl;
 
 	return coefC;
@@ -60,8 +60,8 @@ float ArmamentFallCalculator::CalculateCoefficientC(const ArmamentDatabase::Data
 
 float ArmamentFallCalculator::CalculateCardanoP(float a, float b)
 {
-	float upperValue = pow(b, 2);
-	float lowerValue = 3 * pow(a, 2);
+	float upperValue = powf(b, 2);
+	float lowerValue = 3 * powf(a, 2);
 
 	float cardanoP = 0;
 	if (lowerValue != 0)
