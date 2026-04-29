@@ -1,6 +1,19 @@
 #include <iostream>
+#include <vector>
 
-int main(int argc, char** argv) {
+#include "InputFile.h"
+#include "Structures.h"
+
+
+int main(int argc, char** argv) 
+{
+    InputFile file;
+    std::vector<Structures::WheelsOdometrData> data = file.ReadTxtFile();
+
+
+
+
+
     if (argc != 2) {
         std::cerr << "usage: ugv_odometry <input_path>\n";
         return 1;
