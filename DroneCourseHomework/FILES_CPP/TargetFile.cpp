@@ -9,7 +9,7 @@
 
 DataStructs::TargetData TargetFile::ReadJsonFile()
 {
-	std::ifstream file("DataFiles/json/Targets.json");
+	std::ifstream file("./DroneCourseHomework/DataFiles/json/Targets.json");
 	DataStructs::TargetData targetData{};
 
     if (file.is_open())

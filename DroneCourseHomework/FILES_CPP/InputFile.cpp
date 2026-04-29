@@ -1,7 +1,6 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-
 #include <string>
 #include <vector>
 
@@ -13,7 +12,7 @@
 DataStructs::InputData InputFile::ReadTxtFile()
 {
 	std::string line;
-	std::ifstream file("DataFiles/txt/Input.txt");
+	std::ifstream file("./DroneCourseHomework/DataFiles/txt/Input.txt");
 	DataStructs::InputData inputData{};
 
 	if (file.is_open())
@@ -137,9 +136,8 @@ void InputFile::SetFloatField(const std::string& input, int index, float* output
 
 DataStructs::InputData InputFile::ReadJsonFile()
 {
-	std::ifstream file("DataFiles/json/Input.json");
+	std::ifstream file("./DroneCourseHomework/DataFiles/json/Input.json");
 	DataStructs::InputData inputData{};
-
 	if (file.is_open())
 	{
 		nlohmann::json json = nlohmann::json::parse(file);
