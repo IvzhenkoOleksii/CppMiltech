@@ -9,5 +9,7 @@ class Structures
 		int ForwardRightWheel = 0;
         int BackwardLeftWheel = 0;
         int BackwardRightWheel = 0;
+
+		public:void Cout();
 	};
 };

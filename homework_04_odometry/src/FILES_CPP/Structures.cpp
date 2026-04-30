@@ -1,1 +1,12 @@
 #include "Structures.h"
+
+#include <iostream>
+
+void Structures::WheelsOdometrData::Cout()
+{
+    std::cout << "Ticks is:  " << Ticks << std::endl;
+    std::cout << "ForwardLeftWheel is:  " << ForwardLeftWheel << std::endl;
+    std::cout << "ForwardRightWheel is:  " << ForwardRightWheel << std::endl;
+    std::cout << "BackwardLeftWheel is:  " << BackwardLeftWheel << std::endl;
+    std::cout << "BackwardRightWheel is:  " << BackwardRightWheel << std::endl;
+}
