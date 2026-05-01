@@ -2,9 +2,9 @@
 
 #include <iostream>
 
-void Structures::WheelsOdometrData::Cout()
+void Structures::WheelsOdometrData::Print()
 {
-    std::cout << "Ticks is:  " << Ticks << std::endl;
+    std::cout << "TimeStamp is:  " << TimeStamp << std::endl;
     std::cout << "ForwardLeftWheel is:  " << ForwardLeftWheel << std::endl;
     std::cout << "ForwardRightWheel is:  " << ForwardRightWheel << std::endl;
     std::cout << "BackwardLeftWheel is:  " << BackwardLeftWheel << std::endl;

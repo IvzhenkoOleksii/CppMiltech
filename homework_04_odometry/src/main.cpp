@@ -3,33 +3,41 @@
 
 #include "InputFile.h"
 #include "Structures.h"
+#include "Calculator.h"
 
 
 int main(int argc, char** argv) 
 {
-    InputFile file;
-    std::vector<Structures::WheelsOdometrData> data = file.ReadTxtFile();
-
-
-
-
-
-    if (argc != 2) {
+    if (argc != 2) 
+    {
         std::cerr << "usage: ugv_odometry <input_path>\n";
         return 1;
     }
 
-    // TODO: implement wheel odometry for a 4-wheel differential-drive UGV.
-    //
-    // Parameters:
-    //   ticks_per_revolution = 1024
-    //   wheel_radius_m       = 0.3
-    //   wheelbase_m          = 1.0
-    //
-    // Input:  text file with 5 whitespace-separated numbers per line:
-    //         timestamp_ms fl_ticks fr_ticks bl_ticks br_ticks
-    // Output: same tabular format on stdout, starting from the second sample:
-    //         timestamp_ms x y theta
+    std::string fileName = argv[1];
+    InputFile file;
+    std::vector<Structures::WheelsOdometrData> data = file.ReadTxtFile(fileName);
+
+    Calculator calc;
+    Structures::NrkState nrkState;
+
+    std::cout << std::endl;
+    for (int i = 0; i < data.size(); ++i)
+    {
+        if (i == 0)
+        {
+            // start data are zeros
+            continue;
+        }
+
+        calc.UpdateState(data[i], data[i - 1], nrkState);
+
+        std::cout   << "timestamp:  " << data[i].TimeStamp  
+                    << "    X: " << nrkState.X 
+                    << "    Y: " << nrkState.Y 
+                    << "    Theta: " << nrkState.Theta
+                    <<std::endl;
+    }
 
     return 0;
 }

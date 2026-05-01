@@ -4,12 +4,19 @@ class Structures
 {
 	public:struct WheelsOdometrData
 	{
-        int Ticks = 0;
-		int ForwardLeftWheel = 0;
-		int ForwardRightWheel = 0;
-        int BackwardLeftWheel = 0;
-        int BackwardRightWheel = 0;
+        long TimeStamp = 0;
+		long ForwardLeftWheel = 0;
+		long ForwardRightWheel = 0;
+        long BackwardLeftWheel = 0;
+        long BackwardRightWheel = 0;
 
-		public:void Cout();
+		public:void Print();
+	};
+
+	public:struct NrkState
+	{
+		double X = 0.0f;
+		double Y = 0.0f;
+		double Theta = 0.0f;
 	};
 };

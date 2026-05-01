@@ -7,12 +7,13 @@
 #include "InputFile.h"
 #include "Structures.h"
 
-std::vector<Structures::WheelsOdometrData> InputFile::ReadTxtFile()
+std::vector<Structures::WheelsOdometrData> InputFile::ReadTxtFile(std::string fileName)
 {
     std::vector<Structures::WheelsOdometrData> data = {};
-	std::vector<int> odmRawData = {};
+	std::vector<long> odmRawData = {};
 
-    std::ifstream file("./homework_04_odometry/data/straight.txt");
+	std::cout << "fileName:  " << fileName << std::endl;
+    std::ifstream file("./homework_04_odometry/data/" + fileName);
     if (file.is_open())
 	{
         std::string line;
@@ -22,7 +23,6 @@ std::vector<Structures::WheelsOdometrData> InputFile::ReadTxtFile()
 			Structures::WheelsOdometrData odmValues = FormData(odmRawData);
 			odmRawData.clear();
 			data.push_back(odmValues);
-			odmValues.Cout();
 		}	
     }
     else
@@ -35,7 +35,7 @@ std::vector<Structures::WheelsOdometrData> InputFile::ReadTxtFile()
     return data;
 }
 
-void InputFile::ReadLine(const std::string& line, std::vector<int>& lineData)
+void InputFile::ReadLine(const std::string& line, std::vector<long>& lineData)
 {
 	std::stringstream splitted(line);
 	std::string word;
@@ -49,15 +49,15 @@ void InputFile::ReadLine(const std::string& line, std::vector<int>& lineData)
 	for(int i = 0; i < stringVector.size(); ++i)
 	{
 		std::string val = stringVector[i];
-		int intVal = std::stof(val);
-		lineData.push_back(intVal);
+		long longVal = std::stof(val);
+		lineData.push_back(longVal);
 	}
 }
 
-Structures::WheelsOdometrData InputFile::FormData(const std::vector<int>& data)
+Structures::WheelsOdometrData InputFile::FormData(const std::vector<long>& data)
 {
 	Structures::WheelsOdometrData odmData = {};
-	odmData.Ticks = data[0];
+	odmData.TimeStamp = data[0];
 	odmData.ForwardLeftWheel = data[1];
 	odmData.ForwardRightWheel = data[2];
 	odmData.BackwardLeftWheel = data[3];
