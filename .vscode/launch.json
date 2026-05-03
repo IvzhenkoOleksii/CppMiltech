@@ -1,20 +1,19 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
             "name": "Odometr Debug",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/homework_04_odometry/ugv_odometry",
+            "program": "${workspaceFolder}/build/debug/homework_04_odometry/ugv_odometry",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${fileDirname}",
+            "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "preLaunchTask": "CMake: configure and build",
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing for gdb",
@@ -28,7 +27,5 @@
                 }
             ]
         }
-
-
     ]
 }
