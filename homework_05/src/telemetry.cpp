@@ -115,8 +115,8 @@ double compute_frame_rate_hz(const Frame frames[], int frame_count) {
     const long elapsed_ms = frames[frame_count - 1].timestamp_ms - frames[0].timestamp_ms;
     if (elapsed_ms == 0)
     {
-            std::cout << "Elapsed time is zero. Check frames timestamp_ms" << std::endl;
-            std::exit(1);
+        std::cout << "Elapsed time is zero. Check frames timestamp_ms" << std::endl;
+        std::exit(1);
     }
 
     return static_cast<double>((frame_count - 1) * 1000 / elapsed_ms);
@@ -141,6 +141,12 @@ int read_frames(const char* path, Frame frames[], int max_frames) {
             frames[frame_count] = parse_frame(line, frame_count);
             ++frame_count;
         }
+    }
+
+    if (frame_count == 0)
+    {
+        std::cout << "No frames at all. Check input file. Current file path: " << path << std::endl;
+        std::exit(1);
     }
 
     return frame_count;
