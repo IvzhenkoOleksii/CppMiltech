@@ -6,7 +6,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/debug/homework_05/debugging",
-            "args": ["./homework_05/data/bad_missing_field.txt"],
+            "args": ["./homework_05/data/bad_zero_delta.txt"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],

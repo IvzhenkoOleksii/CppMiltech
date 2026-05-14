@@ -113,6 +113,11 @@ Frame parse_frame(char line[], int frameIndex) {
 
 double compute_frame_rate_hz(const Frame frames[], int frame_count) {
     const long elapsed_ms = frames[frame_count - 1].timestamp_ms - frames[0].timestamp_ms;
+    if (elapsed_ms == 0)
+    {
+            std::cout << "Elapsed time is zero. Check frames timestamp_ms" << std::endl;
+            std::exit(1);
+    }
 
     return static_cast<double>((frame_count - 1) * 1000 / elapsed_ms);
 }
