@@ -6,7 +6,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/debug/homework_05/debugging",
-            "args": ["./homework_05/data/bad_invalid_number.txt"],
+            "args": ["./homework_05/data/bad_missing_field.txt"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],

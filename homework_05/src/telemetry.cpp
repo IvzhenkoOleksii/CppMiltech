@@ -15,14 +15,24 @@
 const int EXPECTED_FIELD_COUNT = 7;
 const int MAX_LINE_LENGTH = 256;
 
-void ErrorHandler(int frameIndex, int fieldIndex, std::string problematicMethodName)
+void ErrorHandler(int frameIndex, int fieldIndex, std::string problematicFunctionName)
 {
     std::cout << "Error during reading frame: "<< frameIndex 
             << "  field: " << fieldIndex 
-            << "  problematic place: "<< problematicFunctionName 
+            << "  problematic place: "<< problematicFunctionName
             << std::endl;
     std::exit(1);
 }
+
+void NullPointerHandler(int frameIndex, int fieldIndex, std::string problematicFunctionName)
+{
+    std::cout << "NullPointer during reading frame: "<< frameIndex 
+            << "  field: " << fieldIndex 
+            << "  problematic place: "<< problematicFunctionName
+            << std::endl;
+    std::exit(1);
+}
+
 
 int split_line(char line[], char* fields[], int max_fields) {
     int count = 0;
@@ -50,25 +60,32 @@ int split_line(char line[], char* fields[], int max_fields) {
     return count;
 }
 
-long parse_long(const char* text) {
+long parse_long(const char* text, int frameIndex, int fieldIndex) {
     char* end = nullptr;
-    const long value = std::strtol(text, &end, 10);
 
-    if (end == text) {
-        std::abort();
+    if (end == text) 
+    {
+        auto location = std::source_location::current();
+        NullPointerHandler(frameIndex, fieldIndex, location.function_name());
     }
 
+    const long value = std::strtol(text, &end, 10);
     return value;
 }
 
-int parse_int(const char* text) {
-    return static_cast<int>(parse_long(text));
+int parse_int(const char* text, int frameIndex, int fieldIndex) {
+    return static_cast<int>(parse_long(text, frameIndex, fieldIndex));
 }
 
 double parse_double(const char* text, int frameIndex, int fieldIndex, std::function<void(int, int, std::string)> errorHandlerFunc) {
     char* end = nullptr;
-    const double value = std::strtod(text, &end);
+    if (end == text) 
+    {
+        auto location = std::source_location::current();
+        NullPointerHandler(frameIndex, fieldIndex, location.function_name());
+    }
 
+    const double value = std::strtod(text, &end);
     if (end == text) 
     {
         auto location = std::source_location::current();
@@ -84,13 +101,13 @@ Frame parse_frame(char line[], int frameIndex) {
     (void)field_count;
 
     Frame frame{};
-    frame.timestamp_ms = parse_long(fields[0]);
-    frame.seq = parse_int(fields[1]);
+    frame.timestamp_ms = parse_long(fields[0], frameIndex, 0);
+    frame.seq = parse_int(fields[1], frameIndex, 1);
     frame.voltage_v = parse_double(fields[2], frameIndex, 2, ErrorHandler);
     frame.current_a = parse_double(fields[3], frameIndex, 3, ErrorHandler);
     frame.temperature_c = parse_double(fields[4], frameIndex, 4, ErrorHandler);
-    frame.gps_fix = parse_int(fields[5]);
-    frame.satellites = parse_int(fields[6]);
+    frame.gps_fix = parse_int(fields[5], frameIndex, 5);
+    frame.satellites = parse_int(fields[6], frameIndex, 6);
     return frame;
 }
 
