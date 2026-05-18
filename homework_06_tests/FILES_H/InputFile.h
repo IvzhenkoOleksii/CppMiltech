@@ -7,7 +7,7 @@
 class InputFile
 {
 	public:DataStructs::InputData ReadTxtFile();
-	public:DataStructs::InputData ReadJsonFile();
+	public:DataStructs::InputData ReadJsonFile(const std::string& path);
 	
 	// private methods
 	private:void ReadLine(const std::string& line, int lineIndex, DataStructs::InputData* data);

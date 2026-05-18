@@ -134,10 +134,10 @@ void InputFile::SetFloatField(const std::string& input, int index, float* output
 }
 
 
-DataStructs::InputData InputFile::ReadJsonFile()
+DataStructs::InputData InputFile::ReadJsonFile(const std::string& path)
 {
-	std::ifstream file("./DroneCourseHomework/DataFiles/json/Input.json");
 	DataStructs::InputData inputData{};
+	std::ifstream file(path);
 	if (file.is_open())
 	{
 		nlohmann::json json = nlohmann::json::parse(file);

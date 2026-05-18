@@ -16,7 +16,7 @@ int main()
 {
     // read input file
     InputFile inputFile;
-    DataStructs::InputData inputData = inputFile.ReadJsonFile();
+    DataStructs::InputData inputData = inputFile.ReadJsonFile("./DroneCourseHomework/DataFiles/json/Input.json");
 
     // create drone controller
     DroneController droneController = { inputData.DroneData, inputData.SimTestStep };
