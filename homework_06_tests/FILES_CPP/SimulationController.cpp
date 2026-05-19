@@ -1,4 +1,3 @@
-#pragma once
 #include "SimulationController.h"
 
 SimulationController::SimulationController(const float& simStepTime)

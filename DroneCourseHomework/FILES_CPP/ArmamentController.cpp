@@ -12,5 +12,5 @@ ArmamentController::ArmamentController(std::string ammoType, float droneAttackSp
 	ArmamentDatabase::Data armData = ArmamentDatabase::GetArmament(ammoType);
 
 	armamentFallTime = armamentCalculator.CalculateFallTime(armData, droneAttackSpeed, droneHeight);
-	armamentFallDistance = armamentCalculator.CalculateFallDistance(armData, droneAttackSpeed, droneHeight, armamentFallTime);
+	armamentFallDistance = armamentCalculator.CalculateFallDistance(armData, droneAttackSpeed, armamentFallTime);
 }

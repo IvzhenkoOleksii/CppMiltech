@@ -67,7 +67,7 @@ void TargetController::UpdateTargetSpeed()
 {
 	DataStructs::Position2D pathStartPosition = positions[currentPathStep];
 
-	int nextPathIndex = currentPathStep + 1;
+	unsigned int nextPathIndex = currentPathStep + 1;
 	if (nextPathIndex >= positions.size())
 	{
 		nextPathIndex = 0;

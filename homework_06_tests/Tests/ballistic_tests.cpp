@@ -2,6 +2,8 @@
 
 #include "InputFile.h"
 #include "DataStructs.h"
+#include "ArmamentDatabase.h"
+#include "ArmamentFallCalculator.h"
 
 TEST(ReadFile, ReadJson)
 {
@@ -37,15 +39,23 @@ TEST(ReadFile, ReadJson)
     });
     std::cout << "[ReadJson] Ended Test 5" << std::endl;
 
-
     EXPECT_EXIT({
         inputData.CheckData();
     }, ::testing::ExitedWithCode(1), ".*");
     std::cout << "[ReadJson] Ended Test 6" << std::endl;
 
+    EXPECT_EXIT({
+        inputData = inputFile.ReadJsonFile("./homework_06_tests/Tests/Data/WrongAmmo.json");
+        ArmamentDatabase::Data armData = ArmamentDatabase::GetArmament(inputData.DroneData.AmmoType);
+    }, ::testing::ExitedWithCode(1), ".*");
+    std::cout << "[ReadJson] Ended Test 7" << std::endl;
+}
 
-    ASSERT_EXIT({
-        inputData.CheckData();
-        std::exit(0); 
-    }, ::testing::ExitedWithCode(0), ".*");
+
+TEST(MathTests, Math)
+{
+    ArmamentDatabase::Data testData = {0, 0, 0, 0};
+
+    ArmamentFallCalculator calculator;
+    calculator.CalculateFallDistance(testData, 0, 0);
 }

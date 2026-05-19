@@ -46,7 +46,7 @@ void InputFile::ReadLine(const std::string& line, std::vector<long>& lineData)
 		stringVector.push_back(word);
 	}
 
-	for(int i = 0; i < stringVector.size(); ++i)
+	for(size_t i = 0; i < stringVector.size(); ++i)
 	{
 		std::string val = stringVector[i];
 		long longVal = std::stof(val);

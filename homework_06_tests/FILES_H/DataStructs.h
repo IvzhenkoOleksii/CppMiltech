@@ -85,10 +85,12 @@ class DataStructs
 		Position3D ManeuverPoint;
 		Position3D FirePoint;
 
-		float TimeToRotate;
-		float TimeToMove;
+		float TimeToRotate = {0.0f};
+		float TimeToMove = {0.0f};
 		// sum of TimeToRotate + TimeToMove
 		float TimeToReach = TimeToRotate + TimeToMove;
+
+		TargetOperationalData() = default;
 	};
 
 	public:struct DronePhysicalState

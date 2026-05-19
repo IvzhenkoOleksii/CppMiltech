@@ -68,7 +68,7 @@ void DroneController::ChooseNearestTarget()
 
 void DroneController::CalculateDistancesToTargets()
 {
-	for (int i = 0; i < targets.size(); ++i)
+	for (size_t i = 0; i < targets.size(); ++i)
 	{
 		CalculateDistanceToTarget(targets[i]->GetCurrentPosition(), i);
 	}
@@ -82,7 +82,7 @@ void DroneController::CalculateDistanceToTarget(const DataStructs::Position2D& t
 
 void DroneController::CalculateAnglesBetweenDroneAndTargets()
 {
-	for (int i = 0; i < targets.size(); ++i)
+	for (size_t i = 0; i < targets.size(); ++i)
 	{
 		CalculateAngleBetweenDroneAndTarget(targets[i]->GetCurrentPosition(), i);
 	}
@@ -99,7 +99,7 @@ void DroneController::CalculateFirePointsToTargets()
 	float armFallDistance = armamentController.GetFallDistance();
 	DataStructs::Position2D dronePosition = operationalData.transform.Position.GetPosition2D();
 
-	for (int i = 0; i < targets.size(); ++i)
+	for (size_t i = 0; i < targets.size(); ++i)
 	{
 		DataStructs::Position2D targetPosition = targets[i]->GetCurrentPosition();
 		float distanceToTarget = targetsOperationalData[i].DistanceToTarget;
@@ -128,10 +128,10 @@ void DroneController::CalculateFirePointsToTargets()
 
 void DroneController::CalculateRotationTimeToTargets()
 {
-	for (int i = 0; i < targets.size(); ++i)
+	for (size_t i = 0; i < targets.size(); ++i)
 	{
 		float angleToRotate = targetsOperationalData[i].AngleToTarget;
-		float timeToRotate = abs(angleToRotate) / inputData.AngularSpeed;
+		float timeToRotate = fabs(angleToRotate) / inputData.AngularSpeed;
 		targetsOperationalData[i].TimeToRotate = timeToRotate;
 	}
 }
@@ -140,7 +140,7 @@ void DroneController::CalculateTimeToReachTargets()
 {
 	DataStructs::Position2D dronePosition2D = operationalData.transform.Position.GetPosition2D();
 
-	for (int i = 0; i < targets.size(); ++i)
+	for (size_t i = 0; i < targets.size(); ++i)
 	{
 		float distanceToTarget = targetsOperationalData[i].DistanceToTarget;
 		DataStructs::Position3D maneuverPoint = targetsOperationalData[i].ManeuverPoint;
@@ -161,7 +161,7 @@ void DroneController::GetClosestTarget()
 {
 	int targetIndex = 0;
 	float smallestReachTime = 0;
-	for (int i = 0; i < targets.size(); ++i)
+	for (size_t i = 0; i < targets.size(); ++i)
 	{
 		if (i == 0)
 		{
@@ -208,7 +208,7 @@ void DroneController::RecalculateDroneDirection()
 	if (!droneCalculator.AreFloatsClose(calculatedState.Direction, angleToTarget))
 	{
 		operationalData.State = DataStructs::TURNING;
-		float angleDifference = abs(angleToTarget);
+		float angleDifference = fabs(angleToTarget);
 		float adding = directionChangeStep;
 		if (angleDifference <= directionChangeStep)
 		{

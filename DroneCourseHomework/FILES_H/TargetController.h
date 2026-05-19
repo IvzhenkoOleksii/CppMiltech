@@ -22,7 +22,7 @@ class TargetController
 	private:float velocityX;
 	private:float velocityY;
 
-	private:int currentPathStep;
+	private:unsigned int currentPathStep;
 
 	private:DataStructs::Position2D currentPosition;
 	private:std::vector<DataStructs::Position2D> positions;

@@ -93,7 +93,7 @@ void InputFile::SetupDronePosition(const std::string &line, DataStructs::InputDa
 	}
 
 	float x, y, z;
-	for (int index = 0; index < dataAsVector.size(); index++)
+	for (size_t index = 0; index < dataAsVector.size(); index++)
 	{
 		switch (index)
 		{

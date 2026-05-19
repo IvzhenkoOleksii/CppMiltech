@@ -1,10 +1,10 @@
+#include <cstddef>
 #include <iostream>
 #include <vector>
 
 #include "InputFile.h"
 #include "Structures.h"
 #include "Calculator.h"
-
 
 int main(int argc, char** argv) 
 {
@@ -22,7 +22,7 @@ int main(int argc, char** argv)
     Structures::NrkState nrkState;
 
     std::cout << std::endl;
-    for (int i = 0; i < data.size(); ++i)
+    for (size_t i = 0; i < data.size(); ++i)
     {
         if (i == 0)
         {

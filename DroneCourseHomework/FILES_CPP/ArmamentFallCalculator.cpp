@@ -132,7 +132,7 @@ float ArmamentFallCalculator::CalculateFallingTime(float p, float phi, float a, 
 	return timeToFall;
 }
 
-float ArmamentFallCalculator::CalculateFallDistance(const ArmamentDatabase::Data& armData, float droneAttackSpeed, float droneZPosition, float fallTime)
+float ArmamentFallCalculator::CalculateFallDistance(const ArmamentDatabase::Data& armData, float droneAttackSpeed, float fallTime)
 {
 	std::cout << std::endl;
 	// pre-calculate value, which used often

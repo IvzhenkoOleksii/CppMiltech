@@ -5,7 +5,7 @@
 class ArmamentFallCalculator
 {
 	public:float CalculateFallTime(const ArmamentDatabase::Data& armData, float droneAttackSpeed, float droneZPosition);
-	public:float CalculateFallDistance(const ArmamentDatabase::Data&, float droneAttackSpeed, float droneZPosition, float fallTime);
+	public:float CalculateFallDistance(const ArmamentDatabase::Data&, float droneAttackSpeed, float fallTime);
 
 	// time of flight = a · t*t*t + b · t*t + c = 0
 	private:float CalculateCoefficientA(const ArmamentDatabase::Data&, float droneAttackSpeed);
