@@ -20,8 +20,7 @@
   "runArgs": [
     "--network=host",
     "--hostname=devcontainer",
-    "--add-host=devcontainer:127.0.1.1",
-    "--cap-add=SYS_PTRACE"
+    "--add-host=devcontainer:127.0.1.1"
   ],
   "customizations": {
     "vscode": {

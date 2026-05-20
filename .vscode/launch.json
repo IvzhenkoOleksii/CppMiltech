@@ -5,13 +5,16 @@
             "name": "Odometr Debug",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/debug/homework_04_odometry/ugv_odometry",
+            "program": "${workspaceFolder}/build/debug/homework_06_tests/ballisticCalculations",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
+            "sourceFileMap": {
+                "${workspaceFolder}": "${workspaceFolder}"
+            },
             "miDebuggerPath": "/usr/bin/gdb",
             "preLaunchTask": "CMake: configure and build",
             "setupCommands": [
@@ -23,6 +26,11 @@
                 {
                     "description": "Set Disassembly Flavor to Intel",
                     "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Disable ASLR disabling in GDB",
+                    "text": "set disable-randomization off", // GDB: don`t start randomization
                     "ignoreFailures": true
                 }
             ]

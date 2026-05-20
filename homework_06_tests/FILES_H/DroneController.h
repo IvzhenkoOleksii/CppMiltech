@@ -5,57 +5,96 @@
 #include "DroneCalculator.h"
 
 #include <vector>
-#include <string>
 
-class DroneController
-{
-public:DroneController(const DataStructs::DroneInputData& data, const float& simStep);
+class DroneController {
+public:
+  DroneController(const DataStructs::DroneInputData& data, const float& simStep);
 
-public:void LockTarget(TargetController* target, const int& targetIndex);
-public:void LockTargets(std::vector<TargetController*> targetRefs);
+public:
+  void LockTarget(TargetController* target, const int& targetIndex);
 
-public:void ChooseNearestTarget();
+public:
+  void LockTargets(std::vector<TargetController*> targetRefs);
 
-public:void RecalculateOperationalStates(float simStepTime);
-public:void UpdateOperationalStates();
-public:void CheckIfDroneReachedFirePosition();
+public:
+  void ChooseNearestTarget();
 
+public:
+  void RecalculateOperationalStates(float simStepTime);
 
-private:void CalculateDistancesToTargets();
-private:void CalculateDistanceToTarget(const DataStructs::Position2D& targetPosition, const int& targetIndex);
+public:
+  void UpdateOperationalStates();
 
-private:void CalculateAnglesBetweenDroneAndTargets();
-private:void CalculateAngleBetweenDroneAndTarget(const DataStructs::Position2D& targetPosition, const int& targetIndex);
+public:
+  void CheckIfDroneReachedFirePosition();
 
-private:void CalculateFirePointsToTargets();
-private:void CalculateRotationTimeToTargets();
-private:void CalculateTimeToReachTargets();
-private:void GetClosestTarget();
+private:
+  void CalculateDistancesToTargets();
 
-private:void RecalculateDroneDirection();
+private:
+  void CalculateDistanceToTarget(const DataStructs::Position2D& targetPosition, const int& targetIndex);
 
-private:void RecalculateDroneVelocity();
-private:void RecalculateDronePosition(float simTime);
+private:
+  void CalculateAnglesBetweenDroneAndTargets();
 
+private:
+  void CalculateAngleBetweenDroneAndTarget(const DataStructs::Position2D& targetPosition, const int& targetIndex);
 
+private:
+  void CalculateFirePointsToTargets();
 
+private:
+  void CalculateRotationTimeToTargets();
 
-// variables
-private:DataStructs::DroneInputData inputData;
-private:ArmamentController armamentController;
-private:DroneCalculator droneCalculator;
+private:
+  void CalculateTimeToReachTargets();
 
-private:float minAttackDistance;
+private:
+  void GetClosestTarget();
 
-private:float acceleration;
-private:float accelerationTime;
-private:float velocityChangeStep;	// how velocity can change during single step time
-private:float directionChangeStep;	// how direction can change during single step time
+private:
+  void RecalculateDroneDirection();
 
-private:DataStructs::DronePhysicalState calculatedState;	// temp state, which will be at the end of simStep, -> will be copied into operationalData
-private:DataStructs::DroneOperationalData operationalData;
+private:
+  void RecalculateDroneVelocity();
 
-// targets store as referncies, so drone will get updated data of targets, ie -> updated position, speed, etc
-private:std::vector<TargetController*> targets {};
-private:std::vector<DataStructs::TargetOperationalData> targetsOperationalData{};
+private:
+  void RecalculateDronePosition(float simTime);
+
+  // variables
+private:
+  DataStructs::DroneInputData inputData;
+
+private:
+  ArmamentController armamentController;
+
+private:
+  DroneCalculator droneCalculator;
+
+private:
+  float minAttackDistance;
+
+private:
+  float acceleration;
+
+private:
+  float accelerationTime;
+
+private:
+  float velocityChangeStep;  // how velocity can change during single step time
+private:
+  float directionChangeStep;  // how direction can change during single step time
+
+private:
+  DataStructs::DronePhysicalState
+    calculatedState;  // temp state, which will be at the end of simStep, -> will be copied into operationalData
+private:
+  DataStructs::DroneOperationalData operationalData;
+
+  // targets store as referncies, so drone will get updated data of targets, ie -> updated position, speed, etc
+private:
+  std::vector<TargetController*> targets{};
+
+private:
+  std::vector<DataStructs::TargetOperationalData> targetsOperationalData{};
 };
