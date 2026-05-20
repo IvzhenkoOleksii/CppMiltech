@@ -15,19 +15,19 @@ TargetsManager::TargetsManager()
 TargetsManager::TargetsManager(const float& arrayTimeStep)
   : TargetsManager()
 {
-  for (size_t i = 0; i < targetData.Positions.size(); ++i) {
-    targets.push_back(TargetController{targetData.Positions[i], arrayTimeStep});
+  for (const auto& Position : targetData.Positions) {
+    targets.emplace_back(Position, arrayTimeStep);
   }
 }
 
 void TargetsManager::UpdateTargets(const float& simStep)
 {
-  for (size_t i = 0; i < targets.size(); ++i) {
-    targets[i].Update(simStep);
+  for (auto& target : targets) {
+    target.Update(simStep);
   }
 }
 
-std::vector<TargetController*> TargetsManager::GetTargetReferencies()
+auto TargetsManager::GetTargetReferencies() -> std::vector<TargetController*>
 {
   std::vector<TargetController*> targetReferencies;
   targetReferencies.reserve(targets.size());

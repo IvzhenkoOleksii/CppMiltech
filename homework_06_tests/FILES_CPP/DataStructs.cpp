@@ -11,12 +11,12 @@ void DataStructs::Position3D::DeInitialize()
   Z = 99999;
 }
 
-bool DataStructs::Position3D::IsInitialized()
+auto DataStructs::Position3D::IsInitialized() -> bool
 {
   return Z < 99999;
 }
 
-DataStructs::Position2D DataStructs::Position3D::GetPosition2D()
+auto DataStructs::Position3D::GetPosition2D() -> DataStructs::Position2D
 {
   Position2D pos;
   pos.X = X;

@@ -13,7 +13,7 @@ void OutputFile::WriteToFile(DataStructs::Position2D firePosition)
     file.close();
   }
   else {
-    std::cout << "Output file open error!  " << std::endl;
+    std::cout << "Output file open error!  " << '\n';
     exit(1);
   }
 }
@@ -27,7 +27,7 @@ void OutputFile::WriteToFile(DataStructs::Position2D maneuverPosition, DataStruc
     file.close();
   }
   else {
-    std::cout << "Output file open error!  " << std::endl;
+    std::cout << "Output file open error!  " << '\n';
     exit(1);
   }
 }

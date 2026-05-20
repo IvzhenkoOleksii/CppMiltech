@@ -4,7 +4,7 @@
 #include "TargetFile.h"
 #include "DataStructs.h"
 
-DataStructs::TargetData TargetFile::ReadJsonFile()
+auto TargetFile::ReadJsonFile() -> DataStructs::TargetData
 {
   std::ifstream file("./DroneCourseHomework/DataFiles/json/Targets.json");
   DataStructs::TargetData targetData{};
@@ -14,7 +14,7 @@ DataStructs::TargetData TargetFile::ReadJsonFile()
     json.at("paths").get_to(targetData.Positions);
   }
   else {
-    std::cout << "Json Targets file read error!  " << std::endl;
+    std::cout << "Json Targets file read error!  " << '\n';
     exit(1);
   }
   file.close();

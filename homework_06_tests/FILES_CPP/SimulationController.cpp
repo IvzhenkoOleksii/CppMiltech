@@ -7,12 +7,12 @@ SimulationController::SimulationController(const float& simStepTime)
   simulationStepTime = simStepTime;
 }
 
-bool SimulationController::IsWorking()
+auto SimulationController::IsWorking() -> bool
 {
   return currentSimulationStep < MaxSimulationSteps;
 }
 
-float SimulationController::GetSimulationStepTime()
+auto SimulationController::GetSimulationStepTime() -> float
 {
   return simulationStepTime;
 }

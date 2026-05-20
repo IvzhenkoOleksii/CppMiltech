@@ -4,7 +4,7 @@
 #include "DataStructs.h"
 #include "DroneController.h"
 
-int main()
+auto main() -> int
 {
   // read input file
   InputFile inputFile;

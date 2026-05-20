@@ -20,3 +20,8 @@ enable_testing()
 add_subdirectory(DroneCourseHomework)
 add_subdirectory(homework_04_odometry)
 add_subdirectory(homework_06_tests)
+
+find_program(CLANG_TIDY_EXE NAMES "clang-tidy")
+if(CLANG_TIDY_EXE)
+    set(CMAKE_CXX_CLANG_TIDY ${CLANG_TIDY_EXE} "-checks=*")
+endif()

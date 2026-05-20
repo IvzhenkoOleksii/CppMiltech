@@ -34,7 +34,7 @@ public:
   };
 
 public:
-  static Data GetArmament(std::string name);
+  static Data GetArmament(const std::string& name);
 
 private:
   static std::map<std::string, Data> sArmaData;

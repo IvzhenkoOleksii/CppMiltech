@@ -2,9 +2,9 @@
 
 #include <vector>
 
-TargetController::TargetController() {}
+TargetController::TargetController() = default;
 
-TargetController::TargetController(const std::vector<DataStructs::Position2D> positionsData, const float& stepTimeData)
+TargetController::TargetController(const std::vector<DataStructs::Position2D>& positionsData, const float& stepTimeData)
 {
   positions = positionsData;
   stepTime = stepTimeData;
@@ -16,12 +16,12 @@ TargetController::TargetController(const std::vector<DataStructs::Position2D> po
   UpdateTargetSpeed();
 }
 
-DataStructs::Position2D TargetController::GetCurrentPosition()
+auto TargetController::GetCurrentPosition() -> DataStructs::Position2D
 {
   return currentPosition;
 }
 
-DataStructs::Position2D TargetController::GetPredictedPosition(const float& time)
+auto TargetController::GetPredictedPosition(const float& time) -> DataStructs::Position2D
 {
   DataStructs::Position2D predictedPosition;
   predictedPosition.X = currentPosition.X + (velocityX * time);

@@ -11,7 +11,7 @@ DroneCalculator::DroneCalculator()
   axisXModule = sqrtf(axisXVectorUnderSQRT);
 }
 
-float DroneCalculator::CalculateDroneAcceleration(const float& droneAttackSpeed, const float& droneAccelerationPath)
+auto DroneCalculator::CalculateDroneAcceleration(const float& droneAttackSpeed, const float& droneAccelerationPath) -> float
 {
   float acc = 0;
   float attackSpeedPower2 = powf(droneAttackSpeed, 2);
@@ -20,19 +20,19 @@ float DroneCalculator::CalculateDroneAcceleration(const float& droneAttackSpeed,
   return acc;
 }
 
-float DroneCalculator::CalculateDistance(const DataStructs::Position2D& position1, const DataStructs::Position2D& position2)
+auto DroneCalculator::CalculateDistance(const DataStructs::Position2D& position1, const DataStructs::Position2D& position2) -> float
 {
   // use Pifagor theorem
   float powXDistance = powf(position1.X - position2.X, 2);
   float powYDistance = powf(position1.Y - position2.Y, 2);
-  float distance = sqrt(powXDistance + powYDistance);
+  float distance = std::sqrt(powXDistance + powYDistance);
 
   return distance;
 }
 
-float DroneCalculator::CalculateAngleBetweenDroneAndTarget(DataStructs::Position3D dronePosition,
-                                                           const float& droneDirection,
-                                                           const DataStructs::Position2D& targetPosition)
+auto DroneCalculator::CalculateAngleBetweenDroneAndTarget(DataStructs::Position3D dronePosition,
+                                                          const float& droneDirection,
+                                                          const DataStructs::Position2D& targetPosition) -> float
 {
   DataStructs::Position2D differenceVector = {targetPosition.X - dronePosition.X, targetPosition.Y - dronePosition.Y};
   float differenceVectorModule = sqrtf(powf(differenceVector.X, 2) + powf(differenceVector.Y, 2));
@@ -56,16 +56,17 @@ float DroneCalculator::CalculateAngleBetweenDroneAndTarget(DataStructs::Position
 
   angle *= sign;
 
-  std::cout << "Angle between drone and target are:  " << angle << std::endl;
+  std::cout << "Angle between drone and target are:  " << angle << '\n';
   return angle;
 }
 
-bool DroneCalculator::AreFloatsClose(float f1, float f2)
+auto DroneCalculator::AreFloatsClose(float f1, float f2) -> bool
 {
   return std::abs(f1 - f2) <= 1e-9;
 }
 
-DataStructs::Position2D DroneCalculator::CalculateDirectionVector(const DataStructs::Position2D& dronePosition, const float& droneDirection)
+auto DroneCalculator::CalculateDirectionVector(const DataStructs::Position2D& dronePosition,
+                                               const float& droneDirection) -> DataStructs::Position2D
 {
   float dirVectorx = dronePosition.X + cosf(droneDirection);
   float dirVectorY = dronePosition.Y + sinf(droneDirection);
@@ -73,10 +74,10 @@ DataStructs::Position2D DroneCalculator::CalculateDirectionVector(const DataStru
   return directionVector;
 }
 
-DataStructs::Position2D DroneCalculator::CalculateManeuverPosition(float minAttackDistance,
-                                                                   float droneToTargetDistance,
-                                                                   DataStructs::Position2D dronePosition,
-                                                                   DataStructs::Position2D targetPosition)
+auto DroneCalculator::CalculateManeuverPosition(float minAttackDistance,
+                                                float droneToTargetDistance,
+                                                DataStructs::Position2D dronePosition,
+                                                DataStructs::Position2D targetPosition) -> DataStructs::Position2D
 {
   float x;
   float y;
@@ -89,14 +90,14 @@ DataStructs::Position2D DroneCalculator::CalculateManeuverPosition(float minAtta
     y = targetPosition.Y;
   }
 
-  std::cout << "Maneuver position X: " << x << "    Y: " << y << std::endl;
-  return DataStructs::Position2D(x, y);
+  std::cout << "Maneuver position X: " << x << "    Y: " << y << '\n';
+  return {x, y};
 }
 
-DataStructs::Position2D DroneCalculator::CalculateFirePosition(float fallDistance,
-                                                               float droneToTargetDistance,
-                                                               DataStructs::Position2D dronePosition,
-                                                               DataStructs::Position2D targetPosition)
+auto DroneCalculator::CalculateFirePosition(float fallDistance,
+                                            float droneToTargetDistance,
+                                            DataStructs::Position2D dronePosition,
+                                            DataStructs::Position2D targetPosition) -> DataStructs::Position2D
 {
   float ratio = 0;
   if (droneToTargetDistance > 0.0) {
@@ -107,18 +108,18 @@ DataStructs::Position2D DroneCalculator::CalculateFirePosition(float fallDistanc
   float fireY = dronePosition.Y + (targetPosition.Y - dronePosition.Y) * ratio;
 
   DataStructs::Position2D firePosition = DataStructs::Position2D(fireX, fireY);
-  std::cout << "Fire position X: " << fireX << "    Y: " << fireY << std::endl;
+  std::cout << "Fire position X: " << fireX << "    Y: " << fireY << '\n';
 
   return firePosition;
 }
 
-bool DroneCalculator::IsDistanceBetweenPointSameAsNeeded(const DataStructs::Position2D& position1,
+auto DroneCalculator::IsDistanceBetweenPointSameAsNeeded(const DataStructs::Position2D& position1,
                                                          const DataStructs::Position2D& position2,
-                                                         float neededDistance)
+                                                         float neededDistance) -> bool
 {
   float distance = CalculateDistance(position1, position2);
   float difference = distance - neededDistance;
-  float differenceAbs = fabs(difference);
+  float differenceAbs = std::fabs(difference);
   bool isDistanceGoodToFire = differenceAbs < 1;
 
   return isDistanceGoodToFire;

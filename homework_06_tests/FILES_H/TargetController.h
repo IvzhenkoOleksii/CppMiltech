@@ -8,7 +8,7 @@ public:
   TargetController();
 
 public:
-  TargetController(const std::vector<DataStructs::Position2D> positionsData, const float& stepTimeData);
+  TargetController(const std::vector<DataStructs::Position2D>& positionsData, const float& stepTimeData);
 
 public:
   DataStructs::Position2D GetCurrentPosition();

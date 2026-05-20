@@ -9,7 +9,7 @@
 
 #include <nlohmann/json.hpp>
 
-DataStructs::InputData InputFile::ReadTxtFile()
+auto InputFile::ReadTxtFile() -> DataStructs::InputData
 {
   std::string line;
   std::ifstream file("./DroneCourseHomework/DataFiles/txt/Input.txt");
@@ -18,13 +18,13 @@ DataStructs::InputData InputFile::ReadTxtFile()
   if (file.is_open()) {
     int lineIndex = 0;
     while (std::getline(file, line)) {
-      std::cout << "Line inside input file is:  " << line << std::endl;
+      std::cout << "Line inside input file is:  " << line << '\n';
       ReadLine(line, lineIndex, &inputData);
       lineIndex++;
     }
   }
   else {
-    std::cout << "Input file read error!  " << line << std::endl;
+    std::cout << "Input file read error!  " << line << '\n';
     exit(1);
   }
   file.close();
@@ -122,7 +122,7 @@ void InputFile::SetFloatField(const std::string& input, int index, float* output
   }
 }
 
-DataStructs::InputData InputFile::ReadJsonFile(const std::string& path)
+auto InputFile::ReadJsonFile(const std::string& path) -> DataStructs::InputData
 {
   DataStructs::InputData inputData{};
   std::ifstream file(path);
@@ -141,7 +141,7 @@ DataStructs::InputData InputFile::ReadJsonFile(const std::string& path)
     json.at("turnThreshold").get_to(inputData.DroneData.TurnThreshold);
   }
   else {
-    std::cout << "Json Input file read error!  " << std::endl;
+    std::cout << "Json Input file read error!  " << '\n';
     exit(1);
   }
   file.close();

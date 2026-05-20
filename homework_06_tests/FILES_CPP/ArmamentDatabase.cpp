@@ -9,17 +9,17 @@ std::map<std::string, ArmamentDatabase::Data> ArmamentDatabase::sArmaData = {{"V
                                                                              {"GLIDING-VOG", ArmamentDatabase::Data(0.45f, 0.10f, 1.0f, 1)},
                                                                              {"GLIDING-RKG", ArmamentDatabase::Data(1.4f, 0.10f, 1.0f, 1)}};
 
-ArmamentDatabase::Data ArmamentDatabase::GetArmament(std::string name)
+auto ArmamentDatabase::GetArmament(const std::string& name) -> ArmamentDatabase::Data
 {
   auto search = sArmaData.find(name);
   if (search == sArmaData.end()) {
-    std::cout << "Error!. There is no data about: " << name << std::endl;
+    std::cout << "Error!. There is no data about: " << name << '\n';
     exit(1);
   }
   else {
     ArmamentDatabase::Data searchedData = search->second;
     std::cout << "Data about " << name << "  mass: " << searchedData.Mass << "  drag: " << searchedData.Drag
-              << "  lift: " << searchedData.Lift << std::endl;
+              << "  lift: " << searchedData.Lift << '\n';
     return searchedData;
   }
 }

@@ -1,6 +1,8 @@
+#include <cmath>
 #include <iostream>
 #include <string>
 #include <cmath>
+#include <utility>
 
 #include "DroneController.h"
 #include "DroneCalculator.h"
@@ -41,9 +43,9 @@ void DroneController::LockTarget(TargetController* target, const int& targetInde
 
 void DroneController::LockTargets(std::vector<TargetController*> targetRefs)
 {
-  targets = targetRefs;
+  targets = std::move(targetRefs);
   for (size_t i = 0; i < targets.size(); ++i) {
-    targetsOperationalData.push_back(DataStructs::TargetOperationalData());
+    targetsOperationalData.emplace_back();
     targetsOperationalData[i].FirePoint.DeInitialize();
     targetsOperationalData[i].ManeuverPoint.DeInitialize();
   }
@@ -87,7 +89,7 @@ void DroneController::CalculateAngleBetweenDroneAndTarget(const DataStructs::Pos
 {
   targetsOperationalData[targetIndex].AngleToTarget = droneCalculator.CalculateAngleBetweenDroneAndTarget(
     operationalData.transform.Position, operationalData.transform.Direction, targetPosition);
-  std::cout << "Angle between drone and target: " << targetsOperationalData[targetIndex].AngleToTarget << std::endl;
+  std::cout << "Angle between drone and target: " << targetsOperationalData[targetIndex].AngleToTarget << '\n';
 }
 
 void DroneController::CalculateFirePointsToTargets()
@@ -126,7 +128,7 @@ void DroneController::CalculateRotationTimeToTargets()
 {
   for (size_t i = 0; i < targets.size(); ++i) {
     float angleToRotate = targetsOperationalData[i].AngleToTarget;
-    float timeToRotate = fabs(angleToRotate) / inputData.AngularSpeed;
+    float timeToRotate = std::fabs(angleToRotate) / inputData.AngularSpeed;
     targetsOperationalData[i].TimeToRotate = timeToRotate;
   }
 }
@@ -192,7 +194,7 @@ void DroneController::RecalculateDroneDirection()
 
   if (!droneCalculator.AreFloatsClose(calculatedState.Direction, angleToTarget)) {
     operationalData.State = DataStructs::TURNING;
-    float angleDifference = fabs(angleToTarget);
+    float angleDifference = std::fabs(angleToTarget);
     float adding = directionChangeStep;
     if (angleDifference <= directionChangeStep) {
       adding = angleToTarget;
@@ -272,6 +274,6 @@ void DroneController::CheckIfDroneReachedFirePosition()
     operationalData.transform.Position.GetPosition2D(), targetPosition, armamentController.GetFallDistance());
 
   if (isReadyToFire) {
-    std::cout << "Fire" << std::endl;
+    std::cout << "Fire" << '\n';
   }
 }
