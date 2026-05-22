@@ -14,6 +14,7 @@
     "source=${localEnv:HOME}/.ssh,target=/home/${localEnv:USER}/.ssh,type=bind,readonly,consistency=cached",
     "source=${localEnv:HOME}/.devcontainers/${localWorkspaceFolderBasename}/.bash_history,target=/home/${localEnv:USER}/.bash_history,type=bind,consistency=delegated",
   ],
+  "initializeCommand": "chmod +x .devcontainer/scripts/initialize",
   "initializeCommand": [
     ".devcontainer/scripts/initialize"
   ],
