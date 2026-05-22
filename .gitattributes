@@ -6,6 +6,7 @@
 # контейнері може падати на CRLF.
 *.sh text eol=lf
 .devcontainer/scripts/* text eol=lf
+*.in text eol=lf
 Dockerfile text eol=lf
 
 # Бінарні assets не проходять text normalization.
