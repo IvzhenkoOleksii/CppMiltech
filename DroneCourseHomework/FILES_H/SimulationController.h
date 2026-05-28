@@ -2,15 +2,19 @@
 
 constexpr int MaxSimulationSteps = 10000;
 
-class SimulationController
-{
-	public:bool IsWorking();
-	public:void Update();
-	public:float GetSimulationStepTime();
+class SimulationController {
+public:
+  SimulationController(const float& simStepTime);
 
-	SimulationController(const float& simStepTime);
+public:
+  bool IsWorking();
+  void Update();
+  float GetSimulationStepTime();
+  void Stop();
 
-	private:int currentSimulationStep;
-	private:float simulationStepTime;
-	private:float currentSimulationTime;
+private:
+  bool isActive;
+  int currentSimulationStep;
+  float simulationStepTime;
+  float currentSimulationTime;
 };

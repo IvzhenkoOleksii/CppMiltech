@@ -5,11 +5,12 @@ SimulationController::SimulationController(const float& simStepTime)
   currentSimulationStep = 0;
   currentSimulationTime = 0;
   simulationStepTime = simStepTime;
+  isActive = true;
 }
 
 bool SimulationController::IsWorking()
 {
-  return currentSimulationStep < MaxSimulationSteps;
+  return isActive && currentSimulationStep < MaxSimulationSteps;
 }
 
 float SimulationController::GetSimulationStepTime()
@@ -21,4 +22,9 @@ void SimulationController::Update()
 {
   ++currentSimulationStep;
   currentSimulationTime += simulationStepTime;
+}
+
+void SimulationController::Stop()
+{
+  isActive = false;
 }

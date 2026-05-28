@@ -1,15 +1,8 @@
-#include <iostream>
-#include <fstream>
-#include <string>
-
 #include "Files/InputFile.h"
 #include "Files/OutputFile.h"
-#include "Files/TargetFile.h"
 #include "DataStructs.h"
 #include "SimulationController.h"
 #include "Drone/DroneController.h"
-#include "Drone/DroneCalculator.h"
-#include "Target/TargetController.h"
 #include "Target/TargetsManager.h"
 
 int main()
@@ -32,7 +25,6 @@ int main()
 
   while (simulation.IsWorking()) {
     targetsManager.OnStepStart(simulationStepTime);
-
     droneController.RecalculateOperationalStates(simulationStepTime);
 
     simulation.Update();
