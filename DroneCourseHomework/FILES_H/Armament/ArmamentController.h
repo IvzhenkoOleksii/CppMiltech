@@ -1,8 +1,8 @@
 #pragma once
 #include <string>
 
-#include "ArmamentDatabase.h"
 #include "ArmamentFallCalculator.h"
+#include "DataStructs.h"
 
 class ArmamentController {
 public:
@@ -10,11 +10,19 @@ public:
 
 public:
   ArmamentController(std::string ammoType, float droneAttackSpeed, float droneHeight, float hitRadius);
-  void CalculateSimulationData(float simStep);
+  void CalculateSimulationData(const float& simStep);
 
 public:
   float GetFallDistance();
   float GetFallTime();
+
+public:
+  void OnStepStart(const float& simStep);
+  void OnStepEnd();
+
+private:
+  void UpdateFallPositionPartially();
+  void UpdateFallPosition();
 
 private:
   ArmamentFallCalculator calculator;
@@ -29,7 +37,8 @@ private:
 
   // data for simulation
 private:
-  float position;
+  bool isFired;
+  DataStructs::Position3D position;
   float fallDirection;
   float fallStepHeight;     // vertical step
   float fallStepDistance;   // horizontal step

@@ -1,21 +1,22 @@
 #include "Target/TargetController.h"
 
-#include <algorithm>
 #include <vector>
-#include <iostream>
 
 TargetController::TargetController() {}
 
 TargetController::TargetController(const std::vector<DataStructs::Position2D> positionsData, const float& stepTimeData)
 {
-  positions = positionsData;
-  stepTime = stepTimeData;
-
   currentPathStep = 0;
   currentStepTime = 0;
-  currentPosition = positions[currentPathStep];
 
-  UpdateTargetSpeed();
+  calculator = {};
+
+  this->positionsData = positionsData;
+  arrayStepTime = stepTimeData;
+
+  currentPosition = this->positionsData[currentPathStep];
+
+  CalculateVelocity();
 }
 
 DataStructs::Position2D TargetController::GetCurrentPosition()
@@ -32,45 +33,47 @@ DataStructs::Position2D TargetController::GetPredictedPosition(const float& time
   return predictedPosition;
 }
 
-void TargetController::Update(const float& simStepTime)
+void TargetController::OnStepStart(const float& simStep)
 {
-  currentStepTime += simStepTime;
+  currentStepTime += simStep;
 
-  if (currentStepTime >= stepTime) {
-    currentStepTime -= stepTime;
+  if (currentStepTime >= arrayStepTime) {
+    currentStepTime -= arrayStepTime;
     UpdateCurrentPathStep();
-    currentPosition = positions[currentPathStep];
-    UpdateTargetSpeed();
+    currentPosition = positionsData[currentPathStep];
+    CalculateVelocity();
   }
   else {
-    currentPosition.X += velocityX * simStepTime;
-    currentPosition.Y += velocityY * simStepTime;
+    currentPosition.X += velocityX * simStep;
+    currentPosition.Y += velocityY * simStep;
   }
 }
+
+void TargetController::OnStepEnd() {}
 
 void TargetController::UpdateCurrentPathStep()
 {
   ++currentPathStep;
-  if (currentPathStep >= positions.size()) {
+  if (currentPathStep >= positionsData.size()) {
     // drop to start of array
     currentPathStep = 0;
   }
 }
 
-void TargetController::UpdateTargetSpeed()
+void TargetController::CalculateVelocity()
 {
-  DataStructs::Position2D pathStartPosition = positions[currentPathStep];
-
-  int nextPathIndex = currentPathStep + 1;
-  if (nextPathIndex >= positions.size()) {
+  size_t nextPathIndex = currentPathStep + 1;
+  if (nextPathIndex >= positionsData.size()) {
+    // move to the start of path. Target move by circled position
     nextPathIndex = 0;
   }
 
-  DataStructs::Position2D pathEndPosition = positions[nextPathIndex];
+  DataStructs::Position2D pathStartPosition = positionsData[currentPathStep];
+  DataStructs::Position2D pathEndPosition = positionsData[nextPathIndex];
 
-  float dX = pathEndPosition.X - pathStartPosition.X;
-  float dY = pathEndPosition.Y - pathStartPosition.Y;
+  DataStructs::Position2D vector = calculator.GetDirectionVector(pathStartPosition, pathEndPosition);
 
-  velocityX = dX / stepTime;
-  velocityY = dY / stepTime;
+  velocityX = vector.X / arrayStepTime;
+  velocityY = vector.Y / arrayStepTime;
+  velocity = calculator.VectorLength(velocityX, velocityY);
 }

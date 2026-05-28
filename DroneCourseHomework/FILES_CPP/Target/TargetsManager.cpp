@@ -15,15 +15,22 @@ TargetsManager::TargetsManager()
 TargetsManager::TargetsManager(const float& arrayTimeStep)
   : TargetsManager()
 {
-  for (int i = 0; i < targetData.Positions.size(); ++i) {
+  for (size_t i = 0; i < targetData.Positions.size(); ++i) {
     targets.push_back(TargetController{targetData.Positions[i], arrayTimeStep});
   }
 }
 
-void TargetsManager::UpdateTargets(const float& simStep)
+void TargetsManager::OnStepStart(const float& simStep)
 {
-  for (int i = 0; i < targets.size(); ++i) {
-    targets[i].Update(simStep);
+  for (size_t i = 0; i < targets.size(); ++i) {
+    targets[i].OnStepStart(simStep);
+  }
+}
+
+void TargetsManager::OnStepEnd()
+{
+  for (size_t i = 0; i < targets.size(); ++i) {
+    targets[i].OnStepEnd();
   }
 }
 

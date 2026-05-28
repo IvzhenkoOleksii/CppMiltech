@@ -31,11 +31,14 @@ int main()
   float simulationStepTime = simulation.GetSimulationStepTime();
 
   while (simulation.IsWorking()) {
+    targetsManager.OnStepStart(simulationStepTime);
+
     droneController.RecalculateOperationalStates(simulationStepTime);
 
     simulation.Update();
 
-    targetsManager.UpdateTargets(simulationStepTime);
+    targetsManager.OnStepEnd();
+
     droneController.UpdateOperationalStates();
     droneController.CheckIfDroneReachedFirePosition();
   }

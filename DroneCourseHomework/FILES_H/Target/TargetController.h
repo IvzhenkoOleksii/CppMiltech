@@ -2,28 +2,42 @@
 #include <vector>
 
 #include "DataStructs.h"
+#include "MathCalculator.h"
 
-class TargetController
-{
-	public:TargetController();
-	public:TargetController(const std::vector<DataStructs::Position2D> positionsData, const float& stepTimeData);
+class TargetController {
+public:
+  TargetController();
+  TargetController(const std::vector<DataStructs::Position2D> positionsData, const float& stepTimeData);
 
-	public:DataStructs::Position2D GetCurrentPosition();
-	public:DataStructs::Position2D GetPredictedPosition(const float& time);
-	public:void Update(const float& simStepTime);
+public:
+  DataStructs::Position2D GetCurrentPosition();
 
-	private:void UpdateTargetSpeed();
-	private:void UpdateCurrentPathStep();
+public:
+  DataStructs::Position2D GetPredictedPosition(const float& time);
 
+public:
+  void OnStepStart(const float& simStep);
+  void OnStepEnd();
 
-	// variables
-	private:float stepTime;
-	private:float currentStepTime;
-	private:float velocityX;
-	private:float velocityY;
+private:
+  void CalculateVelocity();
 
-	private:int currentPathStep;
+private:
+  void UpdateCurrentPathStep();
 
-	private:DataStructs::Position2D currentPosition;
-	private:std::vector<DataStructs::Position2D> positions;
+  // variables
+private:
+  float arrayStepTime;
+  float currentStepTime;
+
+private:
+  float velocityX;
+  float velocityY;
+  float velocity;
+  int currentPathStep;
+  DataStructs::Position2D currentPosition;
+
+private:
+  MathCalculator calculator;
+  std::vector<DataStructs::Position2D> positionsData;
 };

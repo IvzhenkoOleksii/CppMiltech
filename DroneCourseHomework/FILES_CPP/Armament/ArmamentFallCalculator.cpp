@@ -1,7 +1,6 @@
 #define _USE_MATH_DEFINES
 
 #include "Armament/ArmamentFallCalculator.h"
-#include "DataStructs.h"
 
 #include <cmath>
 #include <iostream>
@@ -126,10 +125,7 @@ float ArmamentFallCalculator::CalculateFallingTime(float p, float phi, float a, 
   return timeToFall;
 }
 
-float ArmamentFallCalculator::CalculateFallDistance(const ArmamentDatabase::Data& armData,
-                                                    float droneAttackSpeed,
-                                                    float droneZPosition,
-                                                    float fallTime)
+float ArmamentFallCalculator::CalculateFallDistance(const ArmamentDatabase::Data& armData, float droneAttackSpeed, float fallTime)
 {
   std::cout << std::endl;
   // pre-calculate value, which used often

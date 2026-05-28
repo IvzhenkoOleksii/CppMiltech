@@ -4,15 +4,19 @@
 
 #include <vector>
 
-class TargetsManager
-{
-	public:TargetsManager();
-	public:TargetsManager(const float& arrayTimeStep);
+class TargetsManager {
+public:
+  TargetsManager();
+  TargetsManager(const float& arrayTimeStep);
 
-	public:void UpdateTargets(const float& simStep);
+public:
+  void OnStepStart(const float& simStep);
+  void OnStepEnd();
 
-	public:std::vector<TargetController*> GetTargetReferencies();
+public:
+  std::vector<TargetController*> GetTargetReferencies();
 
-	private:DataStructs::TargetData targetData;
-	private:std::vector<TargetController> targets;
+private:
+  DataStructs::TargetData targetData;
+  std::vector<TargetController> targets;
 };
