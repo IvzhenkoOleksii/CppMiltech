@@ -3,6 +3,7 @@
 #include "Target/TargetController.h"
 #include "Armament/ArmamentController.h"
 #include "DroneCalculator.h"
+#include "MathCalculator.h"
 
 #include <vector>
 #include <string>
@@ -68,9 +69,8 @@ private:
 
 private:
   ArmamentController armamentController;
-
-private:
   DroneCalculator droneCalculator;
+  MathCalculator math;
 
 private:
   float minAttackDistance;

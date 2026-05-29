@@ -7,6 +7,7 @@
 #include "DataStructs.h"
 #include "Armament/ArmamentFallCalculator.h"
 #include "Target/TargetController.h"
+#include "MathCalculator.h"
 
 DroneController::DroneController(const DataStructs::DroneInputData& input, const float& simStep)
 {
@@ -74,7 +75,7 @@ void DroneController::CalculateDistancesToTargets()
 void DroneController::CalculateDistanceToTarget(const DataStructs::Point2D& targetPosition, const int& targetIndex)
 {
   DataStructs::Point2D dronePosition2D = operationalData.transform.Position.GetPoint2D();
-  targetsOperationalData[targetIndex].DistanceToTarget = droneCalculator.CalculateDistance(dronePosition2D, targetPosition);
+  targetsOperationalData[targetIndex].DistanceToTarget = math.DistanceBetweenPoints(dronePosition2D, targetPosition);
 }
 
 void DroneController::CalculateAnglesBetweenDroneAndTargets()
@@ -86,8 +87,10 @@ void DroneController::CalculateAnglesBetweenDroneAndTargets()
 
 void DroneController::CalculateAngleBetweenDroneAndTarget(const DataStructs::Point2D& targetPosition, const int& targetIndex)
 {
-  targetsOperationalData[targetIndex].AngleToTarget = droneCalculator.CalculateAngleBetweenDroneAndTarget(
-    operationalData.transform.Position, operationalData.transform.Direction, targetPosition);
+  DataStructs::Point2D dronePos2D = operationalData.transform.Position.GetPoint2D();
+
+  targetsOperationalData[targetIndex].AngleToTarget =
+    math.AngleBetweenVectorAndPoint(dronePos2D, operationalData.transform.Direction, targetPosition);
   std::cout << "Angle between drone and target: " << targetsOperationalData[targetIndex].AngleToTarget << std::endl;
 }
 
@@ -140,10 +143,10 @@ void DroneController::CalculateTimeToReachTargets()
     float distanceToTarget = targetsOperationalData[i].DistanceToTarget;
     DataStructs::Point3D maneuverPoint = targetsOperationalData[i].ManeuverPoint;
     if (maneuverPoint.IsInitialized()) {
-      distanceToTarget = droneCalculator.CalculateDistance(dronePosition2D, maneuverPoint.GetPoint2D());
+      distanceToTarget = math.DistanceBetweenPoints(dronePosition2D, maneuverPoint.GetPoint2D());
 
       DataStructs::Point2D maneuverPoint2D = maneuverPoint.GetPoint2D();
-      distanceToTarget += droneCalculator.CalculateDistance(maneuverPoint2D, targetsOperationalData[i].FirePoint.GetPoint2D());
+      distanceToTarget += math.DistanceBetweenPoints(maneuverPoint2D, targetsOperationalData[i].FirePoint.GetPoint2D());
     }
 
     float timeToMove = distanceToTarget / inputData.AttackSpeed;
@@ -186,14 +189,14 @@ void DroneController::RecalculateDroneDirection()
   }
 
   int currentTargetIndex = operationalData.CurrentTargetIndex;
+  DataStructs::Point2D dronePosition2D = calculatedState.Position.GetPoint2D();
   DataStructs::Point2D targetPosition = targets[currentTargetIndex]->GetCurrentPosition();
 
-  float angleToTarget =
-    droneCalculator.CalculateAngleBetweenDroneAndTarget(calculatedState.Position, calculatedState.Direction, targetPosition);
+  float angleToTarget = math.AngleBetweenVectorAndPoint(dronePosition2D, calculatedState.Direction, targetPosition);
 
-  if (!droneCalculator.AreFloatsClose(calculatedState.Direction, angleToTarget)) {
+  if (!math.AreEqual(calculatedState.Direction, angleToTarget)) {
     operationalData.State = DataStructs::TURNING;
-    float angleDifference = abs(angleToTarget);
+    float angleDifference = fabs(angleToTarget);
     float adding = directionChangeStep;
     if (angleDifference <= directionChangeStep) {
       adding = angleToTarget;
@@ -243,8 +246,7 @@ void DroneController::RecalculateDronePosition(float simStepTime)
   if (calculatedState.Velocity > 0) {
     float distanceToFly = calculatedState.Velocity * simStepTime;
 
-    DataStructs::Point2D directionVector =
-      droneCalculator.CalculateDirectionVector(calculatedState.Position.GetPoint2D(), calculatedState.Direction);
+    DataStructs::Point2D directionVector = math.GetDirectionVector(calculatedState.Direction);
     float distancex = directionVector.X * distanceToFly;
     float distanceY = directionVector.Y * distanceToFly;
 

@@ -54,6 +54,7 @@ float MathCalculator::VectorLength(DataStructs::Point2D delta)
 
 float MathCalculator::DistanceBetweenPoints(DataStructs::Point2D point1, DataStructs::Point2D point2)
 {
+  // use Pifagor theorem
   float powDistanceX = std::pow(point1.X - point2.X, 2);
   float powDistanceY = std::pow(point1.Y - point2.Y, 2);
   return std::sqrt(powDistanceX + powDistanceY);
@@ -115,5 +116,7 @@ float MathCalculator::AngleBetweenVectorAndPoint(DataStructs::Point2D point1, fl
   float crossProduct = VectorsCrossProduct(differenceVector, dir1Vector);
 
   float sign = -GetSign(crossProduct);
-  return angle * sign;
+  angle *= sign;
+  std::cout << "Angle between drone and target are:  " << angle << std::endl;
+  return angle;
 }
