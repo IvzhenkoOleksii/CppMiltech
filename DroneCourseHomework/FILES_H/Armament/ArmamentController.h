@@ -38,7 +38,7 @@ private:
   // data for simulation
 private:
   bool isFired;
-  DataStructs::Position3D position;
+  DataStructs::Point3D position;
   float fallDirection;
   float fallStepHeight;     // vertical step
   float fallStepDistance;   // horizontal step

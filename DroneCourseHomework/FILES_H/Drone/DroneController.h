@@ -33,13 +33,13 @@ private:
   void CalculateDistancesToTargets();
 
 private:
-  void CalculateDistanceToTarget(const DataStructs::Position2D& targetPosition, const int& targetIndex);
+  void CalculateDistanceToTarget(const DataStructs::Point2D& targetPosition, const int& targetIndex);
 
 private:
   void CalculateAnglesBetweenDroneAndTargets();
 
 private:
-  void CalculateAngleBetweenDroneAndTarget(const DataStructs::Position2D& targetPosition, const int& targetIndex);
+  void CalculateAngleBetweenDroneAndTarget(const DataStructs::Point2D& targetPosition, const int& targetIndex);
 
 private:
   void CalculateFirePointsToTargets();

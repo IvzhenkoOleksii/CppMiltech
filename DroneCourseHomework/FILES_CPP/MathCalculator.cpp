@@ -28,18 +28,18 @@ float MathCalculator::GetSign(float value)
   return -1;
 }
 
-DataStructs::Position2D MathCalculator::GetDirectionVector(const DataStructs::Position2D& start, const DataStructs::Position2D& end)
+DataStructs::Point2D MathCalculator::GetDirectionVector(const DataStructs::Point2D& start, const DataStructs::Point2D& end)
 {
   float dX = end.X - start.X;
   float dY = end.Y - start.Y;
 
-  DataStructs::Position2D answ = {dX, dY};
+  DataStructs::Point2D answ = {dX, dY};
   return answ;
 }
 
-DataStructs::Position2D MathCalculator::GetDirectionVector(float angleInRadians)
+DataStructs::Point2D MathCalculator::GetDirectionVector(float angleInRadians)
 {
-  return DataStructs::Position2D{std::cos(angleInRadians), std::sin(angleInRadians)};
+  return DataStructs::Point2D{std::cos(angleInRadians), std::sin(angleInRadians)};
 }
 
 float MathCalculator::VectorLength(float dx, float dy)
@@ -47,12 +47,12 @@ float MathCalculator::VectorLength(float dx, float dy)
   return std::sqrt(std::pow(dx, 2) + std::pow(dy, 2));
 }
 
-float MathCalculator::VectorLength(DataStructs::Position2D delta)
+float MathCalculator::VectorLength(DataStructs::Point2D delta)
 {
   return std::sqrt(std::pow(delta.X, 2) + std::pow(delta.Y, 2));
 }
 
-float MathCalculator::DistanceBetweenPoints(DataStructs::Position2D point1, DataStructs::Position2D point2)
+float MathCalculator::DistanceBetweenPoints(DataStructs::Point2D point1, DataStructs::Point2D point2)
 {
   float powDistanceX = std::pow(point1.X - point2.X, 2);
   float powDistanceY = std::pow(point1.Y - point2.Y, 2);
@@ -60,33 +60,33 @@ float MathCalculator::DistanceBetweenPoints(DataStructs::Position2D point1, Data
 }
 
 // squared much faster, use it if we can compare squared values
-float MathCalculator::DistanceBetweenPointsSquared(DataStructs::Position2D point1, DataStructs::Position2D point2)
+float MathCalculator::DistanceBetweenPointsSquared(DataStructs::Point2D point1, DataStructs::Point2D point2)
 {
   float powDistanceX = std::pow(point1.X - point2.X, 2);
   float powDistanceY = std::pow(point1.Y - point2.Y, 2);
   return powDistanceX + powDistanceY;
 }
 
-bool MathCalculator::AreVectorsParallel(DataStructs::Position2D vector1, DataStructs::Position2D vector2)
+bool MathCalculator::AreVectorsParallel(DataStructs::Point2D vector1, DataStructs::Point2D vector2)
 {
   float vectorCrossProduct = VectorsCrossProduct(vector1, vector2);
   bool isEqual = AreEqual(vectorCrossProduct, 0);
   return isEqual;
 }
 
-float MathCalculator::VectorsCrossProduct(DataStructs::Position2D vector1, DataStructs::Position2D vector2)
+float MathCalculator::VectorsCrossProduct(DataStructs::Point2D vector1, DataStructs::Point2D vector2)
 {
   return vector1.X * vector2.Y - vector1.Y * vector2.X;
 }
 
-float MathCalculator::VectorsDotProduct(DataStructs::Position2D vector1, DataStructs::Position2D vector2)
+float MathCalculator::VectorsDotProduct(DataStructs::Point2D vector1, DataStructs::Point2D vector2)
 {
   return vector1.X * vector2.X + vector1.Y * vector2.Y;
 }
 
-float MathCalculator::AngleBetweenVectorAndPoint(DataStructs::Position2D point1, float direction1, DataStructs::Position2D point2)
+float MathCalculator::AngleBetweenVectorAndPoint(DataStructs::Point2D point1, float direction1, DataStructs::Point2D point2)
 {
-  DataStructs::Position2D differenceVector = GetDirectionVector(point1, point2);
+  DataStructs::Point2D differenceVector = GetDirectionVector(point1, point2);
   float differenceVectorModule = std::pow(differenceVector.X, 2) + std::pow(differenceVector.Y, 2);
 
   if (AreEqual(differenceVectorModule, 0)) {
@@ -94,7 +94,7 @@ float MathCalculator::AngleBetweenVectorAndPoint(DataStructs::Position2D point1,
     return 0;
   }
 
-  DataStructs::Position2D dir1Vector = GetDirectionVector(direction1);
+  DataStructs::Point2D dir1Vector = GetDirectionVector(direction1);
   float dir1VectorModule = std::pow(dir1Vector.X, 2) + std::pow(dir1Vector.Y, 2);
 
   // instead of sqrt differenceVectorModule and dir1VectorModule, we will pow dotProduct

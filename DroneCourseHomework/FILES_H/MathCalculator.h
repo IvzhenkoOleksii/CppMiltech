@@ -8,16 +8,16 @@ public:
   bool AreEqual(float a, float b);
   float GetSign(float value);
 
-  DataStructs::Position2D GetDirectionVector(const DataStructs::Position2D& start, const DataStructs::Position2D& end);
-  DataStructs::Position2D GetDirectionVector(float angleInRadians);
+  DataStructs::Point2D GetDirectionVector(const DataStructs::Point2D& start, const DataStructs::Point2D& end);
+  DataStructs::Point2D GetDirectionVector(float angleInRadians);
 
   float VectorLength(float dx, float dy);
-  float VectorLength(DataStructs::Position2D delta);
-  float DistanceBetweenPoints(DataStructs::Position2D point1, DataStructs::Position2D point2);
-  float DistanceBetweenPointsSquared(DataStructs::Position2D point1, DataStructs::Position2D point2);
+  float VectorLength(DataStructs::Point2D delta);
+  float DistanceBetweenPoints(DataStructs::Point2D point1, DataStructs::Point2D point2);
+  float DistanceBetweenPointsSquared(DataStructs::Point2D point1, DataStructs::Point2D point2);
 
-  bool AreVectorsParallel(DataStructs::Position2D vector1, DataStructs::Position2D vector2);
-  float VectorsCrossProduct(DataStructs::Position2D vector1, DataStructs::Position2D vector2);
-  float VectorsDotProduct(DataStructs::Position2D vector1, DataStructs::Position2D vector2);
-  float AngleBetweenVectorAndPoint(DataStructs::Position2D point1, float direction1, DataStructs::Position2D point2);
+  bool AreVectorsParallel(DataStructs::Point2D vector1, DataStructs::Point2D vector2);
+  float VectorsCrossProduct(DataStructs::Point2D vector1, DataStructs::Point2D vector2);
+  float VectorsDotProduct(DataStructs::Point2D vector1, DataStructs::Point2D vector2);
+  float AngleBetweenVectorAndPoint(DataStructs::Point2D point1, float direction1, DataStructs::Point2D point2);
 };

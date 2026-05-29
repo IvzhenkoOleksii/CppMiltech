@@ -71,9 +71,9 @@ void DroneController::CalculateDistancesToTargets()
   }
 }
 
-void DroneController::CalculateDistanceToTarget(const DataStructs::Position2D& targetPosition, const int& targetIndex)
+void DroneController::CalculateDistanceToTarget(const DataStructs::Point2D& targetPosition, const int& targetIndex)
 {
-  DataStructs::Position2D dronePosition2D = operationalData.transform.Position.GetPosition2D();
+  DataStructs::Point2D dronePosition2D = operationalData.transform.Position.GetPoint2D();
   targetsOperationalData[targetIndex].DistanceToTarget = droneCalculator.CalculateDistance(dronePosition2D, targetPosition);
 }
 
@@ -84,7 +84,7 @@ void DroneController::CalculateAnglesBetweenDroneAndTargets()
   }
 }
 
-void DroneController::CalculateAngleBetweenDroneAndTarget(const DataStructs::Position2D& targetPosition, const int& targetIndex)
+void DroneController::CalculateAngleBetweenDroneAndTarget(const DataStructs::Point2D& targetPosition, const int& targetIndex)
 {
   targetsOperationalData[targetIndex].AngleToTarget = droneCalculator.CalculateAngleBetweenDroneAndTarget(
     operationalData.transform.Position, operationalData.transform.Direction, targetPosition);
@@ -94,27 +94,27 @@ void DroneController::CalculateAngleBetweenDroneAndTarget(const DataStructs::Pos
 void DroneController::CalculateFirePointsToTargets()
 {
   float armFallDistance = armamentController.GetFallDistance();
-  DataStructs::Position2D dronePosition = operationalData.transform.Position.GetPosition2D();
+  DataStructs::Point2D dronePosition = operationalData.transform.Position.GetPoint2D();
 
   for (int i = 0; i < targets.size(); ++i) {
-    DataStructs::Position2D targetPosition = targets[i]->GetCurrentPosition();
+    DataStructs::Point2D targetPosition = targets[i]->GetCurrentPosition();
     float distanceToTarget = targetsOperationalData[i].DistanceToTarget;
 
     if (minAttackDistance > distanceToTarget) {
-      DataStructs::Position2D maneuverPoint =
+      DataStructs::Point2D maneuverPoint =
         droneCalculator.CalculateManeuverPosition(minAttackDistance, distanceToTarget, dronePosition, targetPosition);
       targetsOperationalData[i].ManeuverPoint.X = maneuverPoint.X;
       targetsOperationalData[i].ManeuverPoint.Y = maneuverPoint.Y;
       targetsOperationalData[i].ManeuverPoint.Z = 0;  // point initialized
 
-      DataStructs::Position2D firePoint =
+      DataStructs::Point2D firePoint =
         droneCalculator.CalculateFirePosition(armFallDistance, minAttackDistance, maneuverPoint, targetPosition);
       targetsOperationalData[i].FirePoint.X = firePoint.X;
       targetsOperationalData[i].FirePoint.Y = firePoint.Y;
       targetsOperationalData[i].FirePoint.Z = 0;  // point initialized
     }
     else {
-      DataStructs::Position2D firePoint =
+      DataStructs::Point2D firePoint =
         droneCalculator.CalculateFirePosition(armFallDistance, minAttackDistance, dronePosition, targetPosition);
       targetsOperationalData[i].FirePoint.X = firePoint.X;
       targetsOperationalData[i].FirePoint.Y = firePoint.Y;
@@ -134,16 +134,16 @@ void DroneController::CalculateRotationTimeToTargets()
 
 void DroneController::CalculateTimeToReachTargets()
 {
-  DataStructs::Position2D dronePosition2D = operationalData.transform.Position.GetPosition2D();
+  DataStructs::Point2D dronePosition2D = operationalData.transform.Position.GetPoint2D();
 
   for (int i = 0; i < targets.size(); ++i) {
     float distanceToTarget = targetsOperationalData[i].DistanceToTarget;
-    DataStructs::Position3D maneuverPoint = targetsOperationalData[i].ManeuverPoint;
+    DataStructs::Point3D maneuverPoint = targetsOperationalData[i].ManeuverPoint;
     if (maneuverPoint.IsInitialized()) {
-      distanceToTarget = droneCalculator.CalculateDistance(dronePosition2D, maneuverPoint.GetPosition2D());
+      distanceToTarget = droneCalculator.CalculateDistance(dronePosition2D, maneuverPoint.GetPoint2D());
 
-      DataStructs::Position2D maneuverPoint2D = maneuverPoint.GetPosition2D();
-      distanceToTarget += droneCalculator.CalculateDistance(maneuverPoint2D, targetsOperationalData[i].FirePoint.GetPosition2D());
+      DataStructs::Point2D maneuverPoint2D = maneuverPoint.GetPoint2D();
+      distanceToTarget += droneCalculator.CalculateDistance(maneuverPoint2D, targetsOperationalData[i].FirePoint.GetPoint2D());
     }
 
     float timeToMove = distanceToTarget / inputData.AttackSpeed;
@@ -186,7 +186,7 @@ void DroneController::RecalculateDroneDirection()
   }
 
   int currentTargetIndex = operationalData.CurrentTargetIndex;
-  DataStructs::Position2D targetPosition = targets[currentTargetIndex]->GetCurrentPosition();
+  DataStructs::Point2D targetPosition = targets[currentTargetIndex]->GetCurrentPosition();
 
   float angleToTarget =
     droneCalculator.CalculateAngleBetweenDroneAndTarget(calculatedState.Position, calculatedState.Direction, targetPosition);
@@ -243,8 +243,8 @@ void DroneController::RecalculateDronePosition(float simStepTime)
   if (calculatedState.Velocity > 0) {
     float distanceToFly = calculatedState.Velocity * simStepTime;
 
-    DataStructs::Position2D directionVector =
-      droneCalculator.CalculateDirectionVector(calculatedState.Position.GetPosition2D(), calculatedState.Direction);
+    DataStructs::Point2D directionVector =
+      droneCalculator.CalculateDirectionVector(calculatedState.Position.GetPoint2D(), calculatedState.Direction);
     float distancex = directionVector.X * distanceToFly;
     float distanceY = directionVector.Y * distanceToFly;
 
@@ -268,9 +268,9 @@ void DroneController::CheckIfDroneReachedFirePosition()
   }
 
   int targetIndex = operationalData.CurrentTargetIndex;
-  DataStructs::Position2D targetPosition = targets[targetIndex]->GetCurrentPosition();
+  DataStructs::Point2D targetPosition = targets[targetIndex]->GetCurrentPosition();
   bool isReadyToFire = droneCalculator.IsDistanceBetweenPointSameAsNeeded(
-    operationalData.transform.Position.GetPosition2D(), targetPosition, armamentController.GetFallDistance());
+    operationalData.transform.Position.GetPoint2D(), targetPosition, armamentController.GetFallDistance());
 
   if (isReadyToFire) {
     std::cout << "Fire" << std::endl;

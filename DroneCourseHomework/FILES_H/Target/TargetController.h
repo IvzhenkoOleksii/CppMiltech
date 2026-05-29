@@ -7,13 +7,13 @@
 class TargetController {
 public:
   TargetController();
-  TargetController(const std::vector<DataStructs::Position2D> positionsData, const float& stepTimeData);
+  TargetController(const std::vector<DataStructs::Point2D> positionsData, const float& stepTimeData);
 
 public:
-  DataStructs::Position2D GetCurrentPosition();
+  DataStructs::Point2D GetCurrentPosition();
 
 public:
-  DataStructs::Position2D GetPredictedPosition(const float& time);
+  DataStructs::Point2D GetPredictedPosition(const float& time);
 
 public:
   void OnStepStart(const float& simStep);
@@ -35,9 +35,9 @@ private:
   float velocityY;
   float velocity;
   int currentPathStep;
-  DataStructs::Position2D currentPosition;
+  DataStructs::Point2D currentPosition;
 
 private:
   MathCalculator calculator;
-  std::vector<DataStructs::Position2D> positionsData;
+  std::vector<DataStructs::Point2D> positionsData;
 };

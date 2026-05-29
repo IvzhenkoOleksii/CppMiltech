@@ -129,7 +129,7 @@ DataStructs::InputData InputFile::ReadJsonFile()
   if (file.is_open()) {
     nlohmann::json json = nlohmann::json::parse(file);
 
-    json.at("position").get_to<DataStructs::Position3D>(inputData.DroneData.Position);
+    json.at("position").get_to<DataStructs::Point3D>(inputData.DroneData.Position);
     json.at("initialDirection").get_to(inputData.DroneData.InitialDirection);
     json.at("attackSpeed").get_to(inputData.DroneData.AttackSpeed);
     json.at("accelerationPath").get_to(inputData.DroneData.AccelerationPath);
