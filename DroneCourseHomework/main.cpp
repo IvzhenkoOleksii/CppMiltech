@@ -15,24 +15,21 @@ int main()
   TargetsManager targetsManager{inputData.ArrayTimeStep};
 
   // create drone controller
-  DroneController droneController = {inputData.DroneData, inputData.SimTestStep};
+  DroneController droneController = {inputData};
   droneController.LockTargets(targetsManager.GetTargetReferencies());
-  droneController.ChooseNearestTarget();
 
   // create simulation controller
   SimulationController simulation = {inputData.SimTestStep};
   float simulationStepTime = simulation.GetSimulationStepTime();
 
   while (simulation.IsWorking()) {
+    droneController.OnStepStart(simulationStepTime);
     targetsManager.OnStepStart(simulationStepTime);
-    droneController.RecalculateOperationalStates(simulationStepTime);
 
     simulation.Update();
 
     targetsManager.OnStepEnd();
-
-    droneController.UpdateOperationalStates();
-    droneController.CheckIfDroneReachedFirePosition();
+    droneController.OnStepEnd();
   }
 
   return 0;

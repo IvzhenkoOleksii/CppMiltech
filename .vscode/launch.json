@@ -5,7 +5,7 @@
             "name": "Work with Debugger",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/debug/homework_05/debugging",
+            "program": "${workspaceFolder}/build/debug/DroneCourseHomework/executable",
             "args": ["./homework_05/data/empty.txt"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

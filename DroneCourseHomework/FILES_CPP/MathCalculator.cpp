@@ -117,6 +117,6 @@ float MathCalculator::AngleBetweenVectorAndPoint(DataStructs::Point2D point1, fl
 
   float sign = -GetSign(crossProduct);
   angle *= sign;
-  std::cout << "Angle between drone and target are:  " << angle << std::endl;
+  // std::cout << "Angle between drone and target are:  " << angle << std::endl;
   return angle;
 }

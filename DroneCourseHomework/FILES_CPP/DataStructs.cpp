@@ -79,8 +79,17 @@ void DataStructs::InputData::CheckData()
   }
 }
 
-// free methods for json support
+bool DataStructs::DroneOperationalData::IsTargetSelected()
+{
+  return CurrentTargetIndex != -1;
+}
 
+void DataStructs::DroneOperationalData::DeselectTarget()
+{
+  CurrentTargetIndex = -1;
+}
+
+// free methods for json support
 void to_json(nlohmann::json& j, const DataStructs::Point2D& position)
 {
   j = nlohmann::json{{0, position.X}, {1, position.Y}};

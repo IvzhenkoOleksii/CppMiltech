@@ -1,280 +1,349 @@
+#include <cstddef>
 #include <iostream>
 #include <string>
 #include <cmath>
 
 #include "Drone/DroneController.h"
 #include "Drone/DroneCalculator.h"
+#include "Armament/ArmamentController.h"
 #include "DataStructs.h"
-#include "Armament/ArmamentFallCalculator.h"
 #include "Target/TargetController.h"
 #include "MathCalculator.h"
 
-DroneController::DroneController(const DataStructs::DroneInputData& input, const float& simStep)
+DroneController::DroneController(const DataStructs::InputData& input)
 {
-  inputData = input;
-  calculatedState = {};
+  inputData = input.DroneData;
+  simStep = input.SimTestStep;
+
+  math = {};
   droneCalculator = {};
+  armamentController = {inputData.AmmoType, inputData.AttackSpeed, inputData.Position.Z, input.HitRadius};
+  armamentController.CalculateSimulationData(input.SimTestStep);
 
-  operationalData = {};
-  operationalData.State = DataStructs::STOPPED;
-  operationalData.transform.Position = inputData.Position;
-  operationalData.transform.Direction = inputData.InitialDirection;
-  operationalData.transform.Velocity = 0;
+  InitState();
+  CalculateAcceleration();
 
-  calculatedState.Position = operationalData.transform.Position;
-  calculatedState.Direction = operationalData.transform.Direction;
-  calculatedState.Velocity = operationalData.transform.Velocity;
-
-  // armamentController = {inputData.AmmoType, inputData.AttackSpeed, inputData.Position.Z, input.};
-
-  // this can be counted once
-  acceleration = droneCalculator.CalculateDroneAcceleration(inputData.AttackSpeed, inputData.AccelerationPath);
-  accelerationTime = inputData.AttackSpeed / acceleration;
-  velocityChangeStep = inputData.AttackSpeed / (accelerationTime / simStep);
-  directionChangeStep = inputData.AngularSpeed / simStep;
+  // this also can be counted once
+  rotateChangeStep = inputData.AngularSpeed / simStep;
   minAttackDistance = armamentController.GetFallDistance() + inputData.AccelerationPath;
 }
 
-void DroneController::LockTarget(TargetController* target, const int& targetIndex)
+void DroneController::InitState()
 {
-  targets[targetIndex] = target;
-  targetsOperationalData[targetIndex] = DataStructs::TargetOperationalData();
+  droneState = {};
+  droneState.State = DataStructs::STOPPED;
+  droneState.transform.Position = inputData.Position;
+  droneState.transform.Direction = inputData.InitialDirection;
+  droneState.transform.Velocity = 0;
+  droneState.DeselectTarget();
+}
+
+void DroneController::CalculateAcceleration()
+{
+  float acceleration = droneCalculator.CalculateDroneAcceleration(inputData.AttackSpeed, inputData.AccelerationPath);
+  accelerationTime = inputData.AttackSpeed / acceleration;
+  velocityChangeStep = inputData.AttackSpeed / (accelerationTime / simStep);
 }
 
 void DroneController::LockTargets(std::vector<TargetController*> targetRefs)
 {
   targets = targetRefs;
-  for (size_t i = 0; i < targets.size(); ++i) {
-    targetsOperationalData.push_back(DataStructs::TargetOperationalData());
-    targetsOperationalData[i].FirePoint.DeInitialize();
-    targetsOperationalData[i].ManeuverPoint.DeInitialize();
+}
+
+void DroneController::OnStepStart(const float& simStep)
+{
+  ChooseTarget();
+  GetTargetSolution();
+  UpdateDroneState();
+
+  armamentController.OnStepStart(simStep);
+}
+
+void DroneController::OnStepEnd()
+{
+  armamentController.OnStepEnd();
+}
+
+void DroneController::ChooseTarget()
+{
+  if (droneState.IsTargetSelected()) {
+    return;
   }
-}
 
-void DroneController::ChooseNearestTarget()
-{
-  if (operationalData.CurrentTargetIndex == -1) {
-    CalculateAnglesBetweenDroneAndTargets();
-    CalculateRotationTimeToTargets();
-
-    CalculateDistancesToTargets();
-    CalculateFirePointsToTargets();
-
-    CalculateTimeToReachTargets();
-    GetClosestTarget();
+  if (armamentController.GetIsFired()) {
+    return;
   }
-}
 
-void DroneController::CalculateDistancesToTargets()
-{
-  for (int i = 0; i < targets.size(); ++i) {
-    CalculateDistanceToTarget(targets[i]->GetCurrentPosition(), i);
-  }
-}
-
-void DroneController::CalculateDistanceToTarget(const DataStructs::Point2D& targetPosition, const int& targetIndex)
-{
-  DataStructs::Point2D dronePosition2D = operationalData.transform.Position.GetPoint2D();
-  targetsOperationalData[targetIndex].DistanceToTarget = math.DistanceBetweenPoints(dronePosition2D, targetPosition);
-}
-
-void DroneController::CalculateAnglesBetweenDroneAndTargets()
-{
-  for (int i = 0; i < targets.size(); ++i) {
-    CalculateAngleBetweenDroneAndTarget(targets[i]->GetCurrentPosition(), i);
-  }
-}
-
-void DroneController::CalculateAngleBetweenDroneAndTarget(const DataStructs::Point2D& targetPosition, const int& targetIndex)
-{
-  DataStructs::Point2D dronePos2D = operationalData.transform.Position.GetPoint2D();
-
-  targetsOperationalData[targetIndex].AngleToTarget =
-    math.AngleBetweenVectorAndPoint(dronePos2D, operationalData.transform.Direction, targetPosition);
-  std::cout << "Angle between drone and target: " << targetsOperationalData[targetIndex].AngleToTarget << std::endl;
-}
-
-void DroneController::CalculateFirePointsToTargets()
-{
-  float armFallDistance = armamentController.GetFallDistance();
-  DataStructs::Point2D dronePosition = operationalData.transform.Position.GetPoint2D();
-
-  for (int i = 0; i < targets.size(); ++i) {
-    DataStructs::Point2D targetPosition = targets[i]->GetCurrentPosition();
-    float distanceToTarget = targetsOperationalData[i].DistanceToTarget;
-
-    if (minAttackDistance > distanceToTarget) {
-      DataStructs::Point2D maneuverPoint =
-        droneCalculator.CalculateManeuverPosition(minAttackDistance, distanceToTarget, dronePosition, targetPosition);
-      targetsOperationalData[i].ManeuverPoint.X = maneuverPoint.X;
-      targetsOperationalData[i].ManeuverPoint.Y = maneuverPoint.Y;
-      targetsOperationalData[i].ManeuverPoint.Z = 0;  // point initialized
-
-      DataStructs::Point2D firePoint =
-        droneCalculator.CalculateFirePosition(armFallDistance, minAttackDistance, maneuverPoint, targetPosition);
-      targetsOperationalData[i].FirePoint.X = firePoint.X;
-      targetsOperationalData[i].FirePoint.Y = firePoint.Y;
-      targetsOperationalData[i].FirePoint.Z = 0;  // point initialized
-    }
-    else {
-      DataStructs::Point2D firePoint =
-        droneCalculator.CalculateFirePosition(armFallDistance, minAttackDistance, dronePosition, targetPosition);
-      targetsOperationalData[i].FirePoint.X = firePoint.X;
-      targetsOperationalData[i].FirePoint.Y = firePoint.Y;
-      targetsOperationalData[i].FirePoint.Z = 0;  // point initialized
-    }
-  }
-}
-
-void DroneController::CalculateRotationTimeToTargets()
-{
-  for (int i = 0; i < targets.size(); ++i) {
-    float angleToRotate = targetsOperationalData[i].AngleToTarget;
-    float timeToRotate = abs(angleToRotate) / inputData.AngularSpeed;
-    targetsOperationalData[i].TimeToRotate = timeToRotate;
-  }
-}
-
-void DroneController::CalculateTimeToReachTargets()
-{
-  DataStructs::Point2D dronePosition2D = operationalData.transform.Position.GetPoint2D();
-
-  for (int i = 0; i < targets.size(); ++i) {
-    float distanceToTarget = targetsOperationalData[i].DistanceToTarget;
-    DataStructs::Point3D maneuverPoint = targetsOperationalData[i].ManeuverPoint;
-    if (maneuverPoint.IsInitialized()) {
-      distanceToTarget = math.DistanceBetweenPoints(dronePosition2D, maneuverPoint.GetPoint2D());
-
-      DataStructs::Point2D maneuverPoint2D = maneuverPoint.GetPoint2D();
-      distanceToTarget += math.DistanceBetweenPoints(maneuverPoint2D, targetsOperationalData[i].FirePoint.GetPoint2D());
-    }
-
-    float timeToMove = distanceToTarget / inputData.AttackSpeed;
-    targetsOperationalData[i].TimeToMove = timeToMove;
-  }
+  GetClosestTarget();
 }
 
 void DroneController::GetClosestTarget()
 {
-  int targetIndex = 0;
+  int targetIndex = -1;
   float smallestReachTime = 0;
-  for (int i = 0; i < targets.size(); ++i) {
-    if (i == 0) {
-      smallestReachTime = targetsOperationalData[i].TimeToReach;
+  for (size_t i = 0; i < targets.size(); ++i) {
+    if (targets[i]->GetVelocity() > inputData.AttackSpeed) {
+      // we cannot reach faster target
+      continue;
     }
-    else {
-      float timeToReach = targetsOperationalData[i].TimeToReach;
-      if (timeToReach < smallestReachTime) {
-        smallestReachTime = timeToReach;
-        targetIndex = i;
-      }
+
+    float timeToTarget = CalcDroneTimeToPoint(targets[i]->GetCurrentPosition());
+
+    if (targetIndex == -1) {
+      smallestReachTime = timeToTarget;
+      targetIndex = i;
+      continue;
+    }
+
+    if (timeToTarget < smallestReachTime) {
+      smallestReachTime = timeToTarget;
+      targetIndex = i;
     }
   }
 
-  operationalData.CurrentTargetIndex = targetIndex;
+  droneState.CurrentTargetIndex = targetIndex;
 }
 
-void DroneController::RecalculateOperationalStates(float simStepTime)
+void DroneController::GetTargetSolution()
 {
-  RecalculateDroneDirection();
-  RecalculateDroneVelocity();
-  RecalculateDronePosition(simStepTime);
-}
-
-void DroneController::RecalculateDroneDirection()
-{
-  if (operationalData.State != DataStructs::TURNING && operationalData.State != DataStructs::STOPPED) {
-    // turning allowed only when stopped
+  if (!droneState.IsTargetSelected()) {
+    // need to select target first
     return;
   }
 
-  int currentTargetIndex = operationalData.CurrentTargetIndex;
-  DataStructs::Point2D dronePosition2D = calculatedState.Position.GetPoint2D();
-  DataStructs::Point2D targetPosition = targets[currentTargetIndex]->GetCurrentPosition();
-
-  float angleToTarget = math.AngleBetweenVectorAndPoint(dronePosition2D, calculatedState.Direction, targetPosition);
-
-  if (!math.AreEqual(calculatedState.Direction, angleToTarget)) {
-    operationalData.State = DataStructs::TURNING;
-    float angleDifference = fabs(angleToTarget);
-    float adding = directionChangeStep;
-    if (angleDifference <= directionChangeStep) {
-      adding = angleToTarget;
-      operationalData.State = DataStructs::STOPPED;
-    }
-
-    if (angleToTarget > 0) {
-      calculatedState.Direction += adding;
-    }
-    else {
-      calculatedState.Direction -= adding;
-    }
-  }
-}
-
-void DroneController::RecalculateDroneVelocity()
-{
-  if (operationalData.State == DataStructs::STOPPED) {
-    operationalData.State = DataStructs::ACCELERATING;
-  }
-
-  if (operationalData.State == DataStructs::ACCELERATING) {
-    if (calculatedState.Velocity < inputData.AttackSpeed) {
-      calculatedState.Velocity += velocityChangeStep;
-    }
-    else {
-      operationalData.State = DataStructs::MOVING;
-    }
-
+  if (armamentController.GetIsFired()) {
+    // no more ammo
     return;
   }
 
-  if (operationalData.State == DataStructs::DECELERATING) {
-    if (calculatedState.Velocity > 0) {
-      calculatedState.Velocity -= velocityChangeStep;
+  int maxSteps = 200;
+  int stepIndex = 0;
+  float targetTime = simStep;
+  float previosTimeDifference = -1;
+
+  while (stepIndex < maxSteps) {
+    TargetController* target = targets[droneState.CurrentTargetIndex];
+    DataStructs::Point2D targetPredictedPoint = target->GetPredictedPosition(targetTime);
+
+    float droneTime = CalcDroneTimeToPoint(targetPredictedPoint);
+    float timeDifference = std::fabs(targetTime - droneTime);
+
+    if (timeDifference < simStep) {
+      droneState.TargetedPosition = targetPredictedPoint;
+      std::cout << "Found target solution by steps:  " << stepIndex << "new targetet point: X   " << targetPredictedPoint.X
+                << " Y:  " << targetPredictedPoint.Y << std::endl;
+      return;
+    }
+
+    ++stepIndex;
+    bool needRollback = false;
+    if (previosTimeDifference > 0 && previosTimeDifference < timeDifference) {
+      targetTime -= timeDifference / 2;
+      needRollback = true;
+    }
+    previosTimeDifference = timeDifference;
+
+    if (needRollback) {
+      continue;
+    }
+
+    if (droneTime > targetTime) {
+      targetTime += timeDifference / 2;
     }
     else {
-      operationalData.State = DataStructs::STOPPED;
+      targetTime -= timeDifference / 2;
     }
-
-    return;
   }
+
+  std::cout << "Didn`t found target solution" << std::endl;
 }
 
-void DroneController::RecalculateDronePosition(float simStepTime)
+float DroneController::CalcDroneTimeToPoint(const DataStructs::Point2D& point)
 {
-  if (calculatedState.Velocity > 0) {
-    float distanceToFly = calculatedState.Velocity * simStepTime;
-
-    DataStructs::Point2D directionVector = math.GetDirectionVector(calculatedState.Direction);
-    float distancex = directionVector.X * distanceToFly;
-    float distanceY = directionVector.Y * distanceToFly;
-
-    calculatedState.Position.X += distancex;
-    calculatedState.Position.Y += distanceY;
-  }
+  DataStructs::Point2D dronePosition2D = droneState.transform.Position.GetPoint2D();
+  float angle = math.AngleBetweenVectorAndPoint(dronePosition2D, droneState.transform.Direction, point);
+  float rotationTime = CalculateRotationTime(angle);
+  float distanceToPredictedPoint = math.DistanceBetweenPoints(dronePosition2D, point);
+  float timeToFly = CalculateTimeToReach(distanceToPredictedPoint);
+  return rotationTime + timeToFly + armamentController.GetFallTime();
 }
 
-void DroneController::UpdateOperationalStates()
+float DroneController::CalculateRotationTime(const float& angleToRotate)
 {
-  operationalData.transform.Position = calculatedState.Position;
-  operationalData.transform.Direction = calculatedState.Direction;
-  operationalData.transform.Velocity = calculatedState.Velocity;
+  return std::fabs(angleToRotate) / inputData.AngularSpeed;
+}
+
+float DroneController::CalculateTimeToReach(const float& distanceToTarget)
+{
+  float timeToMove;
+  float distanceToFly = distanceToTarget - armamentController.GetFallDistance();
+  if (distanceToFly < 0) {
+    std::cerr << "Distance to fly is negative" << std::endl;
+    return 0;
+  }
+
+  if (droneState.transform.Velocity < inputData.AttackSpeed) {
+    float velocityDiff = 1.0f - droneState.transform.Velocity / inputData.AttackSpeed;
+    float distanceWithAcceleration = inputData.AccelerationPath * velocityDiff;
+    float timeToReachAttackSpead = accelerationTime * velocityDiff;
+
+    distanceToFly -= distanceWithAcceleration;
+    timeToMove = timeToReachAttackSpead + distanceToFly / inputData.AttackSpeed;
+  }
+  else {
+    timeToMove = distanceToFly / inputData.AttackSpeed;
+  }
+
+  return timeToMove;
+}
+
+void DroneController::UpdateDroneState()
+{
+  CheckIfDroneReachedFirePosition();
+  bool isRotated = UpdadeDroneRotation();
+  if (!isRotated) {
+    UpdateDroneVelocity();
+    UpdateDronePosition();
+  }
 }
 
 void DroneController::CheckIfDroneReachedFirePosition()
 {
-  if (operationalData.transform.Velocity < inputData.AttackSpeed) {
+  if (armamentController.GetIsFired()) {
+    // already fired
+    return;
+  }
+
+  if (droneState.transform.Velocity < inputData.AttackSpeed) {
     // cannot drop bomb at low speed
     return;
   }
 
-  int targetIndex = operationalData.CurrentTargetIndex;
-  DataStructs::Point2D targetPosition = targets[targetIndex]->GetCurrentPosition();
-  bool isReadyToFire = droneCalculator.IsDistanceBetweenPointSameAsNeeded(
-    operationalData.transform.Position.GetPoint2D(), targetPosition, armamentController.GetFallDistance());
-
-  if (isReadyToFire) {
-    std::cout << "Fire" << std::endl;
+  if (!droneState.IsTargetSelected()) {
+    // need find target first
+    return;
   }
+
+  float distanceToFly = droneState.transform.Velocity * simStep;
+  DataStructs::Point2D dronePosition = droneState.transform.Position.GetPoint2D();
+  bool isReadyToFire = droneCalculator.IsDistanceBetweenPointSameAsNeeded(
+    dronePosition, droneState.TargetedPosition, armamentController.GetFallDistance(), distanceToFly);
+  if (isReadyToFire) {
+    armamentController.DropBomb(droneState.transform.Direction);
+  }
+}
+
+bool DroneController::UpdadeDroneRotation()
+{
+  auto Rotate = [&](float angleToTarget, float rotationAngle) {
+    if (angleToTarget > 0) {
+      droneState.transform.Direction += rotationAngle;
+    }
+    else {
+      droneState.transform.Direction -= rotationAngle;
+    }
+  };
+
+  if (!droneState.IsTargetSelected()) {
+    // no need to rotate arbitrary, only on target
+    return false;
+  }
+
+  DataStructs::Point2D dronePosition = droneState.transform.Position.GetPoint2D();
+  float angleToTarget = math.AngleBetweenVectorAndPoint(dronePosition, droneState.transform.Direction, droneState.TargetedPosition);
+
+  if (math.AreEqual(angleToTarget, 0)) {
+    // already rotated
+    return false;
+  }
+
+  float angleToTargetAbs = std::fabs(angleToTarget);
+  if (angleToTargetAbs <= inputData.TurnThreshold) {
+    Rotate(angleToTarget, angleToTargetAbs);
+    if (droneState.State == DataStructs::ROTATING) {
+      droneState.State = DataStructs::STOPPED;
+    }
+    // finished rotation, turn on inputData.TurnThreshold is not count
+    return false;
+  }
+
+  switch (droneState.State) {
+    case DataStructs::ACCELERATING:
+    case DataStructs::DECELERATING:
+    case DataStructs::CRUISE:
+      // we need to rotate, but we can do it only stopped
+      droneState.State = DataStructs::DECELERATING;
+      return false;
+    case DataStructs::STOPPED:
+    case DataStructs::ROTATING:
+      // rotation in progress
+      droneState.State = DataStructs::ROTATING;
+      float angleToRotate = rotateChangeStep;
+      if (angleToTargetAbs <= rotateChangeStep) {
+        angleToRotate = angleToTargetAbs;
+        StopDroneAndDeselectTarget();
+      }
+
+      Rotate(angleToTarget, angleToRotate);
+
+      return true;
+  }
+}
+
+void DroneController::UpdateDroneVelocity()
+{
+  if (!droneState.IsTargetSelected()) {
+    if (droneState.transform.Velocity > 0) {
+      // need to stop, to lock new target and rotate to it
+      droneState.State = DataStructs::DECELERATING;
+    }
+    else {
+      return;
+    }
+  }
+
+  if (droneState.State == DataStructs::STOPPED) {
+    droneState.State = DataStructs::ACCELERATING;
+  }
+
+  if (droneState.State == DataStructs::ACCELERATING) {
+    if (droneState.transform.Velocity < inputData.AttackSpeed) {
+      droneState.transform.Velocity += velocityChangeStep;
+    }
+    else {
+      droneState.State = DataStructs::CRUISE;
+      std::cout << "Drone reach max velocity" << std::endl;
+    }
+
+    return;
+  }
+
+  if (droneState.State == DataStructs::DECELERATING) {
+    if (droneState.transform.Velocity > 0) {
+      droneState.transform.Velocity -= velocityChangeStep;
+    }
+    else {
+      StopDroneAndDeselectTarget();
+    }
+  }
+}
+
+void DroneController::UpdateDronePosition()
+{
+  if (droneState.transform.Velocity > 0) {
+    float distanceToFly = droneState.transform.Velocity * simStep;
+
+    DataStructs::Point2D directionVector = math.GetDirectionVector(droneState.transform.Direction);
+    float distanceX = directionVector.X * distanceToFly;
+    float distanceY = directionVector.Y * distanceToFly;
+
+    droneState.transform.Position.X += distanceX;
+    droneState.transform.Position.Y += distanceY;
+  }
+}
+
+void DroneController::StopDroneAndDeselectTarget()
+{
+  droneState.State = DataStructs::STOPPED;
+  droneState.DeselectTarget();
 }

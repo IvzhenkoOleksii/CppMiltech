@@ -11,9 +11,8 @@ public:
 
 public:
   DataStructs::Point2D GetCurrentPosition();
-
-public:
   DataStructs::Point2D GetPredictedPosition(const float& time);
+  float GetVelocity();
 
 public:
   void OnStepStart(const float& simStep);

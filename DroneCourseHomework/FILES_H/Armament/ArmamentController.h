@@ -7,14 +7,14 @@
 class ArmamentController {
 public:
   ArmamentController() = default;
-
-public:
   ArmamentController(std::string ammoType, float droneAttackSpeed, float droneHeight, float hitRadius);
-  void CalculateSimulationData(const float& simStep);
 
 public:
+  void CalculateSimulationData(const float& simStep);
+  void DropBomb(float direction);
   float GetFallDistance();
   float GetFallTime();
+  bool GetIsFired();
 
 public:
   void OnStepStart(const float& simStep);

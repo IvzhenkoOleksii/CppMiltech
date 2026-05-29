@@ -2,6 +2,7 @@
 
 #include <string>
 #include <cmath>
+#include <iostream>
 
 float ArmamentController::GetFallDistance()
 {
@@ -13,6 +14,11 @@ float ArmamentController::GetFallTime()
   return armamentFallTime;
 }
 
+bool ArmamentController::GetIsFired()
+{
+  return isFired;
+}
+
 ArmamentController::ArmamentController(std::string ammoType, float droneAttackSpeed, float droneHeight, float hitRadius)
 {
   isFired = false;
@@ -22,6 +28,13 @@ ArmamentController::ArmamentController(std::string ammoType, float droneAttackSp
   armamentFallHeight = droneHeight;
   armamentFallTime = calculator.CalculateFallTime(armData, droneAttackSpeed, armamentFallHeight);
   armamentFallDistance = calculator.CalculateFallDistance(armData, droneAttackSpeed, armamentFallTime);
+}
+
+void ArmamentController::DropBomb(float direction)
+{
+  fallDirection = direction;
+  isFired = true;
+  std::cout << "Fire" << std::endl;
 }
 
 void ArmamentController::CalculateSimulationData(const float& simStep)
@@ -48,6 +61,8 @@ void ArmamentController::OnStepStart(const float& simStep)
   }
   else {
     isFired = false;
+
+    std::cout << "Bomb exploded. Position X:   " << position.X << "   Y:  " << position.Y << std::endl;
 
     //     BombExploded?.Invoke(new Vector3(position.x, position.y, position.z));
   }

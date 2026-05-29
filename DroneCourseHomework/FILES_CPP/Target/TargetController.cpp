@@ -33,6 +33,11 @@ DataStructs::Point2D TargetController::GetPredictedPosition(const float& time)
   return predictedPosition;
 }
 
+float TargetController::GetVelocity()
+{
+  return velocity;
+}
+
 void TargetController::OnStepStart(const float& simStep)
 {
   currentStepTime += simStep;

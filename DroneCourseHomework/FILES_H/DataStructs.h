@@ -7,7 +7,7 @@
 
 class DataStructs {
 public:
-  enum DroneState { STOPPED, ACCELERATING, DECELERATING, TURNING, MOVING };
+  enum DroneState { STOPPED, ACCELERATING, DECELERATING, ROTATING, CRUISE };
 
 public:
   struct Point2D {
@@ -88,19 +88,6 @@ public:
   };
 
 public:
-  struct TargetOperationalData {
-    float DistanceToTarget;
-    float AngleToTarget;
-    Point3D ManeuverPoint;
-    Point3D FirePoint;
-
-    float TimeToRotate;
-    float TimeToMove;
-    // sum of TimeToRotate + TimeToMove
-    float TimeToReach = TimeToRotate + TimeToMove;
-  };
-
-public:
   struct DronePhysicalState {
     float Direction;
     float Velocity;
@@ -110,8 +97,13 @@ public:
 public:
   struct DroneOperationalData {
     DroneState State;
-    int CurrentTargetIndex = -1;
     DronePhysicalState transform;
+    int CurrentTargetIndex = -1;
+    Point2D TargetedPosition;
+
+  public:
+    bool IsTargetSelected();
+    void DeselectTarget();
   };
 };
 
