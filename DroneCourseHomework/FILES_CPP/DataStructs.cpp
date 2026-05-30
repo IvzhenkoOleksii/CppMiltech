@@ -97,7 +97,7 @@ void DataStructs::DroneOperationalData::DeselectTarget()
 // free methods for json support
 void to_json(nlohmann::json& j, const DataStructs::Point2D& position)
 {
-  j = nlohmann::json{{0, position.X}, {1, position.Y}};
+  j = nlohmann::json{position.X, position.Y};
 }
 
 void from_json(const nlohmann::json& j, DataStructs::Point2D& position)
@@ -108,7 +108,7 @@ void from_json(const nlohmann::json& j, DataStructs::Point2D& position)
 
 void to_json(nlohmann::json& j, const DataStructs::Point3D& position)
 {
-  j = nlohmann::json{{0, position.X}, {1, position.Y}, {2, position.Z}};
+  j = nlohmann::json{position.X, position.Y, position.Z};
 }
 
 void from_json(const nlohmann::json& j, DataStructs::Point3D& position)

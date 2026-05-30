@@ -16,15 +16,6 @@ public:
 private:
   static std::vector<EventCallback> subscribers;
 
-public:
-  static void Subscribe(EventCallback callback) { subscribers.push_back(callback); }
-  static void BombExplodedEvent(const DataStructs::Point3D& position)
-  {
-    for (const auto& callback : subscribers) {
-      callback(position);  // Invoke each subscriber
-    }
-  }
-
   // public methods
 public:
   void CalculateSimulationData(const float& simStep);

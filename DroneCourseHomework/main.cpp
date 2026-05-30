@@ -1,8 +1,6 @@
-#include <iostream>
-#include <ostream>
-#include "Armament/ArmamentController.h"
 #include "Files/InputFile.h"
 #include "Files/OutputFile.h"
+#include "OutputController.h"
 #include "DataStructs.h"
 #include "SimulationController.h"
 #include "Drone/DroneController.h"
@@ -10,14 +8,11 @@
 
 int main()
 {
-  ArmamentController::Subscribe([](const DataStructs::Point3D& point) {
-    std::cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
-    exit(0);
-  });
-
   // read input file
   InputFile inputFile;
   DataStructs::InputData inputData = inputFile.ReadJsonFile();
+
+  OutputController outputController;
 
   // create targets
   TargetsManager targetsManager{inputData.ArrayTimeStep};
@@ -34,10 +29,18 @@ int main()
     droneController.OnStepStart(simulationStepTime);
     targetsManager.OnStepStart(simulationStepTime);
 
+    outputController.AddData(droneController.GetDroneState());
+
     simulation.Update();
 
     targetsManager.OnStepEnd();
     droneController.OnStepEnd();
+
+    if (droneController.isBombDropped()) {
+      OutputFile output;
+      output.WriteToFile(outputController.Outputs);
+      return 0;
+    }
   }
 
   return 0;

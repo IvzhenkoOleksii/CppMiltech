@@ -7,7 +7,7 @@
 
 class DataStructs {
 public:
-  enum DroneState { STOPPED, ACCELERATING, DECELERATING, ROTATING, CRUISE };
+  enum DroneState { STOPPED, ACCELERATING, DECELERATING, TURNING, MOVING };
 
 public:
   struct Point2D {

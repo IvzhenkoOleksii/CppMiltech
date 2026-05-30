@@ -15,6 +15,8 @@ public:
   void LockTargets(std::vector<TargetController*> targetRefs);
   void OnStepStart(const float& simStep);
   void OnStepEnd();
+  DataStructs::DroneOperationalData GetDroneState();
+  bool isBombDropped();
 
 private:
   void ChooseTarget();

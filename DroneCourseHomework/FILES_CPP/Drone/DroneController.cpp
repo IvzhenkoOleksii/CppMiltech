@@ -29,6 +29,16 @@ DroneController::DroneController(const DataStructs::InputData& input)
   minAttackDistance = armamentController.GetFallDistance() + inputData.AccelerationPath;
 }
 
+DataStructs::DroneOperationalData DroneController::GetDroneState()
+{
+  return droneState;
+}
+
+bool DroneController::isBombDropped()
+{
+  return armamentController.GetIsFired();
+}
+
 void DroneController::InitState()
 {
   droneState = {};
@@ -267,7 +277,7 @@ bool DroneController::UpdadeDroneRotation()
   float angleToTargetAbs = std::fabs(angleToTarget);
   if (angleToTargetAbs <= inputData.TurnThreshold) {
     Rotate(angleToTarget, angleToTargetAbs);
-    if (droneState.State == DataStructs::ROTATING) {
+    if (droneState.State == DataStructs::TURNING) {
       droneState.State = DataStructs::STOPPED;
     }
     // finished rotation, turn on inputData.TurnThreshold is not count
@@ -277,14 +287,14 @@ bool DroneController::UpdadeDroneRotation()
   switch (droneState.State) {
     case DataStructs::ACCELERATING:
     case DataStructs::DECELERATING:
-    case DataStructs::CRUISE:
+    case DataStructs::MOVING:
       // we need to rotate, but we can do it only stopped
       droneState.State = DataStructs::DECELERATING;
       return false;
     case DataStructs::STOPPED:
-    case DataStructs::ROTATING:
+    case DataStructs::TURNING:
       // rotation in progress
-      droneState.State = DataStructs::ROTATING;
+      droneState.State = DataStructs::TURNING;
       float angleToRotate = rotateChangeStep;
       if (angleToTargetAbs <= rotateChangeStep) {
         angleToRotate = angleToTargetAbs;
@@ -328,7 +338,7 @@ void DroneController::UpdateDroneVelocity()
       droneState.transform.Velocity += velocityChangeStep;
     }
     else {
-      droneState.State = DataStructs::CRUISE;
+      droneState.State = DataStructs::MOVING;
       std::cout << "Drone reach max velocity" << std::endl;
     }
 
