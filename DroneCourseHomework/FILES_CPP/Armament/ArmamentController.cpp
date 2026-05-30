@@ -5,6 +5,8 @@
 #include <iostream>
 #include "DataStructs.h"
 
+std::vector<ArmamentController::EventCallback> ArmamentController::subscribers;
+
 float ArmamentController::GetFallDistance()
 {
   return armamentFallDistance;
@@ -63,6 +65,7 @@ void ArmamentController::OnStepStart(const float& simStep)
   else {
     isFired = false;
     std::cout << "Bomb exploded. Position X:   " << position.X << "   Y:   " << position.Y << "   Z:  " << position.Z << std::endl;
+    BombExplodedEvent(position);
   }
 }
 

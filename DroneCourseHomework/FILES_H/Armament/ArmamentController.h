@@ -9,6 +9,23 @@ public:
   ArmamentController() = default;
   ArmamentController(std::string ammoType, float droneAttackSpeed, float droneHeight, float hitRadius);
 
+  // messaging
+public:
+  using EventCallback = std::function<void(const DataStructs::Point3D&)>;
+
+private:
+  static std::vector<EventCallback> subscribers;
+
+public:
+  static void Subscribe(EventCallback callback) { subscribers.push_back(callback); }
+  static void BombExplodedEvent(const DataStructs::Point3D& position)
+  {
+    for (const auto& callback : subscribers) {
+      callback(position);  // Invoke each subscriber
+    }
+  }
+
+  // public methods
 public:
   void CalculateSimulationData(const float& simStep);
   void DropBomb(DataStructs::Point3D startPosition, float direction);

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <ostream>
+#include "Armament/ArmamentController.h"
 #include "Files/InputFile.h"
 #include "Files/OutputFile.h"
 #include "DataStructs.h"
@@ -9,6 +10,11 @@
 
 int main()
 {
+  ArmamentController::Subscribe([](const DataStructs::Point3D& point) {
+    std::cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
+    exit(0);
+  });
+
   // read input file
   InputFile inputFile;
   DataStructs::InputData inputData = inputFile.ReadJsonFile();
