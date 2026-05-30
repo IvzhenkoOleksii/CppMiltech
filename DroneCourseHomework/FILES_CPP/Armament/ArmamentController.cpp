@@ -3,6 +3,7 @@
 #include <string>
 #include <cmath>
 #include <iostream>
+#include "DataStructs.h"
 
 float ArmamentController::GetFallDistance()
 {
@@ -30,11 +31,11 @@ ArmamentController::ArmamentController(std::string ammoType, float droneAttackSp
   armamentFallDistance = calculator.CalculateFallDistance(armData, droneAttackSpeed, armamentFallTime);
 }
 
-void ArmamentController::DropBomb(float direction)
+void ArmamentController::DropBomb(DataStructs::Point3D startPosition, float direction)
 {
+  position = startPosition;
   fallDirection = direction;
   isFired = true;
-  std::cout << "Fire" << std::endl;
 }
 
 void ArmamentController::CalculateSimulationData(const float& simStep)
@@ -61,10 +62,7 @@ void ArmamentController::OnStepStart(const float& simStep)
   }
   else {
     isFired = false;
-
-    std::cout << "Bomb exploded. Position X:   " << position.X << "   Y:  " << position.Y << std::endl;
-
-    //     BombExploded?.Invoke(new Vector3(position.x, position.y, position.z));
+    std::cout << "Bomb exploded. Position X:   " << position.X << "   Y:   " << position.Y << "   Z:  " << position.Z << std::endl;
   }
 }
 

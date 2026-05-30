@@ -20,6 +20,9 @@ public:
       , Y(y)
     {
     }
+
+  public:
+    void Debug();
   };
 
 public:

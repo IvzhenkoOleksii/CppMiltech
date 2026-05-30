@@ -1,3 +1,5 @@
+#include <iostream>
+#include <ostream>
 #include "Files/InputFile.h"
 #include "Files/OutputFile.h"
 #include "DataStructs.h"

@@ -162,6 +162,7 @@ float ArmamentFallCalculator::CalculateFallDistance(const ArmamentDatabase::Data
 
   float fallDistance = first - second + third + fourth + fifth;
   std::cout << "ArmamentFallCalculator horizontal fall distance: " << fallDistance << std::endl;
+  std::cout << std::endl;
 
   if (fallDistance <= 0) {
     std::cout << "Error! Fall distance less than zero  " << std::endl;

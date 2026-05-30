@@ -13,6 +13,11 @@ bool SimulationController::IsWorking()
   return isActive && currentSimulationStep < MaxSimulationSteps;
 }
 
+int SimulationController::GetCurrentStep()
+{
+  return currentSimulationStep;
+}
+
 float SimulationController::GetSimulationStepTime()
 {
   return simulationStepTime;

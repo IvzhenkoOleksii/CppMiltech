@@ -2,8 +2,13 @@
 
 #include <iostream>
 #include <nlohmann/json.hpp>
+#include <ostream>
 
 // DroneData struct methods
+void DataStructs::Point2D::Debug()
+{
+  std::cout << "    x:   " << X << "   y:   " << Y << std::endl;
+}
 
 void DataStructs::Point3D::DeInitialize()
 {

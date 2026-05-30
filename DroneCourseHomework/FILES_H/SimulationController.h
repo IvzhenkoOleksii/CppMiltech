@@ -11,6 +11,7 @@ public:
   void Update();
   float GetSimulationStepTime();
   void Stop();
+  int GetCurrentStep();
 
 private:
   bool isActive;

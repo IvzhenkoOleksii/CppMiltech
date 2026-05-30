@@ -11,7 +11,7 @@ public:
 
 public:
   void CalculateSimulationData(const float& simStep);
-  void DropBomb(float direction);
+  void DropBomb(DataStructs::Point3D startPosition, float direction);
   float GetFallDistance();
   float GetFallTime();
   bool GetIsFired();

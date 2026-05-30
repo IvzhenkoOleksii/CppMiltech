@@ -1,5 +1,6 @@
 #include <cstddef>
 #include <iostream>
+#include <ostream>
 #include <string>
 #include <cmath>
 
@@ -24,7 +25,7 @@ DroneController::DroneController(const DataStructs::InputData& input)
   CalculateAcceleration();
 
   // this also can be counted once
-  rotateChangeStep = inputData.AngularSpeed / simStep;
+  rotateChangeStep = inputData.AngularSpeed * simStep;
   minAttackDistance = armamentController.GetFallDistance() + inputData.AccelerationPath;
 }
 
@@ -102,6 +103,7 @@ void DroneController::GetClosestTarget()
   }
 
   droneState.CurrentTargetIndex = targetIndex;
+  std::cout << "Selected target:   " << targetIndex << std::endl;
 }
 
 void DroneController::GetTargetSolution()
@@ -130,7 +132,7 @@ void DroneController::GetTargetSolution()
 
     if (timeDifference < simStep) {
       droneState.TargetedPosition = targetPredictedPoint;
-      std::cout << "Found target solution by steps:  " << stepIndex << "new targetet point: X   " << targetPredictedPoint.X
+      std::cout << "Found target solution by steps:  " << stepIndex << "  new targetet point: X   " << targetPredictedPoint.X
                 << " Y:  " << targetPredictedPoint.Y << std::endl;
       return;
     }
@@ -229,7 +231,7 @@ void DroneController::CheckIfDroneReachedFirePosition()
   bool isReadyToFire = droneCalculator.IsDistanceBetweenPointSameAsNeeded(
     dronePosition, droneState.TargetedPosition, armamentController.GetFallDistance(), distanceToFly);
   if (isReadyToFire) {
-    armamentController.DropBomb(droneState.transform.Direction);
+    armamentController.DropBomb(droneState.transform.Position, droneState.transform.Direction);
   }
 }
 
@@ -246,6 +248,11 @@ bool DroneController::UpdadeDroneRotation()
 
   if (!droneState.IsTargetSelected()) {
     // no need to rotate arbitrary, only on target
+    return false;
+  }
+
+  if (armamentController.GetIsFired()) {
+    // stop rotating - no bombs left
     return false;
   }
 
@@ -295,6 +302,16 @@ void DroneController::UpdateDroneVelocity()
   if (!droneState.IsTargetSelected()) {
     if (droneState.transform.Velocity > 0) {
       // need to stop, to lock new target and rotate to it
+      droneState.State = DataStructs::DECELERATING;
+    }
+    else {
+      return;
+    }
+  }
+
+  if (armamentController.GetIsFired()) {
+    if (droneState.transform.Velocity > 0) {
+      // we fired already
       droneState.State = DataStructs::DECELERATING;
     }
     else {
