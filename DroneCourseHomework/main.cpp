@@ -1,3 +1,4 @@
+#include "Armament/ArmamentDatabase.h"
 #include "Files/InputFile.h"
 #include "Files/OutputFile.h"
 #include "OutputController.h"
@@ -11,6 +12,8 @@ int main()
   // read input file
   InputFile inputFile;
   DataStructs::InputData inputData = inputFile.ReadJsonFile();
+
+  ArmamentDatabase dataBase;
 
   OutputController outputController;
 

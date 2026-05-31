@@ -1,13 +1,59 @@
 #include "Armament/ArmamentDatabase.h"
-#include <iostream>
 
-// key - AmmoType
-// value - mass, kg; drag, percents; lift; gliding type
-std::map<std::string, ArmamentDatabase::Data> ArmamentDatabase::sArmaData = {{"VOG-17", ArmamentDatabase::Data(0.35f, 0.07f, 0.0f, 0)},
-                                                                             {"M67", ArmamentDatabase::Data(0.6f, 0.10f, 0.0f, 0)},
-                                                                             {"RKG-3", ArmamentDatabase::Data(1.2f, 0.10f, 0.0f, 0)},
-                                                                             {"GLIDING-VOG", ArmamentDatabase::Data(0.45f, 0.10f, 1.0f, 1)},
-                                                                             {"GLIDING-RKG", ArmamentDatabase::Data(1.4f, 0.10f, 1.0f, 1)}};
+#include <cstddef>
+#include <iostream>
+#include <fstream>
+#include <string>
+
+#include <nlohmann/json.hpp>
+#include <vector>
+
+// this structure need only to parse JSON
+
+struct JsonData {
+public:
+  std::string Name;
+  ArmamentDatabase::Data Dt;
+};
+
+void from_json(const nlohmann::json& j, ArmamentDatabase::Data& data)
+{
+  j.at("mass").get_to(data.Mass);
+  j.at("drag").get_to(data.Drag);
+  j.at("lift").get_to(data.Lift);
+
+  data.Type = 0;
+  if (data.Lift > 0) {
+    data.Type = 1;
+  }
+}
+
+void from_json(const nlohmann::json& j, JsonData& armData)
+{
+  j.at("name").get_to(armData.Name);
+  armData.Dt = j.get<ArmamentDatabase::Data>();
+}
+
+std::map<std::string, ArmamentDatabase::Data> ArmamentDatabase::sArmaData;
+
+ArmamentDatabase::ArmamentDatabase()
+{
+  std::ifstream file("./DroneCourseHomework/DataFiles/json/Ammo.json");
+
+  if (file.is_open()) {
+    nlohmann::json json = nlohmann::json::parse(file);
+
+    std::vector<JsonData> jsonData = json.at("ammo").get<std::vector<JsonData>>();
+    for (size_t i = 0; i < jsonData.size(); ++i) {
+      sArmaData.insert({jsonData[i].Name, jsonData[i].Dt});
+    }
+  }
+  else {
+    std::cout << "Json Ammo file read error!  " << std::endl;
+    exit(1);
+  }
+  file.close();
+}
 
 ArmamentDatabase::Data ArmamentDatabase::GetArmament(std::string name)
 {
