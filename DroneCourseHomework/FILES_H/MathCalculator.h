@@ -2,22 +2,21 @@
 
 #include "DataStructs.h"
 
-// will be static
 class MathCalculator {
 public:
-  bool AreEqual(float a, float b);
-  float GetSign(float value);
+  bool static AreEqual(float a, float b);
+  float static GetSign(float value);
 
-  DataStructs::Point2D GetDirectionVector(const DataStructs::Point2D& start, const DataStructs::Point2D& end);
-  DataStructs::Point2D GetDirectionVector(float angleInRadians);
+  DataStructs::Coord2D static GetDirectionVector(const DataStructs::Coord2D& start, const DataStructs::Coord2D& end);
+  DataStructs::Coord2D static GetDirectionVector(float angleInRadians);
 
-  float VectorLength(float dx, float dy);
-  float VectorLength(DataStructs::Point2D delta);
-  float DistanceBetweenPoints(DataStructs::Point2D point1, DataStructs::Point2D point2);
-  float DistanceBetweenPointsSquared(DataStructs::Point2D point1, DataStructs::Point2D point2);
+  float static VectorLength(float dx, float dy);
+  float static VectorLength(const DataStructs::Coord2D& delta);
+  float static DistanceBetweenPoints(const DataStructs::Coord2D& point1, const DataStructs::Coord2D& point2);
+  float static DistanceBetweenPointsSquared(const DataStructs::Coord2D& point1, const DataStructs::Coord2D& point2);
 
-  bool AreVectorsParallel(DataStructs::Point2D vector1, DataStructs::Point2D vector2);
-  float VectorsCrossProduct(DataStructs::Point2D vector1, DataStructs::Point2D vector2);
-  float VectorsDotProduct(DataStructs::Point2D vector1, DataStructs::Point2D vector2);
-  float AngleBetweenVectorAndPoint(DataStructs::Point2D point1, float direction1, DataStructs::Point2D point2);
+  bool static AreVectorsParallel(const DataStructs::Coord2D& vector1, const DataStructs::Coord2D& vector2);
+  float static VectorsCrossProduct(const DataStructs::Coord2D& vector1, const DataStructs::Coord2D& vector2);
+  float static VectorsDotProduct(const DataStructs::Coord2D& vector1, const DataStructs::Coord2D& vector2);
+  float static AngleBetweenVectorAndPoint(const DataStructs::Coord2D& point1, float direction1, const DataStructs::Coord2D& point2);
 };

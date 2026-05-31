@@ -11,7 +11,7 @@ public:
 
   // messaging
 public:
-  using EventCallback = std::function<void(const DataStructs::Point3D&)>;
+  using EventCallback = std::function<void(const DataStructs::Coord3D&)>;
 
 private:
   static std::vector<EventCallback> subscribers;
@@ -19,7 +19,7 @@ private:
   // public methods
 public:
   void CalculateSimulationData(const float& simStep);
-  void DropBomb(DataStructs::Point3D startPosition, float direction);
+  void DropBomb(DataStructs::Coord3D startPosition, float direction);
   float GetFallDistance();
   float GetFallTime();
   bool GetIsFired();
@@ -46,7 +46,7 @@ private:
   // data for simulation
 private:
   bool isFired;
-  DataStructs::Point3D position;
+  DataStructs::Coord3D position;
   float fallDirection;
   float fallStepHeight;     // vertical step
   float fallStepDistance;   // horizontal step

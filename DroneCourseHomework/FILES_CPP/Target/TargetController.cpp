@@ -4,7 +4,7 @@
 
 TargetController::TargetController() {}
 
-TargetController::TargetController(const std::vector<DataStructs::Point2D> positionsData, const float& stepTimeData)
+TargetController::TargetController(const std::vector<DataStructs::Coord2D> positionsData, const float& stepTimeData)
 {
   currentPathStep = 0;
   currentStepTime = 0;
@@ -19,14 +19,14 @@ TargetController::TargetController(const std::vector<DataStructs::Point2D> posit
   CalculateVelocity();
 }
 
-DataStructs::Point2D TargetController::GetCurrentPosition()
+DataStructs::Coord2D TargetController::GetCurrentPosition()
 {
   return currentPosition;
 }
 
-DataStructs::Point2D TargetController::GetPredictedPosition(const float& time)
+DataStructs::Coord2D TargetController::GetPredictedPosition(const float& time)
 {
-  DataStructs::Point2D predictedPosition;
+  DataStructs::Coord2D predictedPosition;
   predictedPosition.X = currentPosition.X + (velocityX * time);
   predictedPosition.Y = currentPosition.Y + (velocityY * time);
 
@@ -73,10 +73,10 @@ void TargetController::CalculateVelocity()
     nextPathIndex = 0;
   }
 
-  DataStructs::Point2D pathStartPosition = positionsData[currentPathStep];
-  DataStructs::Point2D pathEndPosition = positionsData[nextPathIndex];
+  DataStructs::Coord2D pathStartPosition = positionsData[currentPathStep];
+  DataStructs::Coord2D pathEndPosition = positionsData[nextPathIndex];
 
-  DataStructs::Point2D vector = calculator.GetDirectionVector(pathStartPosition, pathEndPosition);
+  DataStructs::Coord2D vector = calculator.GetDirectionVector(pathStartPosition, pathEndPosition);
 
   velocityX = vector.X / arrayStepTime;
   velocityY = vector.Y / arrayStepTime;

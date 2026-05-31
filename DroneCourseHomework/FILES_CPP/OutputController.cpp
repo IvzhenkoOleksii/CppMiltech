@@ -9,7 +9,7 @@ OutputController::OutputController()
   Outputs.numberOfSteps = 0;
 }
 
-void OutputController::AddData(DataStructs::Point2D coordinates, float direction, DataStructs::DroneState state, int targetIndex)
+void OutputController::AddData(DataStructs::Coord2D coordinates, float direction, DataStructs::DroneState state, int targetIndex)
 {
   Outputs.numberOfSteps++;
   Outputs.coordinates.push_back(coordinates);
@@ -20,7 +20,7 @@ void OutputController::AddData(DataStructs::Point2D coordinates, float direction
 
 void OutputController::AddData(DataStructs::DroneOperationalData operationalData)
 {
-  DataStructs::Point2D dronePosition2D = operationalData.transform.Position.GetPoint2D();
+  DataStructs::Coord2D dronePosition2D = operationalData.transform.Position.GetPoint2D();
   Outputs.numberOfSteps++;
   Outputs.coordinates.push_back(dronePosition2D);
   Outputs.directions.push_back(operationalData.transform.Direction);

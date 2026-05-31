@@ -10,12 +10,12 @@ public:
   enum DroneState { STOPPED, ACCELERATING, DECELERATING, TURNING, MOVING };
 
 public:
-  struct Point2D {
+  struct Coord2D {
     float X = 0.0f;
     float Y = 0.0f;
 
-    Point2D() = default;
-    Point2D(float x, float y)
+    Coord2D() = default;
+    Coord2D(float x, float y)
       : X(x)
       , Y(y)
     {
@@ -23,16 +23,19 @@ public:
 
   public:
     void Debug();
+
+    Coord2D operator/(const Coord2D& other) const;
+    bool operator==(const Coord2D& other) const;
   };
 
 public:
-  struct Point3D {
+  struct Coord3D {
     float X = 0.0f;
     float Y = 0.0f;
     float Z = 0.0f;
 
-    Point3D() = default;
-    Point3D(float x, float y, float z)
+    Coord3D() = default;
+    Coord3D(float x, float y, float z)
       : X(x)
       , Y(y)
       , Z(z)
@@ -40,19 +43,22 @@ public:
     }
 
   public:
-    Point2D GetPoint2D();
+    Coord2D GetPoint2D();
 
   public:
     void DeInitialize();
 
   public:
     bool IsInitialized();
+
+    Coord3D operator/(const Coord3D& other) const;
+    bool operator==(const Coord3D& other) const;
   };
 
 public:
   struct DroneInputData {
     // fields
-    Point3D Position = {0.0f, 0.0f, 0.0f};
+    Coord3D Position = {0.0f, 0.0f, 0.0f};
     std::string AmmoType;
     float InitialDirection = {-1.0f};
     float AttackSpeed = {0.0f};
@@ -87,14 +93,14 @@ public:
 
 public:
   struct TargetData {
-    std::vector<std::vector<DataStructs::Point2D>> Positions;
+    std::vector<std::vector<DataStructs::Coord2D>> Positions;
   };
 
 public:
   struct DronePhysicalState {
     float Direction;
     float Velocity;
-    Point3D Position;
+    Coord3D Position;
   };
 
 public:
@@ -102,7 +108,7 @@ public:
     DroneState State;
     DronePhysicalState transform;
     int CurrentTargetIndex = -1;
-    Point2D TargetedPosition;
+    Coord2D TargetedPosition;
 
   public:
     bool IsTargetSelected();
@@ -110,8 +116,8 @@ public:
   };
 };
 
-void to_json(nlohmann::json& j, const DataStructs::Point2D& position);
-void from_json(const nlohmann::json& j, DataStructs::Point2D& position);
+void to_json(nlohmann::json& j, const DataStructs::Coord2D& position);
+void from_json(const nlohmann::json& j, DataStructs::Coord2D& position);
 
-void to_json(nlohmann::json& j, const DataStructs::Point3D& position);
-void from_json(const nlohmann::json& j, DataStructs::Point3D& position);
+void to_json(nlohmann::json& j, const DataStructs::Coord3D& position);
+void from_json(const nlohmann::json& j, DataStructs::Coord3D& position);

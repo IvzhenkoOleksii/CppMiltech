@@ -1,12 +1,8 @@
 #include "Drone/DroneCalculator.h"
+#include "MathCalculator.h"
 
 #include <cmath>
 #include <iostream>
-
-DroneCalculator::DroneCalculator()
-{
-  math = {};
-}
 
 float DroneCalculator::CalculateDroneAcceleration(const float& droneAttackSpeed, const float& droneAccelerationPath)
 {
@@ -16,11 +12,11 @@ float DroneCalculator::CalculateDroneAcceleration(const float& droneAttackSpeed,
   return acc;
 }
 
-bool DroneCalculator::IsDistanceBetweenPointSameAsNeeded(const DataStructs::Point2D& point1,
-                                                         const DataStructs::Point2D& point2,
+bool DroneCalculator::IsDistanceBetweenPointSameAsNeeded(const DataStructs::Coord2D& point1,
+                                                         const DataStructs::Coord2D& point2,
                                                          float neededDistance)
 {
-  float distance = math.DistanceBetweenPoints(point1, point2);
+  float distance = MathCalculator::DistanceBetweenPoints(point1, point2);
   float difference = distance - neededDistance;
   float differenceAbs = fabs(difference);
   bool isDistanceGoodToFire = differenceAbs < 1;
@@ -28,12 +24,12 @@ bool DroneCalculator::IsDistanceBetweenPointSameAsNeeded(const DataStructs::Poin
   return isDistanceGoodToFire;
 }
 
-bool DroneCalculator::IsDistanceBetweenPointSameAsNeeded(const DataStructs::Point2D& point1,
-                                                         const DataStructs::Point2D& point2,
+bool DroneCalculator::IsDistanceBetweenPointSameAsNeeded(const DataStructs::Coord2D& point1,
+                                                         const DataStructs::Coord2D& point2,
                                                          float neededDistance,
                                                          float droneStepDistance)
 {
-  float distance = math.DistanceBetweenPoints(point1, point2);
+  float distance = MathCalculator::DistanceBetweenPoints(point1, point2);
   float difference = distance - neededDistance;
   float differenceAbs = fabs(difference);
   float halfDroneStepDistance = droneStepDistance / 2;
@@ -42,10 +38,10 @@ bool DroneCalculator::IsDistanceBetweenPointSameAsNeeded(const DataStructs::Poin
   return isDistanceGoodToFire;
 }
 
-DataStructs::Point2D DroneCalculator::CalculateManeuverPosition(float minAttackDistance,
+DataStructs::Coord2D DroneCalculator::CalculateManeuverPosition(float minAttackDistance,
                                                                 float droneToTargetDistance,
-                                                                DataStructs::Point2D dronePosition,
-                                                                DataStructs::Point2D targetPosition)
+                                                                DataStructs::Coord2D dronePosition,
+                                                                DataStructs::Coord2D targetPosition)
 {
   float x;
   float y;
@@ -59,13 +55,13 @@ DataStructs::Point2D DroneCalculator::CalculateManeuverPosition(float minAttackD
   }
 
   std::cout << "Maneuver position X: " << x << "    Y: " << y << std::endl;
-  return DataStructs::Point2D(x, y);
+  return DataStructs::Coord2D(x, y);
 }
 
-DataStructs::Point2D DroneCalculator::CalculateFirePosition(float fallDistance,
+DataStructs::Coord2D DroneCalculator::CalculateFirePosition(float fallDistance,
                                                             float droneToTargetDistance,
-                                                            DataStructs::Point2D dronePosition,
-                                                            DataStructs::Point2D targetPosition)
+                                                            DataStructs::Coord2D dronePosition,
+                                                            DataStructs::Coord2D targetPosition)
 {
   float ratio = 0;
   if (droneToTargetDistance > 0.0) {
@@ -75,7 +71,7 @@ DataStructs::Point2D DroneCalculator::CalculateFirePosition(float fallDistance,
   float fireX = dronePosition.X + (targetPosition.X - dronePosition.X) * ratio;
   float fireY = dronePosition.Y + (targetPosition.Y - dronePosition.Y) * ratio;
 
-  DataStructs::Point2D firePosition = DataStructs::Point2D(fireX, fireY);
+  DataStructs::Coord2D firePosition = DataStructs::Coord2D(fireX, fireY);
   std::cout << "Fire position X: " << fireX << "    Y: " << fireY << std::endl;
 
   return firePosition;

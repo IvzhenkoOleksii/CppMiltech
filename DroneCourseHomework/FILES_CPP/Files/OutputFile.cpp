@@ -5,7 +5,7 @@
 
 const std::string FILE_PATH = "Output.json";
 
-void OutputFile::WriteToFile(DataStructs::Point2D firePosition)
+void OutputFile::WriteToFile(DataStructs::Coord2D firePosition)
 {
   std::ofstream file(FILE_PATH);
   if (file.is_open()) {
@@ -18,7 +18,7 @@ void OutputFile::WriteToFile(DataStructs::Point2D firePosition)
   }
 }
 
-void OutputFile::WriteToFile(DataStructs::Point2D maneuverPosition, DataStructs::Point2D firePosition)
+void OutputFile::WriteToFile(DataStructs::Coord2D maneuverPosition, DataStructs::Coord2D firePosition)
 {
   std::ofstream file(FILE_PATH);
   if (file.is_open()) {

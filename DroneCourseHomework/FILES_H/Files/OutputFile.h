@@ -4,7 +4,7 @@
 
 class OutputFile {
 public:
-  void WriteToFile(DataStructs::Point2D firePosition);
-  void WriteToFile(DataStructs::Point2D maneuverPosition, DataStructs::Point2D firePosition);
+  void WriteToFile(DataStructs::Coord2D firePosition);
+  void WriteToFile(DataStructs::Coord2D maneuverPosition, DataStructs::Coord2D firePosition);
   void WriteToFile(OutputController::Output output);
 };

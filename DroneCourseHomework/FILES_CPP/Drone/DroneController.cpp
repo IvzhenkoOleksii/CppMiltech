@@ -16,7 +16,6 @@ DroneController::DroneController(const DataStructs::InputData& input)
   inputData = input.DroneData;
   simStep = input.SimTestStep;
 
-  math = {};
   droneCalculator = {};
   armamentController = {inputData.AmmoType, inputData.AttackSpeed, inputData.Position.Z, input.HitRadius};
   armamentController.CalculateSimulationData(input.SimTestStep);
@@ -135,7 +134,7 @@ void DroneController::GetTargetSolution()
 
   while (stepIndex < maxSteps) {
     TargetController* target = targets[droneState.CurrentTargetIndex];
-    DataStructs::Point2D targetPredictedPoint = target->GetPredictedPosition(targetTime);
+    DataStructs::Coord2D targetPredictedPoint = target->GetPredictedPosition(targetTime);
 
     float droneTime = CalcDroneTimeToPoint(targetPredictedPoint);
     float timeDifference = std::fabs(targetTime - droneTime);
@@ -170,12 +169,12 @@ void DroneController::GetTargetSolution()
   std::cout << "Didn`t found target solution" << std::endl;
 }
 
-float DroneController::CalcDroneTimeToPoint(const DataStructs::Point2D& point)
+float DroneController::CalcDroneTimeToPoint(const DataStructs::Coord2D& point)
 {
-  DataStructs::Point2D dronePosition2D = droneState.transform.Position.GetPoint2D();
-  float angle = math.AngleBetweenVectorAndPoint(dronePosition2D, droneState.transform.Direction, point);
+  DataStructs::Coord2D dronePosition2D = droneState.transform.Position.GetPoint2D();
+  float angle = MathCalculator::AngleBetweenVectorAndPoint(dronePosition2D, droneState.transform.Direction, point);
   float rotationTime = CalculateRotationTime(angle);
-  float distanceToPredictedPoint = math.DistanceBetweenPoints(dronePosition2D, point);
+  float distanceToPredictedPoint = MathCalculator::DistanceBetweenPoints(dronePosition2D, point);
   float timeToFly = CalculateTimeToReach(distanceToPredictedPoint);
   return rotationTime + timeToFly + armamentController.GetFallTime();
 }
@@ -237,7 +236,7 @@ void DroneController::CheckIfDroneReachedFirePosition()
   }
 
   float distanceToFly = droneState.transform.Velocity * simStep;
-  DataStructs::Point2D dronePosition = droneState.transform.Position.GetPoint2D();
+  DataStructs::Coord2D dronePosition = droneState.transform.Position.GetPoint2D();
   bool isReadyToFire = droneCalculator.IsDistanceBetweenPointSameAsNeeded(
     dronePosition, droneState.TargetedPosition, armamentController.GetFallDistance(), distanceToFly);
   if (isReadyToFire) {
@@ -266,10 +265,11 @@ bool DroneController::UpdadeDroneRotation()
     return false;
   }
 
-  DataStructs::Point2D dronePosition = droneState.transform.Position.GetPoint2D();
-  float angleToTarget = math.AngleBetweenVectorAndPoint(dronePosition, droneState.transform.Direction, droneState.TargetedPosition);
+  DataStructs::Coord2D dronePosition = droneState.transform.Position.GetPoint2D();
+  float angleToTarget =
+    MathCalculator::AngleBetweenVectorAndPoint(dronePosition, droneState.transform.Direction, droneState.TargetedPosition);
 
-  if (math.AreEqual(angleToTarget, 0)) {
+  if (MathCalculator::AreEqual(angleToTarget, 0)) {
     // already rotated
     return false;
   }
@@ -360,7 +360,7 @@ void DroneController::UpdateDronePosition()
   if (droneState.transform.Velocity > 0) {
     float distanceToFly = droneState.transform.Velocity * simStep;
 
-    DataStructs::Point2D directionVector = math.GetDirectionVector(droneState.transform.Direction);
+    DataStructs::Coord2D directionVector = MathCalculator::GetDirectionVector(droneState.transform.Direction);
     float distanceX = directionVector.X * distanceToFly;
     float distanceY = directionVector.Y * distanceToFly;
 

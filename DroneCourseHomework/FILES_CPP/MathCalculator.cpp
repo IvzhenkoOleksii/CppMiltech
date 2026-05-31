@@ -1,8 +1,8 @@
-#include "cmath"
-#include <MathCalculator.h>
 #include <cmath>
 #include <iostream>
 #include <ostream>
+
+#include "MathCalculator.h"
 
 // will be static
 bool MathCalculator::AreEqual(float a, float b)
@@ -28,18 +28,18 @@ float MathCalculator::GetSign(float value)
   return -1;
 }
 
-DataStructs::Point2D MathCalculator::GetDirectionVector(const DataStructs::Point2D& start, const DataStructs::Point2D& end)
+DataStructs::Coord2D MathCalculator::GetDirectionVector(const DataStructs::Coord2D& start, const DataStructs::Coord2D& end)
 {
   float dX = end.X - start.X;
   float dY = end.Y - start.Y;
 
-  DataStructs::Point2D answ = {dX, dY};
+  DataStructs::Coord2D answ = {dX, dY};
   return answ;
 }
 
-DataStructs::Point2D MathCalculator::GetDirectionVector(float angleInRadians)
+DataStructs::Coord2D MathCalculator::GetDirectionVector(float angleInRadians)
 {
-  return DataStructs::Point2D{std::cos(angleInRadians), std::sin(angleInRadians)};
+  return DataStructs::Coord2D{std::cos(angleInRadians), std::sin(angleInRadians)};
 }
 
 float MathCalculator::VectorLength(float dx, float dy)
@@ -47,12 +47,12 @@ float MathCalculator::VectorLength(float dx, float dy)
   return std::sqrt(std::pow(dx, 2) + std::pow(dy, 2));
 }
 
-float MathCalculator::VectorLength(DataStructs::Point2D delta)
+float MathCalculator::VectorLength(const DataStructs::Coord2D& delta)
 {
   return std::sqrt(std::pow(delta.X, 2) + std::pow(delta.Y, 2));
 }
 
-float MathCalculator::DistanceBetweenPoints(DataStructs::Point2D point1, DataStructs::Point2D point2)
+float MathCalculator::DistanceBetweenPoints(const DataStructs::Coord2D& point1, const DataStructs::Coord2D& point2)
 {
   // use Pifagor theorem
   float powDistanceX = std::pow(point1.X - point2.X, 2);
@@ -61,33 +61,33 @@ float MathCalculator::DistanceBetweenPoints(DataStructs::Point2D point1, DataStr
 }
 
 // squared much faster, use it if we can compare squared values
-float MathCalculator::DistanceBetweenPointsSquared(DataStructs::Point2D point1, DataStructs::Point2D point2)
+float MathCalculator::DistanceBetweenPointsSquared(const DataStructs::Coord2D& point1, const DataStructs::Coord2D& point2)
 {
   float powDistanceX = std::pow(point1.X - point2.X, 2);
   float powDistanceY = std::pow(point1.Y - point2.Y, 2);
   return powDistanceX + powDistanceY;
 }
 
-bool MathCalculator::AreVectorsParallel(DataStructs::Point2D vector1, DataStructs::Point2D vector2)
+bool MathCalculator::AreVectorsParallel(const DataStructs::Coord2D& vector1, const DataStructs::Coord2D& vector2)
 {
   float vectorCrossProduct = VectorsCrossProduct(vector1, vector2);
   bool isEqual = AreEqual(vectorCrossProduct, 0);
   return isEqual;
 }
 
-float MathCalculator::VectorsCrossProduct(DataStructs::Point2D vector1, DataStructs::Point2D vector2)
+float MathCalculator::VectorsCrossProduct(const DataStructs::Coord2D& vector1, const DataStructs::Coord2D& vector2)
 {
   return vector1.X * vector2.Y - vector1.Y * vector2.X;
 }
 
-float MathCalculator::VectorsDotProduct(DataStructs::Point2D vector1, DataStructs::Point2D vector2)
+float MathCalculator::VectorsDotProduct(const DataStructs::Coord2D& vector1, const DataStructs::Coord2D& vector2)
 {
   return vector1.X * vector2.X + vector1.Y * vector2.Y;
 }
 
-float MathCalculator::AngleBetweenVectorAndPoint(DataStructs::Point2D point1, float direction1, DataStructs::Point2D point2)
+float MathCalculator::AngleBetweenVectorAndPoint(const DataStructs::Coord2D& point1, float direction1, const DataStructs::Coord2D& point2)
 {
-  DataStructs::Point2D differenceVector = GetDirectionVector(point1, point2);
+  DataStructs::Coord2D differenceVector = GetDirectionVector(point1, point2);
   float differenceVectorModule = std::pow(differenceVector.X, 2) + std::pow(differenceVector.Y, 2);
 
   if (AreEqual(differenceVectorModule, 0)) {
@@ -95,7 +95,7 @@ float MathCalculator::AngleBetweenVectorAndPoint(DataStructs::Point2D point1, fl
     return 0;
   }
 
-  DataStructs::Point2D dir1Vector = GetDirectionVector(direction1);
+  DataStructs::Coord2D dir1Vector = GetDirectionVector(direction1);
   float dir1VectorModule = std::pow(dir1Vector.X, 2) + std::pow(dir1Vector.Y, 2);
 
   // instead of sqrt differenceVectorModule and dir1VectorModule, we will pow dotProduct

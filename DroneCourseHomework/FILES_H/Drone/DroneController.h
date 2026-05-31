@@ -3,7 +3,6 @@
 #include "Target/TargetController.h"
 #include "Armament/ArmamentController.h"
 #include "DroneCalculator.h"
-#include "MathCalculator.h"
 
 #include <vector>
 
@@ -23,7 +22,7 @@ private:
   void GetTargetSolution();
   void UpdateDroneState();
   float CalculateRotationTime(const float& angleToRotate);
-  float CalcDroneTimeToPoint(const DataStructs::Point2D& point);
+  float CalcDroneTimeToPoint(const DataStructs::Coord2D& point);
   float CalculateTimeToReach(const float& distanceToTarget);
   bool UpdadeDroneRotation();
   void UpdateDroneVelocity();
@@ -45,7 +44,6 @@ private:
 private:
   ArmamentController armamentController;
   DroneCalculator droneCalculator;
-  MathCalculator math;
 
 private:
   float minAttackDistance;

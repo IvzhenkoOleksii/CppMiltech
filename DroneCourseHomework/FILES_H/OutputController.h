@@ -9,7 +9,7 @@ class OutputController {
 public:
   struct Output {
     int numberOfSteps;
-    std::vector<DataStructs::Point2D> coordinates;
+    std::vector<DataStructs::Coord2D> coordinates;
     std::vector<float> directions;
     std::vector<int> states;
     std::vector<int> targetIndexes;
@@ -21,7 +21,7 @@ public:
   Output Outputs;
 
 public:
-  void AddData(DataStructs::Point2D coordinates, float direction, DataStructs::DroneState state, int targetIndex);
+  void AddData(DataStructs::Coord2D coordinates, float direction, DataStructs::DroneState state, int targetIndex);
   void AddData(DataStructs::DroneOperationalData operationalData);
 };
 

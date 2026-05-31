@@ -1,33 +1,82 @@
 #include "DataStructs.h"
+#include "MathCalculator.h"
 
 #include <iostream>
 #include <nlohmann/json.hpp>
 #include <ostream>
 
 // DroneData struct methods
-void DataStructs::Point2D::Debug()
+DataStructs::Coord2D DataStructs::Coord2D::operator/(const DataStructs::Coord2D& other) const
+{
+  DataStructs::Coord2D result;
+  result.X = X / other.X;
+  result.Y = Y / other.Y;
+  return result;
+}
+
+bool DataStructs::Coord2D::operator==(const DataStructs::Coord2D& other) const
+{
+  if (!MathCalculator::AreEqual(X, other.X)) {
+    return false;
+  }
+
+  if (!MathCalculator::AreEqual(Y, other.Y)) {
+    return false;
+  }
+
+  return true;
+}
+
+void DataStructs::Coord2D::Debug()
 {
   std::cout << "    x:   " << X << "   y:   " << Y << std::endl;
 }
 
-void DataStructs::Point3D::DeInitialize()
+void DataStructs::Coord3D::DeInitialize()
 {
   // we never work too high -> so it`s a wrong value
   Z = 99999;
 }
 
-bool DataStructs::Point3D::IsInitialized()
+bool DataStructs::Coord3D::IsInitialized()
 {
   return Z < 99999;
 }
 
-DataStructs::Point2D DataStructs::Point3D::GetPoint2D()
+DataStructs::Coord2D DataStructs::Coord3D::GetPoint2D()
 {
-  Point2D pos;
+  Coord2D pos;
   pos.X = X;
   pos.Y = Y;
 
   return pos;
+}
+
+DataStructs::Coord3D DataStructs::Coord3D::operator/(const DataStructs::Coord3D& other) const
+{
+  DataStructs::Coord3D result;
+  result.X = X / other.X;
+  result.Y = Y / other.Y;
+  result.Z = Z / other.Z;
+
+  return result;
+}
+
+bool DataStructs::Coord3D::operator==(const DataStructs::Coord3D& other) const
+{
+  if (!MathCalculator::AreEqual(X, other.X)) {
+    return false;
+  }
+
+  if (!MathCalculator::AreEqual(Y, other.Y)) {
+    return false;
+  }
+
+  if (!MathCalculator::AreEqual(Z, other.Z)) {
+    return false;
+  }
+
+  return true;
 }
 
 void DataStructs::DroneInputData::CheckData()
@@ -95,23 +144,23 @@ void DataStructs::DroneOperationalData::DeselectTarget()
 }
 
 // free methods for json support
-void to_json(nlohmann::json& j, const DataStructs::Point2D& position)
+void to_json(nlohmann::json& j, const DataStructs::Coord2D& position)
 {
   j = nlohmann::json{position.X, position.Y};
 }
 
-void from_json(const nlohmann::json& j, DataStructs::Point2D& position)
+void from_json(const nlohmann::json& j, DataStructs::Coord2D& position)
 {
   j.at(0).get_to(position.X);
   j.at(1).get_to(position.Y);
 }
 
-void to_json(nlohmann::json& j, const DataStructs::Point3D& position)
+void to_json(nlohmann::json& j, const DataStructs::Coord3D& position)
 {
   j = nlohmann::json{position.X, position.Y, position.Z};
 }
 
-void from_json(const nlohmann::json& j, DataStructs::Point3D& position)
+void from_json(const nlohmann::json& j, DataStructs::Coord3D& position)
 {
   j.at(0).get_to(position.X);
   j.at(1).get_to(position.Y);

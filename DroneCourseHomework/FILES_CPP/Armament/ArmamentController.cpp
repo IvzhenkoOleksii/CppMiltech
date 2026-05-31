@@ -31,7 +31,7 @@ ArmamentController::ArmamentController(std::string ammoType, float droneAttackSp
   armamentFallDistance = calculator.CalculateFallDistance(armData, droneAttackSpeed, armamentFallTime);
 }
 
-void ArmamentController::DropBomb(DataStructs::Point3D startPosition, float direction)
+void ArmamentController::DropBomb(DataStructs::Coord3D startPosition, float direction)
 {
   position = startPosition;
   fallDirection = direction;
