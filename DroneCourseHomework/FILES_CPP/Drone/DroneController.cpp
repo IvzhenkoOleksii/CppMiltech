@@ -64,6 +64,8 @@ void DroneController::OnStepStart(const float& simStep)
 {
   ChooseTarget();
   GetTargetSolution();
+  droneState.BombDropPoint = WhereBombDrop();
+  droneState.DropPoint = WhereDroneHeading();
   UpdateDroneState();
 
   armamentController.OnStepStart(simStep);
@@ -373,4 +375,27 @@ void DroneController::StopDroneAndDeselectTarget()
 {
   droneState.State = DataStructs::STOPPED;
   droneState.DeselectTarget();
+}
+
+DataStructs::Coord2D DroneController::WhereBombDrop()
+{
+  float fallDistance = armamentController.CalculateBombFallDistance(droneState.transform.Position, droneState.transform.Velocity);
+  DataStructs::Coord2D dronePosition2D = droneState.transform.Position.GetPoint2D();
+
+  DataStructs::Coord2D answer = {};
+  answer.X = dronePosition2D.X + fallDistance * cosf(droneState.transform.Direction);
+  answer.Y = dronePosition2D.Y + fallDistance * sinf(droneState.transform.Direction);
+  return answer;
+}
+
+DataStructs::Coord2D DroneController::WhereDroneHeading()
+{
+  float fullBombFallDistance = armamentController.GetFallDistance();
+  DataStructs::Coord2D targetPosition = droneState.TargetedPosition;
+  float direction = droneState.transform.Direction * (-1);  // we need point at opposite direction
+
+  DataStructs::Coord2D answer = {};
+  answer.X = targetPosition.X + fullBombFallDistance * cosf(direction);
+  answer.Y = targetPosition.Y + fullBombFallDistance * sinf(direction);
+  return answer;
 }

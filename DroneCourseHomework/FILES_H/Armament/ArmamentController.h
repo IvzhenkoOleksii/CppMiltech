@@ -23,6 +23,7 @@ public:
   float GetFallDistance();
   float GetFallTime();
   bool GetIsFired();
+  float CalculateBombFallDistance(DataStructs::Coord3D startPoint, float speed);
 
 public:
   void OnStepStart(const float& simStep);
@@ -34,6 +35,7 @@ private:
 
 private:
   ArmamentFallCalculator calculator;
+  ArmamentDatabase::Data armData;
 
 private:
   float armamentFallTime;

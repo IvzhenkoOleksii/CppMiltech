@@ -110,6 +110,10 @@ public:
     int CurrentTargetIndex = -1;
     Coord2D TargetedPosition;
 
+    // added only for output, not use it actually
+    Coord2D DropPoint;      // there drone heading to drop a bomb
+    Coord2D BombDropPoint;  // ther will drop bomb if drop right now
+
   public:
     bool IsTargetSelected();
     void DeselectTarget();

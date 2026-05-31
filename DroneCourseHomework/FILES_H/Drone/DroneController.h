@@ -30,6 +30,8 @@ private:
   void CheckIfDroneReachedFirePosition();
   void GetClosestTarget();
   void StopDroneAndDeselectTarget();
+  DataStructs::Coord2D WhereBombDrop();
+  DataStructs::Coord2D WhereDroneHeading();
 
 private:
   // do on the start/constructor/once

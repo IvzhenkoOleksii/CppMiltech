@@ -1,5 +1,6 @@
 #define _USE_MATH_DEFINES
 
+#include "MathCalculator.h"
 #include "Armament/ArmamentFallCalculator.h"
 
 #include <cmath>
@@ -127,6 +128,11 @@ float ArmamentFallCalculator::CalculateFallingTime(float p, float phi, float a, 
 
 float ArmamentFallCalculator::CalculateFallDistance(const ArmamentDatabase::Data& armData, float droneAttackSpeed, float fallTime)
 {
+  if (MathCalculator::AreEqual(droneAttackSpeed, 0)) {
+    // bomb just fall down
+    return 0;
+  }
+
   std::cout << std::endl;
   // pre-calculate value, which used often
   float dragPower2 = powf(armData.Drag, 2);

@@ -24,11 +24,18 @@ ArmamentController::ArmamentController(std::string ammoType, float droneAttackSp
 {
   isFired = false;
   this->hitRadius = hitRadius;
-  ArmamentDatabase::Data armData = ArmamentDatabase::GetArmament(ammoType);
+  armData = ArmamentDatabase::GetArmament(ammoType);
 
   armamentFallHeight = droneHeight;
   armamentFallTime = calculator.CalculateFallTime(armData, droneAttackSpeed, armamentFallHeight);
   armamentFallDistance = calculator.CalculateFallDistance(armData, droneAttackSpeed, armamentFallTime);
+}
+
+float ArmamentController::CalculateBombFallDistance(DataStructs::Coord3D startPoint, float speed)
+{
+  float fallTime = calculator.CalculateFallTime(armData, speed, startPoint.Z);
+  float fallDistance = calculator.CalculateFallDistance(armData, speed, fallTime);
+  return fallDistance;
 }
 
 void ArmamentController::DropBomb(DataStructs::Coord3D startPosition, float direction)
