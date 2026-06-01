@@ -1,9 +1,10 @@
 #include "Armament/ArmamentController.h"
+#include "Armament/Solver/ArmamentAnaliticalSolver.h"
+#include "DataStructs.h"
 
 #include <string>
 #include <cmath>
 #include <iostream>
-#include "DataStructs.h"
 
 float ArmamentController::GetFallDistance()
 {
@@ -25,16 +26,22 @@ ArmamentController::ArmamentController(std::string ammoType, float droneAttackSp
   isFired = false;
   this->hitRadius = hitRadius;
   armData = ArmamentDatabase::GetArmament(ammoType);
+  solver = new ArmamentAnalitycalSolver;
 
   armamentFallHeight = droneHeight;
-  armamentFallTime = calculator.CalculateFallTime(armData, droneAttackSpeed, armamentFallHeight);
-  armamentFallDistance = calculator.CalculateFallDistance(armData, droneAttackSpeed, armamentFallTime);
+  armamentFallTime = solver->CalculateFallTime(armData, droneAttackSpeed, armamentFallHeight);
+  armamentFallDistance = solver->CalculateFallDistance(armData, droneAttackSpeed, armamentFallTime);
+}
+
+ArmamentController::~ArmamentController()
+{
+  delete solver;
 }
 
 float ArmamentController::CalculateBombFallDistance(DataStructs::Coord3D startPoint, float speed)
 {
-  float fallTime = calculator.CalculateFallTime(armData, speed, startPoint.Z);
-  float fallDistance = calculator.CalculateFallDistance(armData, speed, fallTime);
+  float fallTime = solver->CalculateFallTime(armData, speed, startPoint.Z);
+  float fallDistance = solver->CalculateFallDistance(armData, speed, fallTime);
   return fallDistance;
 }
 

@@ -12,12 +12,11 @@
 #include "MathCalculator.h"
 
 DroneController::DroneController(const DataStructs::InputData& input)
+  : inputData(input.DroneData)
+  , simStep(input.SimTestStep)
+  , droneCalculator({})
+  , armamentController({inputData.AmmoType, inputData.AttackSpeed, inputData.Position.Z, input.HitRadius})
 {
-  inputData = input.DroneData;
-  simStep = input.SimTestStep;
-
-  droneCalculator = {};
-  armamentController = {inputData.AmmoType, inputData.AttackSpeed, inputData.Position.Z, input.HitRadius};
   armamentController.CalculateSimulationData(input.SimTestStep);
 
   InitState();

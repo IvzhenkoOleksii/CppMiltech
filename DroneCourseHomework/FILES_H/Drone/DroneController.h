@@ -44,8 +44,8 @@ private:
   float simStep;
 
 private:
-  ArmamentController armamentController;
   DroneCalculator droneCalculator;
+  ArmamentController armamentController;
 
 private:
   float minAttackDistance;
