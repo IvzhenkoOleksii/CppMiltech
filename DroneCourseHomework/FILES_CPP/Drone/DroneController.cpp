@@ -7,15 +7,16 @@
 #include "Drone/DroneController.h"
 #include "Drone/DroneCalculator.h"
 #include "Armament/ArmamentController.h"
+#include "Armament//Solver/IArmamentSolver.h"
 #include "DataStructs.h"
 #include "Target/TargetController.h"
 #include "MathCalculator.h"
 
-DroneController::DroneController(const DataStructs::InputData& input)
+DroneController::DroneController(const DataStructs::InputData& input, IArmamentSolver* solver)
   : inputData(input.DroneData)
   , simStep(input.SimTestStep)
   , droneCalculator({})
-  , armamentController({inputData.AmmoType, inputData.AttackSpeed, inputData.Position.Z, input.HitRadius})
+  , armamentController({inputData.AmmoType, inputData.AttackSpeed, inputData.Position.Z, input.HitRadius, solver})
 {
   armamentController.CalculateSimulationData(input.SimTestStep);
 

@@ -36,7 +36,26 @@ void from_json(const nlohmann::json& j, JsonData& armData)
 
 std::map<std::string, ArmamentDatabase::Data> ArmamentDatabase::sArmaData;
 
-ArmamentDatabase::ArmamentDatabase()
+ArmamentDatabase::Data ArmamentDatabase::GetArmament(const std::string& name)
+{
+  if (sArmaData.empty()) {
+    ReadAmmoFile();
+  }
+
+  auto search = sArmaData.find(name);
+  if (search == sArmaData.end()) {
+    std::cout << "Error!. There is no data about: " << name << std::endl;
+    exit(1);
+  }
+  else {
+    ArmamentDatabase::Data searchedData = search->second;
+    std::cout << "Data about " << name << "  mass: " << searchedData.Mass << "  drag: " << searchedData.Drag
+              << "  lift: " << searchedData.Lift << std::endl;
+    return searchedData;
+  }
+}
+
+void ArmamentDatabase::ReadAmmoFile()
 {
   std::ifstream file("./DroneCourseHomework/DataFiles/json/Ammo.json");
 
@@ -53,19 +72,4 @@ ArmamentDatabase::ArmamentDatabase()
     exit(1);
   }
   file.close();
-}
-
-ArmamentDatabase::Data ArmamentDatabase::GetArmament(std::string name)
-{
-  auto search = sArmaData.find(name);
-  if (search == sArmaData.end()) {
-    std::cout << "Error!. There is no data about: " << name << std::endl;
-    exit(1);
-  }
-  else {
-    ArmamentDatabase::Data searchedData = search->second;
-    std::cout << "Data about " << name << "  mass: " << searchedData.Mass << "  drag: " << searchedData.Drag
-              << "  lift: " << searchedData.Lift << std::endl;
-    return searchedData;
-  }
 }

@@ -1,6 +1,6 @@
 #define _USE_MATH_DEFINES
 
-#include "Armament/Solver/ArmamentAnaliticalSolver.h"
+#include "Armament/Solver/ArmamentAnalyticalSolver.h"
 #include "MathCalculator.h"
 
 #include <cmath>

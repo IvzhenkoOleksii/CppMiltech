@@ -11,9 +11,6 @@
 // 1 - glider type
 class ArmamentDatabase {
 public:
-  ArmamentDatabase();
-
-public:
   struct Data {
   public:
     float Mass;
@@ -39,9 +36,10 @@ public:
   };
 
 public:
-  static Data GetArmament(std::string name);
+  static Data GetArmament(const std::string& name);
 
 private:
   // data map, use only as getter
   static std::map<std::string, Data> sArmaData;
+  static void ReadAmmoFile();
 };

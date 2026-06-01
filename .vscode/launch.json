@@ -6,7 +6,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/debug/DroneCourseHomework/executable",
-            "args": ["./homework_05/data/empty.txt"],
+            "args": ["Txt", "Analytical"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],

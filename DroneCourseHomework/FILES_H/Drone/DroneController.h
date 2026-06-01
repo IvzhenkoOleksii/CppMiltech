@@ -2,13 +2,14 @@
 #include "DataStructs.h"
 #include "Target/TargetController.h"
 #include "Armament/ArmamentController.h"
+#include "Armament//Solver/IArmamentSolver.h"
 #include "DroneCalculator.h"
 
 #include <vector>
 
 class DroneController {
 public:
-  DroneController(const DataStructs::InputData& data);
+  DroneController(const DataStructs::InputData& data, IArmamentSolver* solver);
 
 public:
   void LockTargets(std::vector<TargetController*> targetRefs);

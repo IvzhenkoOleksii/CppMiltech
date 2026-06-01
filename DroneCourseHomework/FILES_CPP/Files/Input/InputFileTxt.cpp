@@ -1,15 +1,15 @@
+#include "Files/Input/InputFileTxt.h"
+#include "DataStructs.h"
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>
 #include <vector>
 
-#include "Files/InputFile.h"
-#include "DataStructs.h"
+InputFileTxt::~InputFileTxt() {}
 
-#include <nlohmann/json.hpp>
-
-DataStructs::InputData InputFile::ReadTxtFile()
+DataStructs::InputData InputFileTxt::ReadFile()
 {
   std::string line;
   std::ifstream file("./DroneCourseHomework/DataFiles/txt/Input.txt");
@@ -33,7 +33,7 @@ DataStructs::InputData InputFile::ReadTxtFile()
   return inputData;
 }
 
-void InputFile::ReadLine(const std::string& line, int lineIndex, DataStructs::InputData* data)
+void InputFileTxt::ReadLine(std::string line, int lineIndex, DataStructs::InputData* data)
 {
   switch (lineIndex) {
     case 0:
@@ -49,6 +49,7 @@ void InputFile::ReadLine(const std::string& line, int lineIndex, DataStructs::In
       SetFloatField(line, lineIndex, &data->DroneData.AccelerationPath);
       break;
     case 4:
+      line.erase(line.size() - 1);
       data->DroneData.AmmoType = line;
       break;
     case 5:
@@ -71,7 +72,7 @@ void InputFile::ReadLine(const std::string& line, int lineIndex, DataStructs::In
   }
 }
 
-void InputFile::SetupDronePosition(const std::string& line, DataStructs::InputData* data)
+void InputFileTxt::SetupDronePosition(const std::string& line, DataStructs::InputData* data)
 {
   std::stringstream splitted(line);
   std::string word;
@@ -106,7 +107,7 @@ void InputFile::SetupDronePosition(const std::string& line, DataStructs::InputDa
   data->DroneData.Position = {x, y, z};
 }
 
-void InputFile::SetFloatField(const std::string& input, int index, float* output)
+void InputFileTxt::SetFloatField(const std::string& input, int index, float* output)
 {
   try {
     if (input.empty()) {
@@ -120,31 +121,4 @@ void InputFile::SetFloatField(const std::string& input, int index, float* output
     std::cout << "   An Error inside Input file. Index of error field:   " << index << "\n";
     exit(1);
   }
-}
-
-DataStructs::InputData InputFile::ReadJsonFile()
-{
-  std::ifstream file("./DroneCourseHomework/DataFiles/json/Input.json");
-  DataStructs::InputData inputData{};
-  if (file.is_open()) {
-    nlohmann::json json = nlohmann::json::parse(file);
-
-    json.at("position").get_to<DataStructs::Coord3D>(inputData.DroneData.Position);
-    json.at("initialDirection").get_to(inputData.DroneData.InitialDirection);
-    json.at("attackSpeed").get_to(inputData.DroneData.AttackSpeed);
-    json.at("accelerationPath").get_to(inputData.DroneData.AccelerationPath);
-    json.at("ammoType").get_to(inputData.DroneData.AmmoType);
-    json.at("arrayTimeStep").get_to(inputData.ArrayTimeStep);
-    json.at("simTimeStep").get_to(inputData.SimTestStep);
-    json.at("hitRadius").get_to(inputData.HitRadius);
-    json.at("angularSpeed").get_to(inputData.DroneData.AngularSpeed);
-    json.at("turnThreshold").get_to(inputData.DroneData.TurnThreshold);
-  }
-  else {
-    std::cout << "Json Input file read error!  " << std::endl;
-    exit(1);
-  }
-  file.close();
-
-  return inputData;
 }

@@ -7,7 +7,7 @@
 class ArmamentController {
 public:
   ArmamentController() = default;
-  ArmamentController(std::string ammoType, float droneAttackSpeed, float droneHeight, float hitRadius);
+  ArmamentController(std::string ammoType, float droneAttackSpeed, float droneHeight, float hitRadius, IArmamentSolver* solver);
 
   ~ArmamentController();
 

@@ -1,5 +1,5 @@
 #include "Armament/ArmamentController.h"
-#include "Armament/Solver/ArmamentAnaliticalSolver.h"
+#include "Armament/Solver/ArmamentAnalyticalSolver.h"
 #include "DataStructs.h"
 
 #include <string>
@@ -21,12 +21,13 @@ bool ArmamentController::GetIsFired()
   return isFired;
 }
 
-ArmamentController::ArmamentController(std::string ammoType, float droneAttackSpeed, float droneHeight, float hitRadius)
+ArmamentController::ArmamentController(
+  std::string ammoType, float droneAttackSpeed, float droneHeight, float hitRadius, IArmamentSolver* solver)
 {
   isFired = false;
   this->hitRadius = hitRadius;
+  this->solver = solver;
   armData = ArmamentDatabase::GetArmament(ammoType);
-  solver = new ArmamentAnalitycalSolver;
 
   armamentFallHeight = droneHeight;
   armamentFallTime = solver->CalculateFallTime(armData, droneAttackSpeed, armamentFallHeight);
