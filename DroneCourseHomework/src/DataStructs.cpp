@@ -34,7 +34,7 @@ void DataStructs::Coord2D::Debug()
 
 void DataStructs::Coord3D::DeInitialize()
 {
-  // we never work too high -> so it`s a wrong value
+  // we never work so high -> so it`s a wrong value
   Z = 99999;
 }
 
@@ -43,11 +43,11 @@ bool DataStructs::Coord3D::IsInitialized()
   return Z < 99999;
 }
 
-DataStructs::Coord2D DataStructs::Coord3D::GetPoint2D()
+DataStructs::Coord2D DataStructs::Coord3D::GetPoint2D(const Coord3D& original)
 {
   Coord2D pos;
-  pos.X = X;
-  pos.Y = Y;
+  pos.X = original.X;
+  pos.Y = original.Y;
 
   return pos;
 }

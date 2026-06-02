@@ -93,6 +93,7 @@ void DroneController::GetClosestTarget()
 {
   int targetIndex = -1;
   float smallestReachTime = 0;
+
   for (size_t i = 0; i < targets.size(); ++i) {
     if (targets[i]->GetVelocity() > inputData.AttackSpeed) {
       // we cannot reach faster target
@@ -173,7 +174,7 @@ void DroneController::GetTargetSolution()
 
 float DroneController::CalcDroneTimeToPoint(const DataStructs::Coord2D& point)
 {
-  DataStructs::Coord2D dronePosition2D = droneState.transform.Position.GetPoint2D();
+  DataStructs::Coord2D dronePosition2D = DataStructs::Coord3D::GetPoint2D(droneState.transform.Position);
   float angle = MathCalculator::AngleBetweenVectorAndPoint(dronePosition2D, droneState.transform.Direction, point);
   float rotationTime = CalculateRotationTime(angle);
   float distanceToPredictedPoint = MathCalculator::DistanceBetweenPoints(dronePosition2D, point);
@@ -238,7 +239,7 @@ void DroneController::CheckIfDroneReachedFirePosition()
   }
 
   float distanceToFly = droneState.transform.Velocity * simStep;
-  DataStructs::Coord2D dronePosition = droneState.transform.Position.GetPoint2D();
+  DataStructs::Coord2D dronePosition = DataStructs::Coord3D::GetPoint2D(droneState.transform.Position);
   bool isReadyToFire = droneCalculator.IsDistanceBetweenPointSameAsNeeded(
     dronePosition, droneState.TargetedPosition, armamentController.GetFallDistance(), distanceToFly);
   if (isReadyToFire) {
@@ -267,7 +268,7 @@ bool DroneController::UpdadeDroneRotation()
     return false;
   }
 
-  DataStructs::Coord2D dronePosition = droneState.transform.Position.GetPoint2D();
+  DataStructs::Coord2D dronePosition = DataStructs::Coord3D::GetPoint2D(droneState.transform.Position);
   float angleToTarget =
     MathCalculator::AngleBetweenVectorAndPoint(dronePosition, droneState.transform.Direction, droneState.TargetedPosition);
 
@@ -380,7 +381,7 @@ void DroneController::StopDroneAndDeselectTarget()
 DataStructs::Coord2D DroneController::WhereBombDrop()
 {
   float fallDistance = armamentController.CalculateBombFallDistance(droneState.transform.Position, droneState.transform.Velocity);
-  DataStructs::Coord2D dronePosition2D = droneState.transform.Position.GetPoint2D();
+  DataStructs::Coord2D dronePosition2D = DataStructs::Coord3D::GetPoint2D(droneState.transform.Position);
 
   DataStructs::Coord2D answer = {};
   answer.X = dronePosition2D.X + fallDistance * cosf(droneState.transform.Direction);

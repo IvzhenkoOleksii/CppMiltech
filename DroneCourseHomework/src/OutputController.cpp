@@ -9,9 +9,9 @@ OutputController::OutputController()
   Outputs.numberOfSteps = 0;
 }
 
-void OutputController::AddData(DataStructs::DroneOperationalData operationalData)
+void OutputController::AddData(const DataStructs::DroneOperationalData& operationalData)
 {
-  DataStructs::Coord2D dronePosition2D = operationalData.transform.Position.GetPoint2D();
+  DataStructs::Coord2D dronePosition2D = DataStructs::Coord3D::GetPoint2D(operationalData.transform.Position);
   Outputs.numberOfSteps++;
 
   OutputController::OutputStep step = {};

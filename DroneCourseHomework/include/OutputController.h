@@ -28,8 +28,9 @@ public:
   Output Outputs;
 
 public:
-  void AddData(DataStructs::DroneOperationalData operationalData);
+  void AddData(const DataStructs::DroneOperationalData& operationalData);
 };
 
+// since it`s an output -> I didn`t create from_json methods
 void to_json(nlohmann::json& j, const OutputController::OutputStep& outputStep);
 void to_json(nlohmann::json& j, const OutputController::Output& output);

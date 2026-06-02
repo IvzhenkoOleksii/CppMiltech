@@ -43,7 +43,7 @@ public:
     }
 
   public:
-    Coord2D GetPoint2D();
+    static Coord2D GetPoint2D(const Coord3D& original);
 
   public:
     void DeInitialize();

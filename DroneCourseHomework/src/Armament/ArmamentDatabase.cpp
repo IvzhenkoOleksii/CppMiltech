@@ -1,6 +1,5 @@
 #include "Armament/ArmamentDatabase.h"
 
-#include <cstddef>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -9,11 +8,10 @@
 #include <vector>
 
 // this structure need only to parse JSON
-
 struct JsonData {
 public:
   std::string Name;
-  ArmamentDatabase::Data Dt;
+  ArmamentDatabase::Data Data;
 };
 
 void from_json(const nlohmann::json& j, ArmamentDatabase::Data& data)
@@ -31,7 +29,7 @@ void from_json(const nlohmann::json& j, ArmamentDatabase::Data& data)
 void from_json(const nlohmann::json& j, JsonData& armData)
 {
   j.at("name").get_to(armData.Name);
-  armData.Dt = j.get<ArmamentDatabase::Data>();
+  armData.Data = j.get<ArmamentDatabase::Data>();
 }
 
 std::map<std::string, ArmamentDatabase::Data> ArmamentDatabase::sArmaData;
@@ -63,8 +61,9 @@ void ArmamentDatabase::ReadAmmoFile()
     nlohmann::json json = nlohmann::json::parse(file);
 
     std::vector<JsonData> jsonData = json.at("ammo").get<std::vector<JsonData>>();
-    for (size_t i = 0; i < jsonData.size(); ++i) {
-      sArmaData.insert({jsonData[i].Name, jsonData[i].Dt});
+
+    for (const auto& entity : jsonData) {
+      sArmaData.insert({entity.Name, entity.Data});
     }
   }
   else {
