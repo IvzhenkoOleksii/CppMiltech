@@ -15,22 +15,22 @@ TargetsManager::TargetsManager()
 TargetsManager::TargetsManager(const float& arrayTimeStep)
   : TargetsManager()
 {
-  for (size_t i = 0; i < targetData.Positions.size(); ++i) {
-    targets.push_back(TargetController{targetData.Positions[i], arrayTimeStep});
+  for (const auto& targetPosition : targetData.Positions) {
+    targets.push_back(TargetController{targetPosition, arrayTimeStep});
   }
 }
 
 void TargetsManager::OnStepStart(const float& simStep)
 {
-  for (size_t i = 0; i < targets.size(); ++i) {
-    targets[i].OnStepStart(simStep);
+  for (auto& target : targets) {
+    target.OnStepStart(simStep);
   }
 }
 
 void TargetsManager::OnStepEnd()
 {
-  for (size_t i = 0; i < targets.size(); ++i) {
-    targets[i].OnStepEnd();
+  for (auto& target : targets) {
+    target.OnStepEnd();
   }
 }
 
@@ -39,7 +39,7 @@ std::vector<TargetController*> TargetsManager::GetTargetReferencies()
   std::vector<TargetController*> targetReferencies;
   targetReferencies.reserve(targets.size());
 
-  for (TargetController& target : targets) {
+  for (auto& target : targets) {
     targetReferencies.push_back(&target);
   }
 

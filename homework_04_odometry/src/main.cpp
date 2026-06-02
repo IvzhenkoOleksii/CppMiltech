@@ -1,3 +1,4 @@
+#include <cstddef>
 #include <iostream>
 #include <vector>
 
@@ -20,7 +21,7 @@ int main(int argc, char** argv)
   Structures::NrkState nrkState;
 
   std::cout << std::endl;
-  for (int i = 0; i < data.size(); ++i) {
+  for (size_t i = 0; i < data.size(); ++i) {
     if (i == 0) {
       // start data are zeros
       continue;

@@ -1,4 +1,5 @@
 #pragma once
+#include <cstddef>
 #include <vector>
 
 #include "DataStructs.h"
@@ -33,7 +34,7 @@ private:
   float velocityX;
   float velocityY;
   float velocity;
-  int currentPathStep;
+  size_t currentPathStep;
   DataStructs::Coord2D currentPosition;
 
 private:
