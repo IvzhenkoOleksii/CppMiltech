@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(ballisticCalculations CXX)
+project(executable CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -9,7 +9,7 @@ file(GLOB PROJECT_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/FILES_CPP/*.cpp")
 
 add_library(ballisticLib STATIC ${PROJECT_SOURCES})
 
-# add_executable(ballisticCalculations DroneCourseHomework.cpp ${PROJECT_SOURCES} )
+# add_executable(executable main.cpp ${PROJECT_SOURCES} )
 
 target_include_directories(
     ballisticLib PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/FILES_H"
@@ -17,8 +17,8 @@ target_include_directories(
 
 target_compile_options(ballisticLib PRIVATE -Wall -Wextra -pedantic)
 
-add_executable(ballisticCalculations DroneCourseHomework.cpp)
-target_link_libraries(ballisticCalculations PRIVATE ballisticLib)
+add_executable(executable main.cpp)
+target_link_libraries(executable PRIVATE ballisticLib)
 
 add_executable(ballistic_tests Tests/ballistic_tests.cpp)
 

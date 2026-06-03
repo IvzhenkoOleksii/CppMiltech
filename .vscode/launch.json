@@ -5,7 +5,7 @@
             "name": "Odometr Debug",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/debug/homework_06_tests/ballisticCalculations",
+            "program": "${workspaceFolder}/build/debug/homework_06_tests/executable",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
