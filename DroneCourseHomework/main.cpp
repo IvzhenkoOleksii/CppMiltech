@@ -1,4 +1,5 @@
 #include <iostream>
+#include <utility>
 
 #include "Armament/Solver/IArmamentSolver.h"
 #include "Files/Input/IInputFile.h"
@@ -20,17 +21,15 @@ int main(int argc, char** argv)
 
   MissionFactory missionFactory{};
 
-  IInputFile* inputFile = missionFactory.CreateInputFile(argv[1]);
-  IArmamentSolver* armamentSolver = missionFactory.CreateArmamentSolver(argv[2]);
-
+  auto inputFile = missionFactory.CreateInputFile(argv[1]);
+  auto armamentSolver = missionFactory.CreateArmamentSolver(argv[2]);
   DataStructs::InputData inputData = inputFile->ReadFile();
-  delete inputFile;
 
   // create targets
   TargetsManager targetsManager{inputData.ArrayTimeStep};
 
   // create drone controller
-  DroneController droneController = {inputData, armamentSolver};
+  DroneController droneController = {inputData, std::move(armamentSolver)};
   droneController.LockTargets(targetsManager.GetTargetReferencies());
 
   // create simulation controller

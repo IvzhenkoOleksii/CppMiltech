@@ -1,15 +1,14 @@
 #pragma once
 #include <string>
+#include <memory>
 
 #include "Armament/Solver/IArmamentSolver.h"
 #include "DataStructs.h"
 
 class ArmamentController {
 public:
-  ArmamentController() = default;
-  ArmamentController(std::string ammoType, float droneAttackSpeed, float droneHeight, float hitRadius, IArmamentSolver* solver);
-
-  ~ArmamentController();
+  ArmamentController(
+    std::string ammoType, float droneAttackSpeed, float droneHeight, float hitRadius, std::unique_ptr<IArmamentSolver> solver);
 
   // messaging
 public:
@@ -36,7 +35,7 @@ private:
   void UpdateFallPosition();
 
 private:
-  IArmamentSolver* solver;
+  std::unique_ptr<IArmamentSolver> solver;
   ArmamentDatabase::Data armData;
 
 private:

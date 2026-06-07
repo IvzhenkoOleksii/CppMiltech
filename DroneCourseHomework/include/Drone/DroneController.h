@@ -5,11 +5,12 @@
 #include "Armament//Solver/IArmamentSolver.h"
 #include "DroneCalculator.h"
 
+#include <memory>
 #include <vector>
 
 class DroneController {
 public:
-  DroneController(const DataStructs::InputData& data, IArmamentSolver* solver);
+  DroneController(const DataStructs::InputData& data, std::unique_ptr<IArmamentSolver> solver);
 
 public:
   void LockTargets(std::vector<TargetController*> targetRefs);

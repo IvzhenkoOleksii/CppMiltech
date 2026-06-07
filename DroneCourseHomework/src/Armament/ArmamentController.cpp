@@ -1,5 +1,4 @@
 #include "Armament/ArmamentController.h"
-#include "Armament/Solver/ArmamentAnalyticalSolver.h"
 #include "DataStructs.h"
 
 #include <string>
@@ -22,27 +21,23 @@ bool ArmamentController::GetIsFired()
 }
 
 ArmamentController::ArmamentController(
-  std::string ammoType, float droneAttackSpeed, float droneHeight, float hitRadius, IArmamentSolver* solver)
+  std::string ammoType, float droneAttackSpeed, float droneHeight, float hitRadius, std::unique_ptr<IArmamentSolver> solver)
 {
   isFired = false;
   this->hitRadius = hitRadius;
-  this->solver = solver;
+  this->solver = std::move(solver);
+
   armData = ArmamentDatabase::GetArmament(ammoType);
 
   armamentFallHeight = droneHeight;
-  armamentFallTime = solver->CalculateFallTime(armData, droneAttackSpeed, armamentFallHeight);
-  armamentFallDistance = solver->CalculateFallDistance(armData, droneAttackSpeed, armamentFallTime);
-}
-
-ArmamentController::~ArmamentController()
-{
-  delete solver;
+  armamentFallTime = this->solver->CalculateFallTime(armData, droneAttackSpeed, armamentFallHeight);
+  armamentFallDistance = this->solver->CalculateFallDistance(armData, droneAttackSpeed, armamentFallTime);
 }
 
 float ArmamentController::CalculateBombFallDistance(DataStructs::Coord3D startPoint, float speed)
 {
-  float fallTime = solver->CalculateFallTime(armData, speed, startPoint.Z);
-  float fallDistance = solver->CalculateFallDistance(armData, speed, fallTime);
+  float fallTime = this->solver->CalculateFallTime(armData, speed, startPoint.Z);
+  float fallDistance = this->solver->CalculateFallDistance(armData, speed, fallTime);
   return fallDistance;
 }
 

@@ -6,29 +6,31 @@
 #include "Armament/Solver/IArmamentSolver.h"
 #include "Armament/Solver/ArmamentAnalyticalSolver.h"
 
-IInputFile* MissionFactory::CreateInputFile(const std::string& typeOfFile)
+#include <memory>
+
+std::unique_ptr<IInputFile> MissionFactory::CreateInputFile(const std::string& typeOfFile)
 {
   fileTypeCode code = ConvertArgumentIntoFileTypeCode(typeOfFile);
   switch (code) {
     case txt:
-      return new InputFileTxt();
+      return std::make_unique<InputFileTxt>();
     case json:
     default:
-      return new InputFileJson();
+      return std::make_unique<InputFileJson>();
   }
 }
 
-IArmamentSolver* MissionFactory::CreateArmamentSolver(const std::string& typeOfSolver)
+std::unique_ptr<IArmamentSolver> MissionFactory::CreateArmamentSolver(const std::string& typeOfSolver)
 {
   armamentSolverTypeCode code = ConvertArgumentIntoArmamentSolverTypeCode(typeOfSolver);
   switch (code) {
     case analytical:
-      return new ArmamentAnalitycalSolver();
+      return std::make_unique<ArmamentAnalitycalSolver>();
     default:
-      return new ArmamentAnalitycalSolver();
+      return std::make_unique<ArmamentAnalitycalSolver>();
   }
 
-  return new ArmamentAnalitycalSolver();
+  return std::make_unique<ArmamentAnalitycalSolver>();
 }
 
 MissionFactory::fileTypeCode MissionFactory::ConvertArgumentIntoFileTypeCode(const std::string& typeOfFile)

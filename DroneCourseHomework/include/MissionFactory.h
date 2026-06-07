@@ -1,10 +1,12 @@
 #include "Files/Input/IInputFile.h"
 #include "Armament/Solver/IArmamentSolver.h"
 
+#include <memory>
+
 class MissionFactory {
 public:
-  IInputFile* CreateInputFile(const std::string& typeOfFile);
-  IArmamentSolver* CreateArmamentSolver(const std::string& typeOfSolver);
+  std::unique_ptr<IInputFile> CreateInputFile(const std::string& typeOfFile);
+  std::unique_ptr<IArmamentSolver> CreateArmamentSolver(const std::string& typeOfSolver);
 
 private:
   enum fileTypeCode { txt, json };

@@ -1,7 +1,6 @@
 #include <cstddef>
 #include <iostream>
 #include <ostream>
-#include <string>
 #include <cmath>
 
 #include "Drone/DroneController.h"
@@ -12,11 +11,11 @@
 #include "Target/TargetController.h"
 #include "MathCalculator.h"
 
-DroneController::DroneController(const DataStructs::InputData& input, IArmamentSolver* solver)
+DroneController::DroneController(const DataStructs::InputData& input, std::unique_ptr<IArmamentSolver> solver)
   : inputData(input.DroneData)
   , simStep(input.SimTestStep)
   , droneCalculator({})
-  , armamentController({inputData.AmmoType, inputData.AttackSpeed, inputData.Position.Z, input.HitRadius, solver})
+  , armamentController({inputData.AmmoType, inputData.AttackSpeed, inputData.Position.Z, input.HitRadius, std::move(solver)})
 {
   armamentController.CalculateSimulationData(input.SimTestStep);
 
