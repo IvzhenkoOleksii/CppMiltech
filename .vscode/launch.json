@@ -6,7 +6,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/debug/homework_06_tests/executable",
-            "args": [],
+            "args": ["/DataFiles/json/Input.json", "/DataFiles/txt/Targets.txt"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],

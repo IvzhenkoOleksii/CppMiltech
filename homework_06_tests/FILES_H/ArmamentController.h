@@ -6,8 +6,6 @@
 class ArmamentController {
 public:
   ArmamentController() = default;
-
-public:
   ArmamentController(std::string ammoType, float droneAttackSpeed, float droneHeight);
 
 public:
@@ -18,7 +16,5 @@ private:
 
 private:
   float armamentFallTime;
-
-private:
   float armamentFallDistance;
 };

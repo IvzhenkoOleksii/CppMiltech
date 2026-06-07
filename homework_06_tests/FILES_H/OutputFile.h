@@ -3,8 +3,8 @@
 
 class OutputFile {
 public:
-  void WriteToFile(DataStructs::Position2D firePosition);
+  void WriteToFile(std::string path, DataStructs::Position2D firePosition);
 
 public:
-  void WriteToFile(DataStructs::Position2D maneuverPosition, DataStructs::Position2D firePosition);
+  void WriteToFile(std::string path, DataStructs::Position2D maneuverPosition, DataStructs::Position2D firePosition);
 };

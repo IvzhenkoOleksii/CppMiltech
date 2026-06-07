@@ -14,10 +14,36 @@ auto TargetFile::ReadJsonFile() -> DataStructs::TargetData
     json.at("paths").get_to(targetData.Positions);
   }
   else {
-    std::cout << "Json Targets file read error!  " << '\n';
+    std::cerr << "Json Targets file read error!  " << '\n';
     exit(1);
   }
   file.close();
 
   return targetData;
+}
+
+DataStructs::Position2D TargetFile::ReadTxtFile(const std::string& path)
+{
+  std::ifstream file(path);
+  DataStructs::Position2D targetPosition;
+  if (file.is_open()) {
+    std::string fileAsLine;
+    std::getline(file, fileAsLine);
+    std::stringstream splitted(fileAsLine);
+    std::string word;
+    std::vector<std::string> lines;
+
+    while (splitted >> word) {
+      lines.push_back(word);
+    }
+
+    targetPosition.X = std::stof(lines[0]);
+    targetPosition.Y = std::stof(lines[1]);
+  }
+  else {
+    std::cerr << "Txt Targets file read error!  " << '\n';
+    exit(1);
+  }
+  file.close();
+  return targetPosition;
 }

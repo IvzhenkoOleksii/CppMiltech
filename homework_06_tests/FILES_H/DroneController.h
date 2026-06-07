@@ -12,77 +12,49 @@ public:
 
 public:
   void LockTarget(TargetController* target, const int& targetIndex);
-
-public:
   void LockTargets(std::vector<TargetController*> targetRefs);
-
-public:
   void ChooseNearestTarget();
 
 public:
   void RecalculateOperationalStates(float simStepTime);
-
-public:
   void UpdateOperationalStates();
+  void CheckIfDroneReachedFirePosition();
 
 public:
-  void CheckIfDroneReachedFirePosition();
+  float GetFallDistance();
+  float GetDistanceToTarget(DataStructs::Position2D targetPosition);
+  DataStructs::Position2D GetCurrentPosition();
+  DataStructs::Position2D GetManeuverPosition(float minAttackDistance, float droneToTargetDistance, DataStructs::Position2D targetPosition);
+
+  DataStructs::Position2D GetFirePosition(float fallDistance,
+                                          float droneToTargetDistance,
+                                          DataStructs::Position2D startPosition,
+                                          DataStructs::Position2D targetPosition);
 
 private:
   void CalculateDistancesToTargets();
-
-private:
   void CalculateDistanceToTarget(const DataStructs::Position2D& targetPosition, const int& targetIndex);
-
-private:
   void CalculateAnglesBetweenDroneAndTargets();
-
-private:
   void CalculateAngleBetweenDroneAndTarget(const DataStructs::Position2D& targetPosition, const int& targetIndex);
-
-private:
   void CalculateFirePointsToTargets();
-
-private:
   void CalculateRotationTimeToTargets();
-
-private:
   void CalculateTimeToReachTargets();
-
-private:
   void GetClosestTarget();
-
-private:
   void RecalculateDroneDirection();
-
-private:
   void RecalculateDroneVelocity();
-
-private:
   void RecalculateDronePosition(float simTime);
 
   // variables
 private:
   DataStructs::DroneInputData inputData;
-
-private:
   ArmamentController armamentController;
-
-private:
   DroneCalculator droneCalculator;
 
 private:
   float minAttackDistance;
-
-private:
   float acceleration;
-
-private:
   float accelerationTime;
-
-private:
-  float velocityChangeStep;  // how velocity can change during single step time
-private:
+  float velocityChangeStep;   // how velocity can change during single step time
   float directionChangeStep;  // how direction can change during single step time
 
 private:
@@ -94,7 +66,5 @@ private:
   // targets store as referncies, so drone will get updated data of targets, ie -> updated position, speed, etc
 private:
   std::vector<TargetController*> targets{};
-
-private:
   std::vector<DataStructs::TargetOperationalData> targetsOperationalData{};
 };

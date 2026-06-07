@@ -35,6 +35,58 @@ DroneController::DroneController(const DataStructs::DroneInputData& input, const
   minAttackDistance = armamentController.GetFallDistance() + inputData.AccelerationPath;
 }
 
+float DroneController::GetFallDistance()
+{
+  return armamentController.GetFallDistance();
+}
+
+float DroneController::GetDistanceToTarget(DataStructs::Position2D targetPosition)
+{
+  return droneCalculator.CalculateDistance(operationalData.transform.Position.GetPosition2D(), targetPosition);
+}
+
+DataStructs::Position2D DroneController::GetCurrentPosition()
+{
+  return operationalData.transform.Position.GetPosition2D();
+}
+
+DataStructs::Position2D DroneController::GetFirePosition(float fallDistance,
+                                                         float droneToTargetDistance,
+                                                         DataStructs::Position2D startPosition,
+                                                         DataStructs::Position2D targetPosition)
+{
+  float ratio = 0;
+  if (droneToTargetDistance > 0.0) {
+    ratio = (droneToTargetDistance - fallDistance) / droneToTargetDistance;
+  }
+
+  float fireX = startPosition.X + (targetPosition.X - startPosition.X) * ratio;
+  float fireY = startPosition.Y + (targetPosition.Y - startPosition.Y) * ratio;
+
+  std::cout << "Fire position X: " << fireX << "    Y: " << fireY << std::endl;
+  return {fireX, fireY};
+}
+
+DataStructs::Position2D DroneController::GetManeuverPosition(float minAttackDistance,
+                                                             float droneToTargetDistance,
+                                                             DataStructs::Position2D targetPosition)
+{
+  float x;
+  float y;
+  DataStructs::Position2D dronePosition = operationalData.transform.Position.GetPosition2D();
+  if (droneToTargetDistance > 0.0) {
+    x = targetPosition.X - ((targetPosition.X - dronePosition.X) * minAttackDistance / droneToTargetDistance);
+    y = targetPosition.Y - ((targetPosition.Y - dronePosition.Y) * minAttackDistance / droneToTargetDistance);
+  }
+  else {
+    x = targetPosition.X + minAttackDistance;
+    y = targetPosition.Y;
+  }
+
+  std::cout << "Maneuver position X: " << x << "    Y: " << y << std::endl;
+  return {x, y};
+}
+
 void DroneController::LockTarget(TargetController* target, const int& targetIndex)
 {
   targets[targetIndex] = target;
