@@ -2,11 +2,11 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Odometr Debug",
+            "name": "Work with Debugger",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/debug/homework_06_tests/executable",
-            "args": ["/DataFiles/json/Input.json", "/DataFiles/txt/Targets.txt"],
+            "program": "${workspaceFolder}/build/debug/DroneCourseHomework/executable",
+            "args": ["Txt", "Table"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],

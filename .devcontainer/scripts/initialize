@@ -11,3 +11,4 @@ touch "${DEVCONTAINER_DATA_ON_HOST}/.bash_history"
 # Ensure ~/.ssh exists so the bind-mount in devcontainer.json does not fail
 # on fresh machines where the user never generated SSH keys yet.
 [ -d "${HOME}/.ssh" ] || mkdir -m 700 "${HOME}/.ssh"
+

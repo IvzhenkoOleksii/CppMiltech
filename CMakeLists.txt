@@ -20,6 +20,7 @@ enable_testing()
 add_subdirectory(DroneCourseHomework)
 add_subdirectory(homework_04_odometry)
 add_subdirectory(homework_06_tests)
+add_subdirectory(homework_05)
 
 find_program(CLANG_TIDY_EXE NAMES "clang-tidy")
 if(CLANG_TIDY_EXE)
