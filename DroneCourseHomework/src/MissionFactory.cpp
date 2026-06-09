@@ -5,6 +5,7 @@
 
 #include "Armament/Solver/IArmamentSolver.h"
 #include "Armament/Solver/ArmamentAnalyticalSolver.h"
+#include "Armament/Solver/Table/ArmamentTableSolver.h"
 
 #include <memory>
 
@@ -25,12 +26,11 @@ std::unique_ptr<IArmamentSolver> MissionFactory::CreateArmamentSolver(const std:
   armamentSolverTypeCode code = ConvertArgumentIntoArmamentSolverTypeCode(typeOfSolver);
   switch (code) {
     case analytical:
-      return std::make_unique<ArmamentAnalitycalSolver>();
     default:
       return std::make_unique<ArmamentAnalitycalSolver>();
+    case tables:
+      return std::make_unique<ArmamentTableSolver>();
   }
-
-  return std::make_unique<ArmamentAnalitycalSolver>();
 }
 
 MissionFactory::fileTypeCode MissionFactory::ConvertArgumentIntoFileTypeCode(const std::string& typeOfFile)
@@ -50,6 +50,9 @@ MissionFactory::armamentSolverTypeCode MissionFactory::ConvertArgumentIntoArmame
 {
   if (typeOfFile == "Analytical") {
     return MissionFactory::analytical;
+  }
+  else if (typeOfFile == "Table") {
+    return MissionFactory::tables;
   }
 
   // by default
