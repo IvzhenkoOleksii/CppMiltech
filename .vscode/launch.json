@@ -12,6 +12,9 @@
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
+            "sourceFileMap": {
+                "${workspaceFolder}": "${workspaceFolder}"
+            },
             "miDebuggerPath": "/usr/bin/gdb",
             "preLaunchTask": "CMake: configure and build",
             "setupCommands": [
@@ -23,6 +26,11 @@
                 {
                     "description": "Set Disassembly Flavor to Intel",
                     "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Disable ASLR disabling in GDB",
+                    "text": "set disable-randomization off", // GDB: don`t start randomization
                     "ignoreFailures": true
                 }
             ]

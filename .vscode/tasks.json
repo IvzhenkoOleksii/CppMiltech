@@ -32,6 +32,52 @@
         "panel": "dedicated",
         "clear": true
       }
+    },
+    {
+      "label": "make format",
+      "type": "shell",
+      "command": "clang-format -i homework_06_tests/FILES_CPP/*.cpp homework_06_tests/FILES_H/*.h && cmake-format -i CMakeLists.txt homework_06_tests/CMakeLists.txt",
+      "group": {
+          "kind": "build",
+          "isDefault": true
+      },
+      "problemMatcher": [],
+      "detail": "Форматирование C++ (clang-format) и CMake (cmake-format) файлов"
+    },
+    {
+      "label": "make lint",
+      "type": "shell",
+      "command": "run-clang-tidy-18 -p build/debug -fix -format -checks='modernize-*,bugprone-*,performance-*' homework_06_tests/*.cpp",
+      "group": {
+          "kind": "build",
+          "isDefault": true
+      },
+      "problemMatcher": ["$gcc"],
+      "detail": "Статический анализ и автоисправление кода через clang-tidy"
+    },
+    {
+      "label": "make test",
+      "type": "shell",
+      "command": "cmake --build build/debug --target ballistic_tests && ./build/debug/homework_06_tests/ballistic_tests",
+      "group": "test",
+      "problemMatcher": ["$gcc"],
+      "detail": "Компиляция проекта и запуск Google Tests"
+    },
+    {
+      "label": "make quality",
+      "type": "shell",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+          "make format",
+          "make lint",
+          "make test"
+      ],
+      "group": {
+          "kind": "build",
+          "isDefault": true
+      },
+      "problemMatcher": [],
+      "detail": "Запуск полной цепочки: форматирование -> линтер -> тесты"
     }
   ]
 }
