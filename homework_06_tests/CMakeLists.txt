@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(executable CXX)
+project(homework6 CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -16,8 +16,8 @@ target_include_directories(
 target_compile_options(ballisticLib PRIVATE -Wall -Wextra -pedantic)
 
 # main exe file
-add_executable(executable main.cpp)
-target_link_libraries(executable PRIVATE ballisticLib)
+add_executable(homework6 main.cpp)
+target_link_libraries(homework6 PRIVATE ballisticLib)
 
 # ballistic tests exe
 add_executable(ballistic_tests Tests/ballistic_tests.cpp)
@@ -27,4 +27,4 @@ include(GoogleTest)
 gtest_discover_tests(ballistic_tests)
 
 target_compile_definitions(ballistic_tests PRIVATE PROJECT_ROOT_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
-target_compile_definitions(executable PRIVATE PROJECT_ROOT_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
+target_compile_definitions(homework6 PRIVATE PROJECT_ROOT_DIR="${CMAKE_CURRENT_SOURCE_DIR}")

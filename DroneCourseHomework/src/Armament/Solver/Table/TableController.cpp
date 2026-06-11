@@ -51,9 +51,8 @@ TableSolver::TableController::TableController()
   file.close();
 }
 
-float TableSolver::TableController::GetNearestFallTime(int massIndex, int dragIndex, int liftIndex, int velocityIndex, int heightIndex)
+float TableSolver::TableController::GetNearestFallTime(int index)
 {
-  int index = massIndex * dragIndex * liftIndex * velocityIndex * heightIndex;
   if (index < tableResults.size()) {
     return tableResults[index].fallTime;
   }
@@ -63,14 +62,24 @@ float TableSolver::TableController::GetNearestFallTime(int massIndex, int dragIn
   }
 }
 
-float TableSolver::TableController::GetNearestFallDistance(int massIndex, int dragIndex, int liftIndex, int velocityIndex, int heightIndex)
+float TableSolver::TableController::GetNearestFallDistance(int index)
 {
-  int index = massIndex * dragIndex * liftIndex * velocityIndex * heightIndex;
   if (index < tableResults.size()) {
     return tableResults[index].fallDistance;
   }
   else {
     std::cerr << "Searching fall distance index bigger that tableResults.size !" << std::endl;
+    std::exit(1);
+  }
+}
+
+TableSolver::TableResult TableSolver::TableController::GetNearestResult(int index)
+{
+  if (index < tableResults.size()) {
+    return tableResults[index];
+  }
+  else {
+    std::cerr << "Searching fall result index bigger that tableResults.size !" << std::endl;
     std::exit(1);
   }
 }
@@ -137,12 +146,57 @@ int TableSolver::TableController::GetNearestTableIndex(float value, const std::v
       continue;
     }
 
-    if (difference < minDiffence) {
+    if (difference <= minDiffence) {
       minDiffIndex = i;
       minDiffence = difference;
     }
   }
 
-  // array index starts from zero, but we cannot multiply on zero - we multiply on 1
-  return minDiffIndex + 1;
+  return minDiffIndex;
+}
+
+int TableSolver::TableController::GetResultsIndex(int heightIndex, int velocityIndex, int massIndex, int dragIndex, int liftIndex)
+{
+  return ((((size_t)heightIndex * table.tableVelocity.size() + velocityIndex) * table.tableMass.size() + massIndex) *
+            table.tableDrag.size() +
+          dragIndex) *
+           table.tableLift.size() +
+         liftIndex;
+}
+
+int TableSolver::TableController::GetResultsIndex(float heightIndex, float velocityIndex, float massIndex, float dragIndex, float liftIndex)
+{
+  return ((((size_t)heightIndex * table.tableVelocity.size() + velocityIndex) * table.tableMass.size() + massIndex) *
+            table.tableDrag.size() +
+          dragIndex) *
+           table.tableLift.size() +
+         liftIndex;
+}
+
+TableSolver::Interp TableSolver::TableController::FindInterpolatedIndex(float value, const std::vector<float>& axis)
+{
+  if (value <= axis.front())
+    return {0, 0.0f};
+  if (value >= axis.back())
+    return {(int)axis.size() - 2, 1.0f};
+
+  auto it = std::lower_bound(axis.begin(), axis.end(), value);
+  int i = (int)(it - axis.begin()) - 1;
+  if (i < 0)
+    i = 0;
+
+  float frac = (value - axis[i]) / (axis[i + 1] - axis[i]);
+  return {i, frac};
+}
+
+TableSolver::TableResult TableSolver::TableController::Lerp(const TableResult& first, const TableResult& second, float coeff)
+{
+  float time = first.fallTime + (second.fallTime - first.fallTime) * coeff;
+  float distance = first.fallDistance + (second.fallDistance - first.fallDistance) * coeff;
+
+  TableResult result;
+  result.fallTime = time;
+  result.fallDistance = distance;
+
+  return result;
 }

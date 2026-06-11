@@ -143,8 +143,8 @@ void DroneController::GetTargetSolution()
 
     if (timeDifference < simStep) {
       droneState.TargetedPosition = targetPredictedPoint;
-      std::cout << "Found target solution by steps:  " << stepIndex << "  new targetet point: X   " << targetPredictedPoint.X
-                << " Y:  " << targetPredictedPoint.Y << std::endl;
+      //  std::cout << "Found target solution by steps:  " << stepIndex << "  new targetet point: X   " << targetPredictedPoint.X
+      //            << " Y:  " << targetPredictedPoint.Y << std::endl;
       return;
     }
 
@@ -191,7 +191,7 @@ float DroneController::CalculateTimeToReach(const float& distanceToTarget)
   float timeToMove;
   float distanceToFly = distanceToTarget - armamentController.GetFallDistance();
   if (distanceToFly < 0) {
-    std::cerr << "Distance to fly is negative" << std::endl;
+    //   std::cerr << "Distance to fly is negative" << std::endl;
     return 0;
   }
 

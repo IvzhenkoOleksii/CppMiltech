@@ -104,10 +104,10 @@ float MathCalculator::AngleBetweenVectorAndPoint(const DataStructs::Coord2D& poi
   float cosAlpha = std::pow(dotProduct, 2) / (differenceVectorModule * dir1VectorModule);
 
   if (cosAlpha > 1) {
-    std::cerr << "Something wrong here!  Cos alpha is greater than 1!" << std::endl;
+    //  std::cerr << "Something wrong here!  Cos alpha is greater than 1!" << std::endl;
     float difference = 1 - cosAlpha;
     if (difference < 0.000f) {
-      std::cerr << "Difference is too small!" << std::endl;
+      //   std::cerr << "Difference is too small!" << std::endl;
       cosAlpha = 1;
     }
   }

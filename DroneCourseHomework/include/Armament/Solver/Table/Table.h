@@ -15,4 +15,9 @@ struct TableResult {
   float fallDistance;  // distance to fall
 };
 
+struct Interp {
+  int index;
+  float fraction;
+};
+
 }  // namespace TableSolver

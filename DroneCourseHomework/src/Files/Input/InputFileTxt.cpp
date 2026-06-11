@@ -49,7 +49,6 @@ void InputFileTxt::ReadLine(std::string line, int lineIndex, DataStructs::InputD
       SetFloatField(line, lineIndex, &data->DroneData.AccelerationPath);
       break;
     case 4:
-      line.erase(line.size() - 1);
       data->DroneData.AmmoType = line;
       break;
     case 5:
