@@ -374,6 +374,7 @@ void DroneController::UpdateDronePosition()
 void DroneController::StopDroneAndDeselectTarget()
 {
   droneState.State = DataStructs::STOPPED;
+
   droneState.DeselectTarget();
 }
 
