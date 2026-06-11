@@ -6,8 +6,8 @@
 class ArmamentAnalitycalSolver : public IArmamentSolver {
 public:
   ~ArmamentAnalitycalSolver();
-  float CalculateFallTime(const ArmamentDatabase::Data& armData, float droneAttackSpeed, float droneZPosition) override;
-  float CalculateFallDistance(const ArmamentDatabase::Data&, float droneAttackSpeed, float fallTime) override;
+
+  ArmamentDatabase::FallResult Calculate(const ArmamentDatabase::Data& armData, float droneAttackSpeed, float droneZPosition) override;
 
 private:
   // time of flight = a · t*t*t + b · t*t + c = 0
@@ -22,5 +22,7 @@ private:
   float CalculateCardanoPHI(float p, float q);
 
 private:
-  float CalculateFallingTime(float p, float fi, float a, float b);
+  float CalculateFallTime(float p, float fi, float a, float b);
+  float CalculateFallTime(const ArmamentDatabase::Data& armData, float droneAttackSpeed, float droneZPosition);
+  float CalculateFallDistance(const ArmamentDatabase::Data& armData, float droneAttackSpeed, float fallTime);
 };

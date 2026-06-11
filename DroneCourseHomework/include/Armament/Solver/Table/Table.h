@@ -10,14 +10,17 @@ struct Table {
   std::vector<float> tableLift;
 };
 
-struct TableResult {
-  float fallTime;      // time to fall
-  float fallDistance;  // distance to fall
-};
-
 struct Interp {
   int index;
   float fraction;
+
+  bool IsEqaul(Interp value)
+  {
+    if (index != value.index || fraction != value.fraction) {
+      return false;
+    }
+    return true;
+  }
 };
 
 }  // namespace TableSolver

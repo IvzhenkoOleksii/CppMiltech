@@ -8,8 +8,8 @@ class ArmamentTableSolver : public IArmamentSolver {
 public:
   ArmamentTableSolver();
   ~ArmamentTableSolver();
-  float CalculateFallTime(const ArmamentDatabase::Data& armData, float droneAttackSpeed, float droneZPosition) override;
-  float CalculateFallDistance(const ArmamentDatabase::Data&, float droneAttackSpeed, float fallTime) override;
+
+  ArmamentDatabase::FallResult Calculate(const ArmamentDatabase::Data& armData, float droneAttackSpeed, float droneZPosition) override;
 
 private:
   TableController tableController;

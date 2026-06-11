@@ -5,6 +5,5 @@
 class IArmamentSolver {
 public:
   virtual ~IArmamentSolver() = default;
-  virtual float CalculateFallTime(const ArmamentDatabase::Data& armData, float droneAttackSpeed, float droneZPosition) = 0;
-  virtual float CalculateFallDistance(const ArmamentDatabase::Data&, float droneAttackSpeed, float fallTime) = 0;
+  virtual ArmamentDatabase::FallResult Calculate(const ArmamentDatabase::Data& armData, float droneAttackSpeed, float droneZPosition) = 0;
 };

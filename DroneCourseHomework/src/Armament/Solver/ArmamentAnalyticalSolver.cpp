@@ -1,6 +1,7 @@
 #define _USE_MATH_DEFINES
 
 #include "Armament/Solver/ArmamentAnalyticalSolver.h"
+#include "Armament/ArmamentDatabase.h"
 #include "MathCalculator.h"
 
 #include <cmath>
@@ -10,25 +11,15 @@ const float GRAVITY = 9.80665f;
 
 ArmamentAnalitycalSolver::~ArmamentAnalitycalSolver() {}
 
-float ArmamentAnalitycalSolver::CalculateFallTime(const ArmamentDatabase::Data& armData, float droneAttackSpeed, float droneZPosition)
+ArmamentDatabase::FallResult ArmamentAnalitycalSolver::Calculate(const ArmamentDatabase::Data& armData,
+                                                                 float droneAttackSpeed,
+                                                                 float droneZPosition)
 {
-  std::cout << std::endl;
-  float coefA = CalculateCoefficientA(armData, droneAttackSpeed);
-  float coefB = CalculateCoefficientB(armData, droneAttackSpeed);
-  float coefC = CalculateCoefficientC(armData, droneZPosition);
+  float fallTime = CalculateFallTime(armData, droneAttackSpeed, droneZPosition);
+  float fallDistance = CalculateFallDistance(armData, droneAttackSpeed, fallTime);
+  ArmamentDatabase::FallResult result{fallTime, fallDistance};
 
-  float cardanoP = CalculateCardanoP(coefA, coefB);
-  float cardanoQ = CalculateCardanoQ(coefA, coefB, coefC);
-  float cardanoPHI = CalculateCardanoPHI(cardanoP, cardanoQ);
-
-  float fallTime = CalculateFallingTime(cardanoP, cardanoPHI, coefA, coefB);
-
-  if (fallTime <= 0) {
-    std::cout << "Error! Fall time less than zero  " << std::endl;
-    exit(1);
-  }
-
-  return fallTime;
+  return result;
 }
 
 float ArmamentAnalitycalSolver::CalculateFallDistance(const ArmamentDatabase::Data& armData, float droneAttackSpeed, float fallTime)
@@ -83,7 +74,7 @@ float ArmamentAnalitycalSolver::CalculateFallDistance(const ArmamentDatabase::Da
   return fallDistance;
 }
 
-float ArmamentAnalitycalSolver::CalculateFallingTime(float p, float phi, float a, float b)
+float ArmamentAnalitycalSolver::CalculateFallTime(float p, float phi, float a, float b)
 {
   float first = -p / 3;
   float firstSquare = 2 * sqrt(first);
@@ -100,6 +91,27 @@ float ArmamentAnalitycalSolver::CalculateFallingTime(float p, float phi, float a
   std::cout << "ArmamentAnalitycalSolver timeToFall: " << timeToFall << std::endl;
 
   return timeToFall;
+}
+
+float ArmamentAnalitycalSolver::CalculateFallTime(const ArmamentDatabase::Data& armData, float droneAttackSpeed, float droneZPosition)
+{
+  std::cout << std::endl;
+  float coefA = CalculateCoefficientA(armData, droneAttackSpeed);
+  float coefB = CalculateCoefficientB(armData, droneAttackSpeed);
+  float coefC = CalculateCoefficientC(armData, droneZPosition);
+
+  float cardanoP = CalculateCardanoP(coefA, coefB);
+  float cardanoQ = CalculateCardanoQ(coefA, coefB, coefC);
+  float cardanoPHI = CalculateCardanoPHI(cardanoP, cardanoQ);
+
+  float fallTime = CalculateFallTime(cardanoP, cardanoPHI, coefA, coefB);
+
+  if (fallTime <= 0) {
+    std::cout << "Error! Fall time less than zero  " << std::endl;
+    exit(1);
+  }
+
+  return fallTime;
 }
 
 // private part: actual implementation

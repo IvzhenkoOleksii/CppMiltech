@@ -2,6 +2,7 @@
 #include <string>
 #include <memory>
 
+#include "Armament/ArmamentDatabase.h"
 #include "Armament/Solver/IArmamentSolver.h"
 #include "DataStructs.h"
 
@@ -39,8 +40,7 @@ private:
   ArmamentDatabase::Data armData;
 
 private:
-  float armamentFallTime;
-  float armamentFallDistance;
+  ArmamentDatabase::FallResult fallResult;
   float armamentFallHeight;
 
 private:

@@ -7,12 +7,12 @@
 
 float ArmamentController::GetFallDistance()
 {
-  return armamentFallDistance;
+  return fallResult.Distance;
 }
 
 float ArmamentController::GetFallTime()
 {
-  return armamentFallTime;
+  return fallResult.Time;
 }
 
 bool ArmamentController::GetIsFired()
@@ -30,15 +30,13 @@ ArmamentController::ArmamentController(
   armData = ArmamentDatabase::GetArmament(ammoType);
 
   armamentFallHeight = droneHeight;
-  armamentFallTime = this->solver->CalculateFallTime(armData, droneAttackSpeed, armamentFallHeight);
-  armamentFallDistance = this->solver->CalculateFallDistance(armData, droneAttackSpeed, armamentFallTime);
+  fallResult = this->solver->Calculate(armData, droneAttackSpeed, armamentFallHeight);
 }
 
 float ArmamentController::CalculateBombFallDistance(DataStructs::Coord3D startPoint, float speed)
 {
-  float fallTime = this->solver->CalculateFallTime(armData, speed, startPoint.Z);
-  float fallDistance = this->solver->CalculateFallDistance(armData, speed, fallTime);
-  return fallDistance;
+  ArmamentDatabase::FallResult result = this->solver->Calculate(armData, speed, startPoint.Z);
+  return result.Distance;
 }
 
 void ArmamentController::DropBomb(DataStructs::Coord3D startPosition, float direction)
@@ -50,10 +48,10 @@ void ArmamentController::DropBomb(DataStructs::Coord3D startPosition, float dire
 
 void ArmamentController::CalculateSimulationData(const float& simStep)
 {
-  numberOfFallSteps = armamentFallTime / simStep;
+  numberOfFallSteps = fallResult.Time / simStep;
   currentFallStepIndex = numberOfFallSteps;
   fallStepHeight = armamentFallHeight / numberOfFallSteps;
-  fallStepDistance = armamentFallDistance / numberOfFallSteps;
+  fallStepDistance = fallResult.Distance / numberOfFallSteps;
 }
 
 void ArmamentController::OnStepStart(const float& simStep)

@@ -30,6 +30,24 @@ public:
   };
 
 public:
+  struct FallResult {
+    float Time;      // time to fall
+    float Distance;  // distance to fall
+
+    FallResult()
+    {
+      Time = 0;
+      Distance = 0;
+    }
+
+    FallResult(float time, float distance)
+    {
+      Time = time;
+      Distance = distance;
+    }
+  };
+
+public:
   static Data GetArmament(const std::string& name);
 
 private:
