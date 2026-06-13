@@ -1,7 +1,9 @@
 #include <iostream>
+#include <ostream>
+#include <thread>
 #include <utility>
+#include <memory>
 
-#include "Armament/Solver/IArmamentSolver.h"
 #include "Files/Input/IInputFile.h"
 
 #include "Files/OutputFile.h"
@@ -12,8 +14,63 @@
 #include "Target/TargetsManager.h"
 #include "MissionFactory.h"
 
+#include "Test/Class1.h"
+
 int main(int argc, char** argv)
 {
+  // some functions definition
+  void OnSimulationEnds();
+  void OnSimulationStepStarted(std::unique_ptr<SimulationController> simulation,
+                               std::unique_ptr<DroneController> droneController,
+                               std::unique_ptr<TargetsManager> targetsManager);
+  void WriteDataToOutputFile(const OutputController& controller);
+
+  // Class1 class1{};
+  // Class2 class2{};
+
+  // class1.InsertFunction([&class2]() { return class2.GetPassedSteps(); });
+  // class2.LoopEndedAction = [&class1]() { class1.FinishThreadLoop(); };
+
+  // class1.StartWork();
+  // class2.StartWork();
+
+  // class1.JoinThread();
+  // class2.JoinThread();
+
+  // std::cout << "END" << std::endl;
+  // return 0;
+
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+
   if (argc != 3) {
     std::cerr << "usage: Need 2 additional arguments: for inputFile and Solver <input_path>\n";
     return 1;
@@ -32,29 +89,72 @@ int main(int argc, char** argv)
   DroneController droneController = {inputData, std::move(armamentSolver)};
   droneController.LockTargets(targetsManager.GetTargetReferencies());
 
-  // create simulation controller
-  SimulationController simulation = {inputData.SimTestStep};
-  float simulationStepTime = simulation.GetSimulationStepTime();
-
   // prepare controller for output
   OutputController outputController;
-  while (simulation.IsWorking()) {
-    droneController.OnStepStart(simulationStepTime);
-    targetsManager.OnStepStart(simulationStepTime);
 
+  // create simulation controller
+  SimulationController simulation = {inputData.SimTestStep};
+  simulation.LoopEndedAction = [&]() {
+    WriteDataToOutputFile(outputController);
+    OnSimulationEnds();
+  };
+
+  simulation.LoopStepStartedAction = [&]() {
+    float stepTime = simulation.GetSimulationStepTime();
+    droneController.OnStepStart(stepTime);
+    targetsManager.OnStepStart(stepTime);
     outputController.AddData(droneController.GetDroneState());
+  };
 
-    simulation.Update();
-
+  simulation.LoopStepEndedAction = [&]() {
     targetsManager.OnStepEnd();
     droneController.OnStepEnd();
 
     if (droneController.isBombDropped()) {
-      OutputFile output;
-      output.WriteToFile(outputController.Outputs);
-      return 0;
+      simulation.FinishLoopThread();
     }
-  }
+  };
+
+  simulation.StartLoopThread();
+  simulation.JoinThread();
+
+  // while (simulation.IsWorking()) {
+  //   droneController.OnStepStart(simulationStepTime);
+  //   targetsManager.OnStepStart(simulationStepTime);
+
+  //   outputController.AddData(droneController.GetDroneState());
+
+  //   simulation.Update();
+
+  //   targetsManager.OnStepEnd();
+  //   droneController.OnStepEnd();
+
+  //   if (droneController.isBombDropped()) {
+  //     OutputFile output;
+  //     output.WriteToFile(outputController.Outputs);
+  //     return 0;
+  //   }
+  // }
 
   return 0;
+}
+
+void WriteDataToOutputFile(const OutputController& controller)
+{
+  OutputFile output;
+  output.WriteToFile(controller.Outputs);
+}
+
+void OnSimulationEnds()
+{
+  std::cout << "INNER FUNCTION ON SIMULATION ENDS";
+}
+
+void OnSimulationStepStarted(std::unique_ptr<SimulationController> simulation,
+                             std::unique_ptr<DroneController> droneController,
+                             std::unique_ptr<TargetsManager> targetsManager)
+{
+  float stepTime = simulation->GetSimulationStepTime();
+  droneController->OnStepStart(stepTime);
+  targetsManager->OnStepStart(stepTime);
 }
