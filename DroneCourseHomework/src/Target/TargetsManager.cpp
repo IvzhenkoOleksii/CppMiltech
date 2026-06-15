@@ -3,6 +3,7 @@
 #include "Files/TargetFile.h"
 #include "DataStructs.h"
 
+#include <memory>
 #include <vector>
 
 TargetsManager::TargetsManager()
@@ -12,36 +13,31 @@ TargetsManager::TargetsManager()
   targetData = targetFile.ReadJsonFile();
 }
 
-TargetsManager::TargetsManager(const float& arrayTimeStep)
+TargetsManager::TargetsManager(const float& simStep, const float& arrayTimeStep)
   : TargetsManager()
 {
   for (const auto& targetPosition : targetData.Positions) {
-    targets.push_back(TargetController{targetPosition, arrayTimeStep});
+    std::unique_ptr<TargetController> target = std::make_unique<TargetController>(simStep, arrayTimeStep, targetPosition);
+    targets.push_back(std::move(target));
   }
 }
 
-void TargetsManager::OnStepStart(const float& simStep)
+size_t TargetsManager::GetSize()
 {
-  for (auto& target : targets) {
-    target.OnStepStart(simStep);
-  }
+  return targets.size();
 }
 
-void TargetsManager::OnStepEnd()
+float TargetsManager::GetTargetVelocityAbs(int index)
 {
-  for (auto& target : targets) {
-    target.OnStepEnd();
-  }
+  return targets[index]->GetVelocityAbs();
 }
 
-std::vector<TargetController*> TargetsManager::GetTargetReferencies()
+DataStructs::Coord2D TargetsManager::GetTargetCurrentPosition(int index)
 {
-  std::vector<TargetController*> targetReferencies;
-  targetReferencies.reserve(targets.size());
+  return targets[index]->GetCurrentPosition();
+}
 
-  for (auto& target : targets) {
-    targetReferencies.push_back(&target);
-  }
-
-  return targetReferencies;
+DataStructs::Coord2D TargetsManager::GetTargetPredictedPosition(int index, float time)
+{
+  return targets[index]->GetPredictedPosition(time);
 }

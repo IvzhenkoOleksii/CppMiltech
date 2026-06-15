@@ -1,18 +1,26 @@
 #include "Target/TargetController.h"
+#include "MathCalculator.h"
 
+#include <cstdlib>
+#include <iostream>
+#include <ostream>
 #include <vector>
 
-TargetController::TargetController() {}
-
-TargetController::TargetController(const std::vector<DataStructs::Coord2D> positionsData, const float& stepTimeData)
+TargetController::TargetController(const float& stepTime)
+  : BaseLoop(stepTime)
 {
+}
+
+TargetController::TargetController(const float& stepTime, const float& arrayTimeStep, const std::vector<DataStructs::Coord2D> positionsData)
+  : BaseLoop(stepTime)
+{
+  this->positionsData = positionsData;
+  this->arrayTimeStep = arrayTimeStep;
+
   currentPathStep = 0;
   currentStepTime = 0;
 
   calculator = {};
-
-  this->positionsData = positionsData;
-  arrayStepTime = stepTimeData;
 
   currentPosition = this->positionsData[currentPathStep];
 
@@ -33,28 +41,45 @@ DataStructs::Coord2D TargetController::GetPredictedPosition(const float& time)
   return predictedPosition;
 }
 
-float TargetController::GetVelocity()
+float TargetController::GetVelocityAbs()
 {
-  return velocity;
+  return velocityAbs;
 }
 
-void TargetController::OnStepStart(const float& simStep)
+void TargetController::LoopFunction()
 {
-  currentStepTime += simStep;
+  std::chrono::duration duration = std::chrono::duration<float>{stepTime};
+  while (isLoopActive) {
+    if (LoopStepStartedAction) {
+      LoopStepStartedAction();
+    }
 
-  if (currentStepTime >= arrayStepTime) {
-    currentStepTime -= arrayStepTime;
+    std::this_thread::sleep_for(duration);
+
+    // do something here
+    OnStepEnd();
+
+    if (LoopStepEndedAction) {
+      LoopStepEndedAction();
+    }
+  }
+}
+
+void TargetController::OnStepEnd()
+{
+  std::cout << "TargetController OnStepEnd" << std::endl;
+  currentStepTime += stepTime;
+  currentPosition.X += velocityX * stepTime;
+  currentPosition.Y += velocityY * stepTime;
+
+  if (currentStepTime >= arrayTimeStep) {
+    currentStepTime -= arrayTimeStep;
+    std::cerr << "TargetController currentStepTime >= arrayTimeStep" << std::endl;
+    ;
     UpdateCurrentPathStep();
-    currentPosition = positionsData[currentPathStep];
     CalculateVelocity();
   }
-  else {
-    currentPosition.X += velocityX * simStep;
-    currentPosition.Y += velocityY * simStep;
-  }
 }
-
-void TargetController::OnStepEnd() {}
 
 void TargetController::UpdateCurrentPathStep()
 {
@@ -78,7 +103,7 @@ void TargetController::CalculateVelocity()
 
   DataStructs::Coord2D vector = calculator.GetDirectionVector(pathStartPosition, pathEndPosition);
 
-  velocityX = vector.X / arrayStepTime;
-  velocityY = vector.Y / arrayStepTime;
-  velocity = calculator.VectorLength(velocityX, velocityY);
+  velocityX = vector.X / arrayTimeStep;
+  velocityY = vector.Y / arrayTimeStep;
+  velocityAbs = calculator.VectorLength(velocityX, velocityY);
 }

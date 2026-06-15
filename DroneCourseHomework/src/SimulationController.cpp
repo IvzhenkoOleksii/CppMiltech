@@ -5,14 +5,13 @@
 SimulationController::SimulationController(const float& stepTime)
   : BaseLoop(stepTime)
 {
-  currentSimulationStep = 0;
-  currentSimulationTime = 0;
-  loopStep = stepTime;
+  currentTime = 0;
+  currentStepIndex = 0;
 }
 
 void SimulationController::LoopFunction()
 {
-  std::chrono::duration duration = std::chrono::duration<float>{loopStep};
+  std::chrono::duration duration = std::chrono::duration<float>{stepTime};
   while (isLoopActive) {
     std::cout << "STEP STARTED" << std::endl;
 
@@ -22,8 +21,8 @@ void SimulationController::LoopFunction()
 
     std::this_thread::sleep_for(duration);
 
-    ++currentSimulationStep;
-    currentSimulationTime += simulationStepTime;
+    currentTime += stepTime;
+    ++currentStepIndex;
 
     if (LoopStepEndedAction) {
       LoopStepEndedAction();
@@ -31,13 +30,13 @@ void SimulationController::LoopFunction()
 
     std::cout << "STEP ENDED" << std::endl;
     // check if we out of steps
-    if (currentSimulationStep > MaxSimulationSteps) {
+    if (currentStepIndex > MaxSimulationSteps) {
       FinishLoopThread();
     }
   }
 }
 
-float SimulationController::GetSimulationStepTime()
+float SimulationController::GetStepTime()
 {
-  return simulationStepTime;
+  return stepTime;
 }

@@ -8,7 +8,6 @@
 #include "Armament/ArmamentController.h"
 #include "Armament//Solver/IArmamentSolver.h"
 #include "DataStructs.h"
-#include "Target/TargetController.h"
 #include "MathCalculator.h"
 
 DroneController::DroneController(const DataStructs::InputData& input, std::unique_ptr<IArmamentSolver> solver)
@@ -54,9 +53,9 @@ void DroneController::CalculateAcceleration()
   velocityChangeStep = inputData.AttackSpeed / (accelerationTime / simStep);
 }
 
-void DroneController::LockTargets(std::vector<TargetController*> targetRefs)
+void DroneController::LockTargets(TargetsManager* targetsManager)
 {
-  targets = targetRefs;
+  this->targetsManager = targetsManager;
 }
 
 void DroneController::OnStepStart(const float& simStep)
@@ -93,13 +92,14 @@ void DroneController::GetClosestTarget()
   int targetIndex = -1;
   float smallestReachTime = 0;
 
-  for (size_t i = 0; i < targets.size(); ++i) {
-    if (targets[i]->GetVelocity() > inputData.AttackSpeed) {
+  for (size_t i = 0; i < targetsManager->GetSize(); ++i) {
+    if (targetsManager->GetTargetVelocityAbs(i) > inputData.AttackSpeed) {
       // we cannot reach faster target
       continue;
     }
 
-    float timeToTarget = CalcDroneTimeToPoint(targets[i]->GetCurrentPosition());
+    DataStructs::Coord2D currentTargetPosition = targetsManager->GetTargetCurrentPosition(i);
+    float timeToTarget = CalcDroneTimeToPoint(currentTargetPosition);
 
     if (targetIndex == -1) {
       smallestReachTime = timeToTarget;
@@ -134,9 +134,9 @@ void DroneController::GetTargetSolution()
   float targetTime = simStep;
   float previosTimeDifference = -1;
 
+  int targetIndex = droneState.CurrentTargetIndex;
   while (stepIndex < maxSteps) {
-    TargetController* target = targets[droneState.CurrentTargetIndex];
-    DataStructs::Coord2D targetPredictedPoint = target->GetPredictedPosition(targetTime);
+    DataStructs::Coord2D targetPredictedPoint = targetsManager->GetTargetPredictedPosition(targetIndex, targetTime);
 
     float droneTime = CalcDroneTimeToPoint(targetPredictedPoint);
     float timeDifference = std::fabs(targetTime - droneTime);

@@ -2,21 +2,21 @@
 #include "DataStructs.h"
 #include "TargetController.h"
 
+#include <cstddef>
 #include <vector>
 
 class TargetsManager {
 public:
   TargetsManager();
-  TargetsManager(const float& arrayTimeStep);
+  TargetsManager(const float& simStep, const float& arrayTimeStep);
 
 public:
-  void OnStepStart(const float& simStep);
-  void OnStepEnd();
-
-public:
-  std::vector<TargetController*> GetTargetReferencies();
+  size_t GetSize();
+  float GetTargetVelocityAbs(int index);
+  DataStructs::Coord2D GetTargetCurrentPosition(int index);
+  DataStructs::Coord2D GetTargetPredictedPosition(int index, float time);
 
 private:
   DataStructs::TargetData targetData;
-  std::vector<TargetController> targets;
+  std::vector<std::unique_ptr<TargetController>> targets;
 };

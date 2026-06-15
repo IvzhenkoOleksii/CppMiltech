@@ -4,36 +4,38 @@
 
 #include "DataStructs.h"
 #include "MathCalculator.h"
+#include "Threads/BaseLoop.h"
 
-class TargetController {
+class TargetController : public BaseLoop {
 public:
-  TargetController();
-  TargetController(const std::vector<DataStructs::Coord2D> positionsData, const float& stepTimeData);
+  TargetController(const float& stepTime);
+  TargetController(const float& stepTime, const float& arrayTimeStep, const std::vector<DataStructs::Coord2D> positionsData);
+  virtual ~TargetController() = default;
 
+  // getters
 public:
   DataStructs::Coord2D GetCurrentPosition();
   DataStructs::Coord2D GetPredictedPosition(const float& time);
-  float GetVelocity();
+  float GetVelocityAbs();
 
-public:
-  void OnStepStart(const float& simStep);
+  // functions
+protected:
+  void LoopFunction() override;
+
+private:
   void OnStepEnd();
-
-private:
   void CalculateVelocity();
-
-private:
   void UpdateCurrentPathStep();
 
   // variables
 private:
-  float arrayStepTime;
+  float arrayTimeStep;
   float currentStepTime;
 
 private:
   float velocityX;
   float velocityY;
-  float velocity;
+  float velocityAbs;
   size_t currentPathStep;
   DataStructs::Coord2D currentPosition;
 

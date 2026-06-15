@@ -10,16 +10,16 @@ public:
   void Update();
 
 public:
-  float GetSimulationStepTime();
+  float GetStepTime();
 
   SimulationController(const float& simStepTime);
 
 private:
-  int currentSimulationStep;
+  int currentStepIndex;
 
 private:
   float simulationStepTime;
 
 private:
-  float currentSimulationTime;
+  float currentTime;
 };

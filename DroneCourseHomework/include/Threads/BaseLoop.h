@@ -1,9 +1,12 @@
+#pragma once
+#include <atomic>
 #include <thread>
 #include <functional>
 
 class IBaseLoop {
 public:
   IBaseLoop(const float& stepTime);
+
   virtual void StartLoopThread() = 0;
   virtual void JoinThread() = 0;
   virtual void FinishLoopThread() = 0;
@@ -15,14 +18,15 @@ protected:
 
 protected:
   // properties and variables
-  float loopStep;
   std::thread thread;
+  std::atomic<float> stepTime;
   std::atomic<bool> isLoopActive;
 };
 
 class BaseLoop : public IBaseLoop {
 public:
   BaseLoop(const float& stepTime);
+  virtual ~BaseLoop() = default;
   void StartLoopThread() override;
   void JoinThread() override;
   void FinishLoopThread() override;

@@ -2,21 +2,21 @@
 
 #include "Threads/BaseLoop.h"
 
-constexpr int MaxSimulationSteps = 100;
+constexpr int MaxSimulationSteps = 100;  // must be 10000
 
 class SimulationController : public BaseLoop {
 public:
   SimulationController(const float& stepTime);
+  virtual ~SimulationController() = default;
 
 protected:
   // functions
   void LoopFunction() override;
 
 public:
-  float GetSimulationStepTime();
+  float GetStepTime();
 
 private:
-  int currentSimulationStep;
-  float simulationStepTime;
-  float currentSimulationTime;
+  int currentStepIndex;
+  float currentTime;
 };

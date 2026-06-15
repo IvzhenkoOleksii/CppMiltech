@@ -20,9 +20,7 @@ int main(int argc, char** argv)
 {
   // some functions definition
   void OnSimulationEnds();
-  void OnSimulationStepStarted(std::unique_ptr<SimulationController> simulation,
-                               std::unique_ptr<DroneController> droneController,
-                               std::unique_ptr<TargetsManager> targetsManager);
+  void OnSimulationStepStarted(std::unique_ptr<SimulationController> simulation, std::unique_ptr<DroneController> droneController);
   void WriteDataToOutputFile(const OutputController& controller);
 
   // Class1 class1{};
@@ -83,11 +81,11 @@ int main(int argc, char** argv)
   DataStructs::InputData inputData = inputFile->ReadFile();
 
   // create targets
-  TargetsManager targetsManager{inputData.ArrayTimeStep};
+  TargetsManager targetsManager{inputData.SimTestStep, inputData.ArrayTimeStep};
 
   // create drone controller
   DroneController droneController = {inputData, std::move(armamentSolver)};
-  droneController.LockTargets(targetsManager.GetTargetReferencies());
+  droneController.LockTargets(&targetsManager);
 
   // prepare controller for output
   OutputController outputController;
@@ -100,14 +98,12 @@ int main(int argc, char** argv)
   };
 
   simulation.LoopStepStartedAction = [&]() {
-    float stepTime = simulation.GetSimulationStepTime();
+    float stepTime = simulation.GetStepTime();
     droneController.OnStepStart(stepTime);
-    targetsManager.OnStepStart(stepTime);
     outputController.AddData(droneController.GetDroneState());
   };
 
   simulation.LoopStepEndedAction = [&]() {
-    targetsManager.OnStepEnd();
     droneController.OnStepEnd();
 
     if (droneController.isBombDropped()) {
@@ -150,11 +146,8 @@ void OnSimulationEnds()
   std::cout << "INNER FUNCTION ON SIMULATION ENDS";
 }
 
-void OnSimulationStepStarted(std::unique_ptr<SimulationController> simulation,
-                             std::unique_ptr<DroneController> droneController,
-                             std::unique_ptr<TargetsManager> targetsManager)
+void OnSimulationStepStarted(std::unique_ptr<SimulationController> simulation, std::unique_ptr<DroneController> droneController)
 {
-  float stepTime = simulation->GetSimulationStepTime();
+  float stepTime = simulation->GetStepTime();
   droneController->OnStepStart(stepTime);
-  targetsManager->OnStepStart(stepTime);
 }

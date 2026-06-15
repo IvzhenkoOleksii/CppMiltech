@@ -4,7 +4,8 @@
 
 BaseLoop::BaseLoop(const float& stepTime)
 {
-  loopStep = stepTime;
+  this->stepTime = stepTime;
+  isLoopActive = false;
 }
 
 void BaseLoop::StartLoopThread()

@@ -1,19 +1,18 @@
 #pragma once
 #include "DataStructs.h"
-#include "Target/TargetController.h"
 #include "Armament/ArmamentController.h"
 #include "Armament//Solver/IArmamentSolver.h"
 #include "DroneCalculator.h"
+#include "Target/TargetsManager.h"
 
 #include <memory>
-#include <vector>
 
 class DroneController {
 public:
   DroneController(const DataStructs::InputData& data, std::unique_ptr<IArmamentSolver> solver);
 
 public:
-  void LockTargets(std::vector<TargetController*> targetRefs);
+  void LockTargets(TargetsManager* targetsManager);
   void OnStepStart(const float& simStep);
   void OnStepEnd();
   DataStructs::DroneOperationalData GetDroneState();
@@ -48,6 +47,7 @@ private:
 private:
   DroneCalculator droneCalculator;
   ArmamentController armamentController;
+  TargetsManager* targetsManager;
 
 private:
   float minAttackDistance;
@@ -57,8 +57,4 @@ private:
 
 private:
   DataStructs::DroneOperationalData droneState;
-
-  // targets store as referencies, so drone will get updated data of targets, ie -> updated position, speed, etc
-private:
-  std::vector<TargetController*> targets{};
 };
