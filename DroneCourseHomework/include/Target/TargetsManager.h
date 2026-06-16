@@ -12,9 +12,10 @@ public:
 
 public:
   size_t GetSize();
-  float GetTargetVelocityAbs(int index);
-  DataStructs::Coord2D GetTargetCurrentPosition(int index);
-  DataStructs::Coord2D GetTargetPredictedPosition(int index, float time);
+  float GetTargetVelocityAbs(const int& index);
+  DataStructs::Coord2D GetTargetCurrentPosition(const int& index);
+  DataStructs::Coord2D GetTargetPredictedPosition(const int& index, const float& time);
+  void FinishTargetsThreads();
 
 private:
   DataStructs::TargetData targetData;

@@ -1,6 +1,8 @@
 #include "Threads/BaseLoop.h"
 
 #include <iostream>
+#include <ostream>
+#include <thread>
 
 BaseLoop::BaseLoop(const float& stepTime)
 {
@@ -16,6 +18,11 @@ void BaseLoop::StartLoopThread()
 
 void BaseLoop::JoinThread()
 {
+  if (std::this_thread::get_id() == thread.get_id()) {
+    std::cerr << "Cannot fire join for itself!" << std::endl;
+    return;
+  }
+
   if (thread.joinable()) {
     thread.join();
   }
@@ -23,11 +30,11 @@ void BaseLoop::JoinThread()
 
 void BaseLoop::FinishLoopThread()
 {
-  std::cout << "LOOP ENDED" << std::endl;
+  isLoopActive = false;
+
+  JoinThread();
 
   if (LoopEndedAction) {
     LoopEndedAction();
   }
-
-  isLoopActive = false;
 }

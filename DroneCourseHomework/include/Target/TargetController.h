@@ -3,7 +3,6 @@
 #include <vector>
 
 #include "DataStructs.h"
-#include "MathCalculator.h"
 #include "Threads/BaseLoop.h"
 
 class TargetController : public BaseLoop {
@@ -26,11 +25,11 @@ private:
   void OnStepEnd();
   void CalculateVelocity();
   void UpdateCurrentPathStep();
+  int GetNextPathIndex();
 
   // variables
 private:
   float arrayTimeStep;
-  float currentStepTime;
 
 private:
   float velocityX;
@@ -40,6 +39,5 @@ private:
   DataStructs::Coord2D currentPosition;
 
 private:
-  MathCalculator calculator;
   std::vector<DataStructs::Coord2D> positionsData;
 };

@@ -19,7 +19,7 @@
 int main(int argc, char** argv)
 {
   // some functions definition
-  void OnSimulationEnds();
+  void OnSimulationEnds(TargetsManager * targetsManager);
   void OnSimulationStepStarted(std::unique_ptr<SimulationController> simulation, std::unique_ptr<DroneController> droneController);
   void WriteDataToOutputFile(const OutputController& controller);
 
@@ -94,7 +94,7 @@ int main(int argc, char** argv)
   SimulationController simulation = {inputData.SimTestStep};
   simulation.LoopEndedAction = [&]() {
     WriteDataToOutputFile(outputController);
-    OnSimulationEnds();
+    OnSimulationEnds(&targetsManager);
   };
 
   simulation.LoopStepStartedAction = [&]() {
@@ -141,13 +141,7 @@ void WriteDataToOutputFile(const OutputController& controller)
   output.WriteToFile(controller.Outputs);
 }
 
-void OnSimulationEnds()
+void OnSimulationEnds(TargetsManager* targetsManager)
 {
-  std::cout << "INNER FUNCTION ON SIMULATION ENDS";
-}
-
-void OnSimulationStepStarted(std::unique_ptr<SimulationController> simulation, std::unique_ptr<DroneController> droneController)
-{
-  float stepTime = simulation->GetStepTime();
-  droneController->OnStepStart(stepTime);
+  targetsManager->FinishTargetsThreads();
 }

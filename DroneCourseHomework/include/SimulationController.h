@@ -2,7 +2,7 @@
 
 #include "Threads/BaseLoop.h"
 
-constexpr int MaxSimulationSteps = 100;  // must be 10000
+constexpr int MaxSimulationSteps = 10;  // must be 10000
 
 class SimulationController : public BaseLoop {
 public:
@@ -18,5 +18,4 @@ public:
 
 private:
   int currentStepIndex;
-  float currentTime;
 };

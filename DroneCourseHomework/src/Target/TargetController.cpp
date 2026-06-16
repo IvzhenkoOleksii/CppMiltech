@@ -18,10 +18,6 @@ TargetController::TargetController(const float& stepTime, const float& arrayTime
   this->arrayTimeStep = arrayTimeStep;
 
   currentPathStep = 0;
-  currentStepTime = 0;
-
-  calculator = {};
-
   currentPosition = this->positionsData[currentPathStep];
 
   CalculateVelocity();
@@ -56,7 +52,7 @@ void TargetController::LoopFunction()
 
     std::this_thread::sleep_for(duration);
 
-    // do something here
+    // we are updating target position here
     OnStepEnd();
 
     if (LoopStepEndedAction) {
@@ -67,15 +63,11 @@ void TargetController::LoopFunction()
 
 void TargetController::OnStepEnd()
 {
-  std::cout << "TargetController OnStepEnd" << std::endl;
-  currentStepTime += stepTime;
   currentPosition.X += velocityX * stepTime;
   currentPosition.Y += velocityY * stepTime;
 
-  if (currentStepTime >= arrayTimeStep) {
-    currentStepTime -= arrayTimeStep;
-    std::cerr << "TargetController currentStepTime >= arrayTimeStep" << std::endl;
-    ;
+  int nextPathIndex = GetNextPathIndex();
+  if (MathCalculator::AreEqual(currentPosition, positionsData[nextPathIndex])) {
     UpdateCurrentPathStep();
     CalculateVelocity();
   }
@@ -92,18 +84,25 @@ void TargetController::UpdateCurrentPathStep()
 
 void TargetController::CalculateVelocity()
 {
+  int nextPathIndex = GetNextPathIndex();
+
+  DataStructs::Coord2D pathStartPosition = positionsData[currentPathStep];
+  DataStructs::Coord2D pathEndPosition = positionsData[nextPathIndex];
+
+  DataStructs::Coord2D vector = MathCalculator::GetDirectionVector(pathStartPosition, pathEndPosition);
+
+  velocityX = vector.X / arrayTimeStep;
+  velocityY = vector.Y / arrayTimeStep;
+  velocityAbs = MathCalculator::VectorLength(velocityX, velocityY);
+}
+
+int TargetController::GetNextPathIndex()
+{
   size_t nextPathIndex = currentPathStep + 1;
   if (nextPathIndex >= positionsData.size()) {
     // move to the start of path. Target move by circled position
     nextPathIndex = 0;
   }
 
-  DataStructs::Coord2D pathStartPosition = positionsData[currentPathStep];
-  DataStructs::Coord2D pathEndPosition = positionsData[nextPathIndex];
-
-  DataStructs::Coord2D vector = calculator.GetDirectionVector(pathStartPosition, pathEndPosition);
-
-  velocityX = vector.X / arrayTimeStep;
-  velocityY = vector.Y / arrayTimeStep;
-  velocityAbs = calculator.VectorLength(velocityX, velocityY);
+  return nextPathIndex;
 }

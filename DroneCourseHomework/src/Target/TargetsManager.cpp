@@ -20,6 +20,17 @@ TargetsManager::TargetsManager(const float& simStep, const float& arrayTimeStep)
     std::unique_ptr<TargetController> target = std::make_unique<TargetController>(simStep, arrayTimeStep, targetPosition);
     targets.push_back(std::move(target));
   }
+
+  for (const auto& target : targets) {
+    target->StartLoopThread();
+  }
+}
+
+void TargetsManager::FinishTargetsThreads()
+{
+  for (const auto& target : targets) {
+    target->FinishLoopThread();
+  }
 }
 
 size_t TargetsManager::GetSize()
@@ -27,17 +38,17 @@ size_t TargetsManager::GetSize()
   return targets.size();
 }
 
-float TargetsManager::GetTargetVelocityAbs(int index)
+float TargetsManager::GetTargetVelocityAbs(const int& index)
 {
   return targets[index]->GetVelocityAbs();
 }
 
-DataStructs::Coord2D TargetsManager::GetTargetCurrentPosition(int index)
+DataStructs::Coord2D TargetsManager::GetTargetCurrentPosition(const int& index)
 {
   return targets[index]->GetCurrentPosition();
 }
 
-DataStructs::Coord2D TargetsManager::GetTargetPredictedPosition(int index, float time)
+DataStructs::Coord2D TargetsManager::GetTargetPredictedPosition(const int& index, const float& time)
 {
   return targets[index]->GetPredictedPosition(time);
 }
