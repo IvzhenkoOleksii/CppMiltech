@@ -13,11 +13,11 @@ TargetsManager::TargetsManager()
   targetData = targetFile.ReadJsonFile();
 }
 
-TargetsManager::TargetsManager(const float& simStep, const float& arrayTimeStep)
+TargetsManager::TargetsManager(const float& stepTime, const float& arrayTimeStep)
   : TargetsManager()
 {
   for (const auto& targetPosition : targetData.Positions) {
-    std::unique_ptr<TargetController> target = std::make_unique<TargetController>(simStep, arrayTimeStep, targetPosition);
+    std::unique_ptr<TargetController> target = std::make_unique<TargetController>(stepTime, arrayTimeStep, targetPosition);
     targets.push_back(std::move(target));
   }
 

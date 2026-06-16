@@ -7,9 +7,9 @@
 
 class DataStructs {
 public:
+  // general-overall structs
   enum DroneState { STOPPED, ACCELERATING, DECELERATING, TURNING, MOVING };
 
-public:
   struct Coord2D {
     float X = 0.0f;
     float Y = 0.0f;
@@ -28,7 +28,6 @@ public:
     bool operator==(const Coord2D& other) const;
   };
 
-public:
   struct Coord3D {
     float X = 0.0f;
     float Y = 0.0f;
@@ -56,6 +55,7 @@ public:
   };
 
 public:
+  // input files structs: Input, Target
   struct DroneInputData {
     // fields
     Coord3D Position = {0.0f, 0.0f, 0.0f};
@@ -75,7 +75,6 @@ public:
     //	public:void SetPosition(float X, float Y, float Z);
   };
 
-public:
   struct InputData {
     // fields
     DroneInputData DroneData{};
@@ -91,12 +90,12 @@ public:
     void CheckData();
   };
 
-public:
   struct TargetData {
     std::vector<std::vector<DataStructs::Coord2D>> Positions;
   };
 
 public:
+  // structs for drone
   struct DronePhysicalState {
     float Direction;
     float Velocity;

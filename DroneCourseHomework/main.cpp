@@ -1,6 +1,5 @@
 #include <iostream>
 #include <ostream>
-#include <thread>
 #include <utility>
 #include <memory>
 
@@ -14,8 +13,6 @@
 #include "Target/TargetsManager.h"
 #include "MissionFactory.h"
 
-#include "Test/Class1.h"
-
 int main(int argc, char** argv)
 {
   // some functions definition
@@ -23,61 +20,18 @@ int main(int argc, char** argv)
   void OnSimulationStepStarted(std::unique_ptr<SimulationController> simulation, std::unique_ptr<DroneController> droneController);
   void WriteDataToOutputFile(const OutputController& controller);
 
-  // Class1 class1{};
-  // Class2 class2{};
-
-  // class1.InsertFunction([&class2]() { return class2.GetPassedSteps(); });
-  // class2.LoopEndedAction = [&class1]() { class1.FinishThreadLoop(); };
-
-  // class1.StartWork();
-  // class2.StartWork();
-
-  // class1.JoinThread();
-  // class2.JoinThread();
-
-  // std::cout << "END" << std::endl;
-  // return 0;
-
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-
+  // here is main starts actually
   if (argc != 3) {
     std::cerr << "usage: Need 2 additional arguments: for inputFile and Solver <input_path>\n";
     return 1;
   }
 
+  // factory creates all needed additional classes
   MissionFactory missionFactory{};
-
   auto inputFile = missionFactory.CreateInputFile(argv[1]);
   auto armamentSolver = missionFactory.CreateArmamentSolver(argv[2]);
+
+  // start work. Read input file
   DataStructs::InputData inputData = inputFile->ReadFile();
 
   // create targets
@@ -113,24 +67,6 @@ int main(int argc, char** argv)
 
   simulation.StartLoopThread();
   simulation.JoinThread();
-
-  // while (simulation.IsWorking()) {
-  //   droneController.OnStepStart(simulationStepTime);
-  //   targetsManager.OnStepStart(simulationStepTime);
-
-  //   outputController.AddData(droneController.GetDroneState());
-
-  //   simulation.Update();
-
-  //   targetsManager.OnStepEnd();
-  //   droneController.OnStepEnd();
-
-  //   if (droneController.isBombDropped()) {
-  //     OutputFile output;
-  //     output.WriteToFile(outputController.Outputs);
-  //     return 0;
-  //   }
-  // }
 
   return 0;
 }

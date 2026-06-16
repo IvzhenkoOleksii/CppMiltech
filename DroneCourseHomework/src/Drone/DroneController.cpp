@@ -8,6 +8,7 @@
 #include "Armament/ArmamentController.h"
 #include "Armament//Solver/IArmamentSolver.h"
 #include "DataStructs.h"
+#include "Drone/DronePhysicalController.h"
 #include "MathCalculator.h"
 
 DroneController::DroneController(const DataStructs::InputData& input, std::unique_ptr<IArmamentSolver> solver)
@@ -15,6 +16,7 @@ DroneController::DroneController(const DataStructs::InputData& input, std::uniqu
   , simStep(input.SimTestStep)
   , droneCalculator({})
   , armamentController({inputData.AmmoType, inputData.AttackSpeed, inputData.Position.Z, input.HitRadius, std::move(solver)})
+  , physicalStateController(std::make_unique<DronePhysicalController>(input.SimTestStep, input.DroneData))
 {
   armamentController.CalculateSimulationData(input.SimTestStep);
 

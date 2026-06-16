@@ -2,6 +2,7 @@
 #include "DataStructs.h"
 #include "Armament/ArmamentController.h"
 #include "Armament//Solver/IArmamentSolver.h"
+#include "Drone/DronePhysicalController.h"
 #include "DroneCalculator.h"
 #include "Target/TargetsManager.h"
 
@@ -48,6 +49,7 @@ private:
   DroneCalculator droneCalculator;
   ArmamentController armamentController;
   TargetsManager* targetsManager;
+  std::unique_ptr<DronePhysicalController> physicalStateController;
 
 private:
   float minAttackDistance;
