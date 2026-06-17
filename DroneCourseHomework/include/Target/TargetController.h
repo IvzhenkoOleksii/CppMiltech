@@ -4,25 +4,22 @@
 
 #include "DataStructs.h"
 #include "MathCalculator.h"
+#include "ITargetController.h"
 
-class TargetController {
+class TargetController : public ITargetController {
 public:
-  TargetController();
   TargetController(const std::vector<DataStructs::Coord2D> positionsData, const float& stepTimeData);
 
+  // ITargetController
 public:
-  DataStructs::Coord2D GetCurrentPosition();
-  DataStructs::Coord2D GetPredictedPosition(const float& time);
-  float GetVelocity();
-
-public:
-  void OnStepStart(const float& simStep);
-  void OnStepEnd();
+  DataStructs::Coord2D GetCurrentPosition() override;
+  DataStructs::Coord2D GetPredictedPosition(const float& time) override;
+  float GetVelocity() override;
+  void OnStepStart(const float& simStep) override;
+  void OnStepEnd() override;
 
 private:
   void CalculateVelocity();
-
-private:
   void UpdateCurrentPathStep();
 
   // variables

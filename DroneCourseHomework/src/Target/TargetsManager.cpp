@@ -1,5 +1,4 @@
 #include "Target/TargetsManager.h"
-#include "Target/TargetController.h"
 #include "Files/TargetFile.h"
 #include "DataStructs.h"
 
@@ -12,36 +11,30 @@ TargetsManager::TargetsManager()
   targetData = targetFile.ReadJsonFile();
 }
 
-TargetsManager::TargetsManager(const float& arrayTimeStep)
+TargetsManager::TargetsManager(const float& arrayTimeStep, MissionFactory* factory)
   : TargetsManager()
 {
   for (const auto& targetPosition : targetData.Positions) {
-    targets.push_back(TargetController{targetPosition, arrayTimeStep});
+    ITargetController* controller = factory->CreateTargetController(targetPosition, arrayTimeStep);
+    targets.push_back(controller);
   }
 }
 
 void TargetsManager::OnStepStart(const float& simStep)
 {
   for (auto& target : targets) {
-    target.OnStepStart(simStep);
+    target->OnStepStart(simStep);
   }
 }
 
 void TargetsManager::OnStepEnd()
 {
   for (auto& target : targets) {
-    target.OnStepEnd();
+    target->OnStepEnd();
   }
 }
 
-std::vector<TargetController*> TargetsManager::GetTargetReferencies()
+std::vector<ITargetController*> TargetsManager::GetTargetReferencies()
 {
-  std::vector<TargetController*> targetReferencies;
-  targetReferencies.reserve(targets.size());
-
-  for (auto& target : targets) {
-    targetReferencies.push_back(&target);
-  }
-
-  return targetReferencies;
+  return targets;
 }

@@ -9,7 +9,6 @@
 #include "Armament/ArmamentController.h"
 #include "Armament//Solver/IArmamentSolver.h"
 #include "DataStructs.h"
-#include "Target/TargetController.h"
 #include "MathCalculator.h"
 
 DroneController::DroneController(const DataStructs::InputData& input, IArmamentSolver* solver)
@@ -55,7 +54,7 @@ void DroneController::CalculateAcceleration()
   velocityChangeStep = inputData.AttackSpeed / (accelerationTime / simStep);
 }
 
-void DroneController::LockTargets(std::vector<TargetController*> targetRefs)
+void DroneController::LockTargets(std::vector<ITargetController*> targetRefs)
 {
   targets = targetRefs;
 }
@@ -136,7 +135,7 @@ void DroneController::GetTargetSolution()
   float previosTimeDifference = -1;
 
   while (stepIndex < maxSteps) {
-    TargetController* target = targets[droneState.CurrentTargetIndex];
+    ITargetController* target = targets[droneState.CurrentTargetIndex];
     DataStructs::Coord2D targetPredictedPoint = target->GetPredictedPosition(targetTime);
 
     float droneTime = CalcDroneTimeToPoint(targetPredictedPoint);

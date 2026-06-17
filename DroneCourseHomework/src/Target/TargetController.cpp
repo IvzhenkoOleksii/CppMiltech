@@ -2,8 +2,6 @@
 
 #include <vector>
 
-TargetController::TargetController() {}
-
 TargetController::TargetController(const std::vector<DataStructs::Coord2D> positionsData, const float& stepTimeData)
 {
   currentPathStep = 0;

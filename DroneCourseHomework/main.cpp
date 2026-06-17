@@ -1,3 +1,4 @@
+#include <cstdlib>
 #include <iostream>
 
 #include "Armament/Solver/IArmamentSolver.h"
@@ -9,25 +10,33 @@
 #include "SimulationController.h"
 #include "Drone/DroneController.h"
 #include "Target/TargetsManager.h"
-#include "MissionFactory.h"
 
 int main(int argc, char** argv)
 {
   if (argc != 3) {
     std::cerr << "usage: Need 2 additional arguments: for inputFile and Solver <input_path>\n";
-    return 1;
+    std::exit(1);
   }
 
   MissionFactory missionFactory{};
 
   IInputFile* inputFile = missionFactory.CreateInputFile(argv[1]);
+  if (inputFile == nullptr) {
+    std::cerr << "Input file didn`t initialzied. Exit!" << std::endl;
+    std::exit(1);
+  }
+
   IArmamentSolver* armamentSolver = missionFactory.CreateArmamentSolver(argv[2]);
+  if (armamentSolver == nullptr) {
+    std::cerr << "Armament solver didn`t initialzied. Exit!" << std::endl;
+    std::exit(1);
+  }
 
   DataStructs::InputData inputData = inputFile->ReadFile();
   delete inputFile;
 
   // create targets
-  TargetsManager targetsManager{inputData.ArrayTimeStep};
+  TargetsManager targetsManager{inputData.ArrayTimeStep, &missionFactory};
 
   // create drone controller
   DroneController droneController = {inputData, armamentSolver};
