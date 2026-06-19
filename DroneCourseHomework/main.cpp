@@ -16,7 +16,7 @@
 int main(int argc, char** argv)
 {
   // some functions definition
-  void OnSimulationEnds(TargetsManager * targetsManager);
+  void OnSimulationEnds(TargetsManager * targetsManager, DroneController * drone);
   void OnSimulationStepStarted(std::unique_ptr<SimulationController> simulation, std::unique_ptr<DroneController> droneController);
   void WriteDataToOutputFile(const OutputController& controller);
 
@@ -35,7 +35,7 @@ int main(int argc, char** argv)
   DataStructs::InputData inputData = inputFile->ReadFile();
 
   // create targets
-  TargetsManager targetsManager{inputData.SimTestStep, inputData.ArrayTimeStep};
+  TargetsManager targetsManager{inputData.TargetStepTime, inputData.ArrayTimeStep, inputData.TimeScale};
 
   // create drone controller
   DroneController droneController = {inputData, std::move(armamentSolver)};
@@ -45,10 +45,10 @@ int main(int argc, char** argv)
   OutputController outputController;
 
   // create simulation controller
-  SimulationController simulation = {inputData.SimTestStep};
+  SimulationController simulation = {inputData.SimStepTime, inputData.TimeScale};  // previous sim step time
   simulation.LoopEndedAction = [&]() {
     WriteDataToOutputFile(outputController);
-    OnSimulationEnds(&targetsManager);
+    OnSimulationEnds(&targetsManager, &droneController);
   };
 
   simulation.LoopStepStartedAction = [&]() {
@@ -77,7 +77,8 @@ void WriteDataToOutputFile(const OutputController& controller)
   output.WriteToFile(controller.Outputs);
 }
 
-void OnSimulationEnds(TargetsManager* targetsManager)
+void OnSimulationEnds(TargetsManager* targetsManager, DroneController* drone)
 {
   targetsManager->FinishTargetsThreads();
+  drone->Finish();
 }

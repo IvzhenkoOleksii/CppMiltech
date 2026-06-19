@@ -6,7 +6,7 @@ constexpr int MaxSimulationSteps = 10;  // must be 10000
 
 class SimulationController : public BaseLoop {
 public:
-  SimulationController(const float& stepTime);
+  SimulationController(const float& stepTime, const int& timeScale);
   virtual ~SimulationController() = default;
 
 protected:

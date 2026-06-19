@@ -5,7 +5,7 @@
 
 class IBaseLoop {
 public:
-  IBaseLoop(const float& stepTime);
+  IBaseLoop(const float& stepTime, const int& timeScale);
 
   virtual void StartLoopThread() = 0;
   virtual void JoinThread() = 0;
@@ -25,7 +25,7 @@ protected:
 
 class BaseLoop : public IBaseLoop {
 public:
-  BaseLoop(const float& stepTime);
+  BaseLoop(const float& stepTime, const int& timeScale);
   virtual ~BaseLoop() = default;
   void StartLoopThread() override;
   void JoinThread() override;
@@ -34,4 +34,7 @@ public:
   std::function<void()> LoopStepStartedAction;
   std::function<void()> LoopStepEndedAction;
   std::function<void()> LoopEndedAction;
+
+protected:
+  std::chrono::duration<float> duration;
 };

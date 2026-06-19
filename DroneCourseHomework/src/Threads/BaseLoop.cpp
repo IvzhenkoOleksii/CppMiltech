@@ -4,9 +4,10 @@
 #include <ostream>
 #include <thread>
 
-BaseLoop::BaseLoop(const float& stepTime)
+BaseLoop::BaseLoop(const float& stepTime, const int& timeScale)
 {
   this->stepTime = stepTime;
+  this->duration = std::chrono::duration<float>{stepTime / timeScale};
   isLoopActive = false;
 }
 

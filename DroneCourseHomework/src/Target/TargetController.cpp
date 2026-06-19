@@ -4,13 +4,16 @@
 #include <cstdlib>
 #include <vector>
 
-TargetController::TargetController(const float& stepTime)
-  : BaseLoop(stepTime)
+TargetController::TargetController(const float& stepTime, const int& timeScale)
+  : BaseLoop(stepTime, timeScale)
 {
 }
 
-TargetController::TargetController(const float& stepTime, const float& arrayTimeStep, const std::vector<DataStructs::Coord2D> positionsData)
-  : BaseLoop(stepTime)
+TargetController::TargetController(const float& stepTime,
+                                   const int& timeScale,
+                                   const float& arrayTimeStep,
+                                   const std::vector<DataStructs::Coord2D> positionsData)
+  : BaseLoop(stepTime, timeScale)
 {
   this->positionsData = positionsData;
   this->arrayTimeStep = arrayTimeStep;
@@ -42,7 +45,6 @@ float TargetController::GetVelocityAbs()
 
 void TargetController::LoopFunction()
 {
-  std::chrono::duration duration = std::chrono::duration<float>{stepTime};
   while (isLoopActive) {
     if (LoopStepStartedAction) {
       LoopStepStartedAction();

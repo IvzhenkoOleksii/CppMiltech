@@ -1,7 +1,7 @@
 #include "Drone/DronePhysicalController.h"
 
-DronePhysicalController::DronePhysicalController(const float& stepTime, const DataStructs::DroneInputData& inputData)
-  : BaseLoop(stepTime)
+DronePhysicalController::DronePhysicalController(const float& stepTime, const int& timeScale, const DataStructs::DroneInputData& inputData)
+  : BaseLoop(stepTime, timeScale)
 {
   this->state.Velocity = 0;
   this->state.Position = inputData.Position;
@@ -16,7 +16,6 @@ DronePhysicalController::DronePhysicalController(const float& stepTime, const Da
 
 void DronePhysicalController::LoopFunction()
 {
-  std::chrono::duration duration = std::chrono::duration<float>{this->stepTime};
   while (isLoopActive) {
     if (LoopStepStartedAction) {
       LoopStepStartedAction();

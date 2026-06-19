@@ -78,7 +78,10 @@ public:
   struct InputData {
     // fields
     DroneInputData DroneData{};
-    float SimTestStep = {0.0f};
+    float SimStepTime = {0.0f};
+    float PhysicsStepTime = {0.0f};
+    float TargetStepTime = {0.0f};
+    int TimeScale = {1};
     float ArrayTimeStep = {0.0f};
     float HitRadius = {0.0f};
 

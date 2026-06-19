@@ -2,9 +2,9 @@
 #include "Threads/BaseLoop.h"
 #include "DataStructs.h"
 
-class DronePhysicalController : BaseLoop {
+class DronePhysicalController : public BaseLoop {
 public:
-  DronePhysicalController(const float& stepTime, const DataStructs::DroneInputData& inputData);
+  DronePhysicalController(const float& stepTime, const int& timeScale, const DataStructs::DroneInputData& inputData);
   virtual ~DronePhysicalController() = default;
   DataStructs::DronePhysicalState GetState();
 

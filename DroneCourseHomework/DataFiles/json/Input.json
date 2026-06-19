@@ -6,6 +6,9 @@
   "ammoType": "VOG-17",
   "arrayTimeStep": 0.5,
   "simTimeStep": 0.1,
+  "targetTimeStep":0.05,
+  "physicsTimeStep":0.01,
+  "timeScale":1,
   "hitRadius": 3,
   "angularSpeed": 1.0,
   "turnThreshold": 0.1

@@ -117,8 +117,23 @@ void DataStructs::InputData::CheckData()
 {
   DroneData.CheckData();
 
-  if (SimTestStep <= 0) {
-    std::cout << "SimTestStep <= 0" << "\n";
+  if (SimStepTime <= 0) {
+    std::cout << "DroneControllerStepTime <= 0" << "\n";
+    exit(1);
+  }
+
+  if (PhysicsStepTime <= 0) {
+    std::cout << "DronePhysicsStepTime <= 0" << "\n";
+    exit(1);
+  }
+
+  if (TargetStepTime <= 0) {
+    std::cout << "TargetStepTime <= 0" << "\n";
+    exit(1);
+  }
+
+  if (TimeScale <= 0) {
+    std::cout << "TimeScale <= 0" << "\n";
     exit(1);
   }
 

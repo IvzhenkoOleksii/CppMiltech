@@ -8,7 +8,7 @@
 class TargetsManager {
 public:
   TargetsManager();
-  TargetsManager(const float& stepTime, const float& arrayTimeStep);
+  TargetsManager(const float& stepTime, const float& arrayTimeStep, const int& timeScale);
 
 public:
   size_t GetSize();

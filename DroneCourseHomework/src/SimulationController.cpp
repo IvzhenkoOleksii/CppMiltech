@@ -1,14 +1,13 @@
 #include "SimulationController.h"
 
-SimulationController::SimulationController(const float& stepTime)
-  : BaseLoop(stepTime)
+SimulationController::SimulationController(const float& stepTime, const int& timeScale)
+  : BaseLoop(stepTime, timeScale)
 {
   currentStepIndex = 0;
 }
 
 void SimulationController::LoopFunction()
 {
-  std::chrono::duration duration = std::chrono::duration<float>{stepTime};
   while (isLoopActive) {
     if (LoopStepStartedAction) {
       LoopStepStartedAction();

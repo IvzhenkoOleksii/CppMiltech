@@ -18,6 +18,7 @@ public:
   void OnStepEnd();
   DataStructs::DroneOperationalData GetDroneState();
   bool isBombDropped();
+  void Finish();
 
 private:
   void ChooseTarget();

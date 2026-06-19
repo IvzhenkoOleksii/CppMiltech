@@ -7,8 +7,12 @@
 
 class TargetController : public BaseLoop {
 public:
-  TargetController(const float& stepTime);
-  TargetController(const float& stepTime, const float& arrayTimeStep, const std::vector<DataStructs::Coord2D> positionsData);
+  // constructors ans destructors
+  TargetController(const float& stepTime, const int& timeScale);
+  TargetController(const float& stepTime,
+                   const int& timeScale,
+                   const float& arrayTimeStep,
+                   const std::vector<DataStructs::Coord2D> positionsData);
   virtual ~TargetController() = default;
 
   // getters

@@ -21,10 +21,13 @@ DataStructs::InputData InputFileJson::ReadFile()
     json.at("accelerationPath").get_to(inputData.DroneData.AccelerationPath);
     json.at("ammoType").get_to(inputData.DroneData.AmmoType);
     json.at("arrayTimeStep").get_to(inputData.ArrayTimeStep);
-    json.at("simTimeStep").get_to(inputData.SimTestStep);
+    json.at("simTimeStep").get_to(inputData.SimStepTime);
     json.at("hitRadius").get_to(inputData.HitRadius);
     json.at("angularSpeed").get_to(inputData.DroneData.AngularSpeed);
     json.at("turnThreshold").get_to(inputData.DroneData.TurnThreshold);
+    json.at("targetTimeStep").get_to(inputData.TargetStepTime);
+    json.at("physicsTimeStep").get_to(inputData.PhysicsStepTime);
+    json.at("timeScale").get_to(inputData.TimeScale);
   }
   else {
     std::cout << "Json Input file read error!  " << std::endl;

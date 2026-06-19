@@ -13,12 +13,12 @@
 
 DroneController::DroneController(const DataStructs::InputData& input, std::unique_ptr<IArmamentSolver> solver)
   : inputData(input.DroneData)
-  , simStep(input.SimTestStep)
+  , simStep(input.SimStepTime)
   , droneCalculator({})
   , armamentController({inputData.AmmoType, inputData.AttackSpeed, inputData.Position.Z, input.HitRadius, std::move(solver)})
-  , physicalStateController(std::make_unique<DronePhysicalController>(input.SimTestStep, input.DroneData))
+  , physicalStateController(std::make_unique<DronePhysicalController>(input.PhysicsStepTime, input.TimeScale, input.DroneData))
 {
-  armamentController.CalculateSimulationData(input.SimTestStep);
+  armamentController.CalculateSimulationData(input.PhysicsStepTime);
 
   InitState();
   CalculateAcceleration();
@@ -26,6 +26,11 @@ DroneController::DroneController(const DataStructs::InputData& input, std::uniqu
   // this also can be counted once
   rotateChangeStep = inputData.AngularSpeed * simStep;
   minAttackDistance = armamentController.GetFallDistance() + inputData.AccelerationPath;
+}
+
+void DroneController::Finish()
+{
+  physicalStateController->FinishLoopThread();
 }
 
 DataStructs::DroneOperationalData DroneController::GetDroneState()
