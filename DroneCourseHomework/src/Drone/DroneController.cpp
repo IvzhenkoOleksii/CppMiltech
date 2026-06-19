@@ -10,9 +10,11 @@
 #include "DataStructs.h"
 #include "Drone/DronePhysicalController.h"
 #include "MathCalculator.h"
+#include "Threads/BaseLoop.h"
 
 DroneController::DroneController(const DataStructs::InputData& input, std::unique_ptr<IArmamentSolver> solver)
-  : inputData(input.DroneData)
+  : BaseLoop(input.SimStepTime, input.TimeScale)
+  , inputData(input.DroneData)
   , simStep(input.SimStepTime)
   , droneCalculator({})
   , armamentController(std::make_unique<ArmamentController>(inputData.AmmoType,
@@ -36,7 +38,9 @@ DroneController::DroneController(const DataStructs::InputData& input, std::uniqu
 
 void DroneController::Finish()
 {
+  this->FinishLoopThread();
   physicalStateController->FinishLoopThread();
+  armamentController->FinishLoopThread();
 }
 
 DataStructs::DroneOperationalData DroneController::GetDroneState()
@@ -412,3 +416,7 @@ DataStructs::Coord2D DroneController::WhereDroneHeading()
   answer.Y = targetPosition.Y + fullBombFallDistance * sinf(direction);
   return answer;
 }
+
+void DroneController::OnLoopStepStart() {};
+void DroneController::OnLoopStepEnd() {};
+void DroneController::OnAfterStepEndAction() {};

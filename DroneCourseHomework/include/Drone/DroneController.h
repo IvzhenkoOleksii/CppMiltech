@@ -5,10 +5,11 @@
 #include "Drone/DronePhysicalController.h"
 #include "DroneCalculator.h"
 #include "Target/TargetsManager.h"
+#include "Threads/BaseLoop.h"
 
 #include <memory>
 
-class DroneController {
+class DroneController : public BaseLoop {
 public:
   DroneController(const DataStructs::InputData& data, std::unique_ptr<IArmamentSolver> solver);
 
@@ -19,6 +20,11 @@ public:
   DataStructs::DroneOperationalData GetDroneState();
   bool isBombDropped();
   void Finish();
+
+protected:
+  void OnLoopStepStart() override;
+  void OnLoopStepEnd() override;
+  void OnAfterStepEndAction() override;
 
 private:
   void ChooseTarget();
