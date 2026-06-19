@@ -11,7 +11,9 @@ public:
 
 protected:
   // functions
-  void LoopFunction() override;
+  void OnLoopStepStart() override;
+  void OnLoopStepEnd() override;
+  void OnAfterStepEndAction() override;
 
 public:
   float GetStepTime();

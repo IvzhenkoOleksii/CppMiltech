@@ -14,19 +14,8 @@ DronePhysicalController::DronePhysicalController(const float& stepTime, const in
   StartLoopThread();
 }
 
-void DronePhysicalController::LoopFunction()
-{
-  while (isLoopActive) {
-    if (LoopStepStartedAction) {
-      LoopStepStartedAction();
-    }
+void DronePhysicalController::OnLoopStepStart() {}
 
-    std::this_thread::sleep_for(duration);
+void DronePhysicalController::OnLoopStepEnd() {}
 
-    // we are updating target position here
-
-    if (LoopStepEndedAction) {
-      LoopStepEndedAction();
-    }
-  }
-}
+void DronePhysicalController::OnAfterStepEndAction() {}

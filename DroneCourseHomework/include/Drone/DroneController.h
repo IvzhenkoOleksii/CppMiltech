@@ -48,9 +48,9 @@ private:
 
 private:
   DroneCalculator droneCalculator;
-  ArmamentController armamentController;
-  TargetsManager* targetsManager;
+  std::unique_ptr<ArmamentController> armamentController;
   std::unique_ptr<DronePhysicalController> physicalStateController;
+  TargetsManager* targetsManager;
 
 private:
   float minAttackDistance;

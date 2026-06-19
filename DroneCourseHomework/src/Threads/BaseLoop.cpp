@@ -29,6 +29,27 @@ void BaseLoop::JoinThread()
   }
 }
 
+void BaseLoop::LoopFunction()
+{
+  while (isLoopActive) {
+    if (LoopStepStartedAction) {
+      LoopStepStartedAction();
+    }
+
+    OnLoopStepStart();
+
+    std::this_thread::sleep_for(duration);
+
+    OnLoopStepEnd();
+
+    if (LoopStepEndedAction) {
+      LoopStepEndedAction();
+    }
+
+    OnAfterStepEndAction();
+  }
+}
+
 void BaseLoop::FinishLoopThread()
 {
   isLoopActive = false;
@@ -39,3 +60,7 @@ void BaseLoop::FinishLoopThread()
     LoopEndedAction();
   }
 }
+
+void BaseLoop::OnLoopStepStart() {};
+void BaseLoop::OnLoopStepEnd() {};
+void BaseLoop::OnAfterStepEndAction() {};

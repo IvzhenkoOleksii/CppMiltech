@@ -8,7 +8,7 @@
   "simTimeStep": 0.1,
   "targetTimeStep":0.05,
   "physicsTimeStep":0.01,
-  "timeScale":1,
+  "timeScale":10,
   "hitRadius": 3,
   "angularSpeed": 1.0,
   "turnThreshold": 0.1

@@ -23,10 +23,11 @@ public:
 
   // functions
 protected:
-  void LoopFunction() override;
+  void OnLoopStepStart() override;
+  void OnLoopStepEnd() override;
+  void OnAfterStepEndAction() override;
 
 private:
-  void OnStepEnd();
   void CalculateVelocity();
   void UpdateCurrentPathStep();
   int GetNextPathIndex();

@@ -9,7 +9,9 @@ public:
   DataStructs::DronePhysicalState GetState();
 
 protected:
-  void LoopFunction() override;
+  void OnLoopStepStart() override;
+  void OnLoopStepEnd() override;
+  void OnAfterStepEndAction() override;
 
 private:
   DataStructs::DronePhysicalState state;

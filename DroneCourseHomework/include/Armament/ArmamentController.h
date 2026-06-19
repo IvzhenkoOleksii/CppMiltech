@@ -5,11 +5,17 @@
 #include "Armament/ArmamentDatabase.h"
 #include "Armament/Solver/IArmamentSolver.h"
 #include "DataStructs.h"
+#include "Threads/BaseLoop.h"
 
-class ArmamentController {
+class ArmamentController : public BaseLoop {
 public:
-  ArmamentController(
-    std::string ammoType, float droneAttackSpeed, float droneHeight, float hitRadius, std::unique_ptr<IArmamentSolver> solver);
+  ArmamentController(const std::string& ammoType,
+                     const float& droneAttackSpeed,
+                     const float& droneHeight,
+                     const float& hitRadius,
+                     const float& stepTime,
+                     const int& timeScale,
+                     std::unique_ptr<IArmamentSolver> solver);
 
   // messaging
 public:
@@ -30,6 +36,11 @@ public:
 public:
   void OnStepStart(const float& simStep);
   void OnStepEnd();
+
+protected:
+  void OnLoopStepStart() override;
+  void OnLoopStepEnd() override;
+  void OnAfterStepEndAction() override;
 
 private:
   void UpdateFallPositionPartially();

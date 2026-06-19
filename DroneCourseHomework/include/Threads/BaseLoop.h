@@ -36,5 +36,9 @@ public:
   std::function<void()> LoopEndedAction;
 
 protected:
+  void LoopFunction() override;
+  virtual void OnLoopStepStart() = 0;
+  virtual void OnLoopStepEnd() = 0;
+  virtual void OnAfterStepEndAction() = 0;
   std::chrono::duration<float> duration;
 };

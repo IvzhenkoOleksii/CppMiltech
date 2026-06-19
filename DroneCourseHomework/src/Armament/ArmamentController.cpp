@@ -1,5 +1,6 @@
 #include "Armament/ArmamentController.h"
 #include "DataStructs.h"
+#include "Threads/BaseLoop.h"
 
 #include <string>
 #include <cmath>
@@ -20,8 +21,14 @@ bool ArmamentController::GetIsFired()
   return isFired;
 }
 
-ArmamentController::ArmamentController(
-  std::string ammoType, float droneAttackSpeed, float droneHeight, float hitRadius, std::unique_ptr<IArmamentSolver> solver)
+ArmamentController::ArmamentController(const std::string& ammoType,
+                                       const float& droneAttackSpeed,
+                                       const float& droneHeight,
+                                       const float& hitRadius,
+                                       const float& stepTime,
+                                       const int& timeScale,
+                                       std::unique_ptr<IArmamentSolver> solver)
+  : BaseLoop(stepTime, timeScale)
 {
   isFired = false;
   this->hitRadius = hitRadius;
@@ -97,3 +104,9 @@ void ArmamentController::UpdateFallPositionPartially()
 }
 
 void ArmamentController::OnStepEnd() {}
+
+void ArmamentController::OnLoopStepStart() {}
+
+void ArmamentController::OnLoopStepEnd() {}
+
+void ArmamentController::OnAfterStepEndAction() {}

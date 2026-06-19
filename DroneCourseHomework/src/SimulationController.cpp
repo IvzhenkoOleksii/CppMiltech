@@ -6,25 +6,18 @@ SimulationController::SimulationController(const float& stepTime, const int& tim
   currentStepIndex = 0;
 }
 
-void SimulationController::LoopFunction()
+void SimulationController::OnLoopStepStart() {}
+
+void SimulationController::OnLoopStepEnd()
 {
-  while (isLoopActive) {
-    if (LoopStepStartedAction) {
-      LoopStepStartedAction();
-    }
+  ++currentStepIndex;
+}
 
-    std::this_thread::sleep_for(duration);
-
-    ++currentStepIndex;
-
-    if (LoopStepEndedAction) {
-      LoopStepEndedAction();
-    }
-
-    // check if we out of steps
-    if (currentStepIndex > MaxSimulationSteps) {
-      FinishLoopThread();
-    }
+void SimulationController::OnAfterStepEndAction()
+{
+  // check if we out of steps
+  if (currentStepIndex > MaxSimulationSteps) {
+    FinishLoopThread();
   }
 }
 
