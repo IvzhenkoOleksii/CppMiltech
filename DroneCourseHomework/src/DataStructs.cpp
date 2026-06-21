@@ -148,12 +148,12 @@ void DataStructs::InputData::CheckData()
   }
 }
 
-bool DataStructs::DroneOperationalData::IsTargetSelected()
+bool DataStructs::DroneOperationalState::IsTargetSelected()
 {
   return CurrentTargetIndex != -1;
 }
 
-void DataStructs::DroneOperationalData::DeselectTarget()
+void DataStructs::DroneOperationalState::DeselectTarget()
 {
   CurrentTargetIndex = -1;
 }

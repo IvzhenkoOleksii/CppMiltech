@@ -9,19 +9,19 @@ OutputController::OutputController()
   Outputs.numberOfSteps = 0;
 }
 
-void OutputController::AddData(const DataStructs::DroneOperationalData& operationalData)
+void OutputController::AddData(const DataStructs::DroneFullData& data)
 {
-  DataStructs::Coord2D dronePosition2D = DataStructs::Coord3D::GetPoint2D(operationalData.transform.Position);
+  DataStructs::Coord2D dronePosition2D = DataStructs::Coord3D::GetPoint2D(data.physicalState.Position);
   Outputs.numberOfSteps++;
 
   OutputController::OutputStep step = {};
   step.pos = dronePosition2D;
-  step.direction = operationalData.transform.Direction;
-  step.state = operationalData.State;
-  step.targetIdx = operationalData.CurrentTargetIndex;
-  step.dropPoint = operationalData.DropPoint;
-  step.aimPoint = operationalData.BombDropPoint;
-  step.predictedTarget = operationalData.TargetedPosition;
+  step.direction = data.physicalState.Direction;
+  step.state = data.operationalState.State;
+  step.targetIdx = data.operationalState.CurrentTargetIndex;
+  step.dropPoint = data.operationalState.DropPoint;
+  step.aimPoint = data.operationalState.AimPoint;
+  step.predictedTarget = data.operationalState.TargetedPosition;
 
   Outputs.steps.push_back(step);
 }

@@ -51,11 +51,7 @@ int main(int argc, char** argv)
     OnSimulationEnds(&targetsManager, &droneController);
   };
 
-  simulation.LoopStepStartedAction = [&]() {
-    float stepTime = simulation.GetStepTime();
-    droneController.OnStepStart(stepTime);
-    outputController.AddData(droneController.GetDroneState());
-  };
+  simulation.LoopStepStartedAction = [&]() { outputController.AddData(droneController.GetDroneState()); };
 
   simulation.LoopStepEndedAction = [&]() {
     droneController.OnStepEnd();

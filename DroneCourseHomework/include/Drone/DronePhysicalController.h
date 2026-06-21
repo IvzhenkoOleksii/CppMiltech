@@ -1,15 +1,25 @@
 #pragma once
 #include "Drone/DroneCalculator.h"
+#include "Drone/DronePhysicalCommand.h"
 #include "Threads/BaseLoop.h"
 #include "DataStructs.h"
 
 class DronePhysicalController : public BaseLoop {
 public:
+  // constructors, destructors
   DronePhysicalController(const float& stepTime, const int& timeScale, const DataStructs::DroneInputData& inputData);
   virtual ~DronePhysicalController() = default;
+  std::function<void()> DroneStoped;
+
+  // getters
+public:
   DataStructs::DronePhysicalState GetState();
+  float GetHalfStepDistance();
 
   // functions
+public:
+  void ReceiveCommand(const DronePhysicalCommand& command);
+
 protected:
   void OnLoopStepStart() override;
   void OnLoopStepEnd() override;
@@ -19,11 +29,15 @@ private:
   void CalculateAcceleration(const float& accelerationPath);
   void Accelerate();
   void Decelerate();
+  void Rotate();
+  void UpdatePosition();
 
   // variables
 private:
   DroneCalculator droneCalculator;
   DataStructs::DronePhysicalState state;
+
+  // these are comes from constructor or calculate ones and just using, so no need to threat them specially
   float maxSpeed;
   float angularSpeed;
   float turnThreshold;

@@ -35,6 +35,7 @@ private:
   // variables
 private:
   float arrayTimeStep;
+  std::vector<DataStructs::Coord2D> positionsData;
 
 private:
   float velocityX;
@@ -42,7 +43,4 @@ private:
   float velocityAbs;
   size_t currentPathStep;
   DataStructs::Coord2D currentPosition;
-
-private:
-  std::vector<DataStructs::Coord2D> positionsData;
 };

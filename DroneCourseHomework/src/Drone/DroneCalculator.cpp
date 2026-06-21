@@ -19,23 +19,22 @@ bool DroneCalculator::IsDistanceBetweenPointSameAsNeeded(const DataStructs::Coor
   float distance = MathCalculator::DistanceBetweenPoints(point1, point2);
   float difference = distance - neededDistance;
   float differenceAbs = fabs(difference);
-  bool isDistanceGoodToFire = differenceAbs < 1;
+  bool isDistanceGood = differenceAbs < 1;
 
-  return isDistanceGoodToFire;
+  return isDistanceGood;
 }
 
 bool DroneCalculator::IsDistanceBetweenPointSameAsNeeded(const DataStructs::Coord2D& point1,
                                                          const DataStructs::Coord2D& point2,
                                                          float neededDistance,
-                                                         float droneStepDistance)
+                                                         float halfDroneStepDistance)
 {
   float distance = MathCalculator::DistanceBetweenPoints(point1, point2);
   float difference = distance - neededDistance;
   float differenceAbs = fabs(difference);
-  float halfDroneStepDistance = droneStepDistance / 2;
-  bool isDistanceGoodToFire = differenceAbs < halfDroneStepDistance;
+  bool isDistanceGood = differenceAbs < halfDroneStepDistance;
 
-  return isDistanceGoodToFire;
+  return isDistanceGood;
 }
 
 DataStructs::Coord2D DroneCalculator::CalculateManeuverPosition(float minAttackDistance,
@@ -75,4 +74,28 @@ DataStructs::Coord2D DroneCalculator::CalculateFirePosition(float fallDistance,
   std::cout << "Fire position X: " << fireX << "    Y: " << fireY << std::endl;
 
   return firePosition;
+}
+
+DataStructs::Coord2D DroneCalculator::CalculateAimPoint(const DataStructs::DronePhysicalState& physicalState, const float& fallDistance)
+{
+  // point there bomb fall if drop it right now
+  DataStructs::Coord2D dronePosition2D = DataStructs::Coord3D::GetPoint2D(physicalState.Position);
+
+  DataStructs::Coord2D answer = {};
+  answer.X = dronePosition2D.X + fallDistance * cosf(physicalState.Direction);
+  answer.Y = dronePosition2D.Y + fallDistance * sinf(physicalState.Direction);
+  return answer;
+}
+
+DataStructs::Coord2D DroneCalculator::CalculateDropPoint(const DataStructs::DronePhysicalState& physicalState,
+                                                         const DataStructs::Coord2D& targetPosition,
+                                                         const float& fallDistance)
+{
+  // point there need to drop bomb on target
+  float direction = physicalState.Direction * (-1);  // we need point at opposite direction
+
+  DataStructs::Coord2D answer = {};
+  answer.X = targetPosition.X + fallDistance * cosf(direction);
+  answer.Y = targetPosition.Y + fallDistance * sinf(direction);
+  return answer;
 }

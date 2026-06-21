@@ -28,7 +28,7 @@ public:
   Output Outputs;
 
 public:
-  void AddData(const DataStructs::DroneOperationalData& operationalData);
+  void AddData(const DataStructs::DroneFullData& data);
 };
 
 // since it`s an output -> I didn`t create from_json methods

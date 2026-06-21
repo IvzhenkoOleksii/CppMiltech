@@ -6,6 +6,14 @@
 #include <cmath>
 #include <iostream>
 
+// is Fired flag can change during session
+std::atomic<bool> isFiredGetter;
+bool ArmamentController::GetIsFired()
+{
+  return isFiredGetter;
+}
+
+// these next 2 values are constant, no need std::atomic or mutex
 float ArmamentController::GetFallDistance()
 {
   return fallResult.Distance;
@@ -14,11 +22,6 @@ float ArmamentController::GetFallDistance()
 float ArmamentController::GetFallTime()
 {
   return fallResult.Time;
-}
-
-bool ArmamentController::GetIsFired()
-{
-  return isFired;
 }
 
 ArmamentController::ArmamentController(const std::string& ammoType,
@@ -31,6 +34,8 @@ ArmamentController::ArmamentController(const std::string& ammoType,
   : BaseLoop(stepTime, timeScale)
 {
   isFired = false;
+  isFiredGetter.store(isFired);
+
   this->hitRadius = hitRadius;
   this->solver = std::move(solver);
 
@@ -50,7 +55,9 @@ void ArmamentController::DropBomb(DataStructs::Coord3D startPosition, float dire
 {
   position = startPosition;
   fallDirection = direction;
+
   isFired = true;
+  isFiredGetter.store(isFired);
 }
 
 void ArmamentController::CalculateSimulationData(const float& simStep)

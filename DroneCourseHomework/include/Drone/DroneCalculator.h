@@ -24,4 +24,10 @@ public:
                                              float droneToTargetDistance,
                                              DataStructs::Coord2D dronePosition,
                                              DataStructs::Coord2D targetPosition);
+
+  DataStructs::Coord2D CalculateAimPoint(const DataStructs::DronePhysicalState& physicalState, const float& fallDistance);
+
+  DataStructs::Coord2D CalculateDropPoint(const DataStructs::DronePhysicalState& physicalState,
+                                          const DataStructs::Coord2D& targetPosition,
+                                          const float& fallDistance);
 };

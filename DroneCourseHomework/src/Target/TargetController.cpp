@@ -1,8 +1,12 @@
 #include "Target/TargetController.h"
 #include "MathCalculator.h"
 
+#include <atomic>
 #include <cstdlib>
 #include <vector>
+
+std::atomic<DataStructs::Coord2D> currentPositionGetter;
+std::atomic<float> velocityAbsGetter;
 
 TargetController::TargetController(const float& stepTime, const int& timeScale)
   : BaseLoop(stepTime, timeScale)
@@ -26,7 +30,7 @@ TargetController::TargetController(const float& stepTime,
 
 DataStructs::Coord2D TargetController::GetCurrentPosition()
 {
-  return currentPosition;
+  return currentPositionGetter.load();
 }
 
 DataStructs::Coord2D TargetController::GetPredictedPosition(const float& time)
@@ -40,21 +44,24 @@ DataStructs::Coord2D TargetController::GetPredictedPosition(const float& time)
 
 float TargetController::GetVelocityAbs()
 {
-  return velocityAbs;
+  return velocityAbsGetter.load();
 }
 
-void TargetController::OnLoopStepStart() {}
+void TargetController::OnLoopStepStart()
+{
+  int nextPathIndex = GetNextPathIndex();
+  if (MathCalculator::AreEqual(currentPosition, positionsData[nextPathIndex])) {
+    UpdateCurrentPathStep();
+    CalculateVelocity();
+  }
+}
 
 void TargetController::OnLoopStepEnd()
 {
   currentPosition.X += velocityX * stepTime;
   currentPosition.Y += velocityY * stepTime;
 
-  int nextPathIndex = GetNextPathIndex();
-  if (MathCalculator::AreEqual(currentPosition, positionsData[nextPathIndex])) {
-    UpdateCurrentPathStep();
-    CalculateVelocity();
-  }
+  currentPositionGetter.store(currentPosition);
 }
 
 void TargetController::OnAfterStepEndAction() {}
@@ -80,6 +87,7 @@ void TargetController::CalculateVelocity()
   velocityX = vector.X / arrayTimeStep;
   velocityY = vector.Y / arrayTimeStep;
   velocityAbs = MathCalculator::VectorLength(velocityX, velocityY);
+  velocityAbsGetter.store(velocityAbs);
 }
 
 int TargetController::GetNextPathIndex()
