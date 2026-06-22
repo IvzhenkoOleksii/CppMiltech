@@ -1,5 +1,6 @@
 #pragma once
 #include <cstddef>
+#include <mutex>
 #include <vector>
 
 #include "DataStructs.h"
@@ -38,9 +39,9 @@ private:
   std::vector<DataStructs::Coord2D> positionsData;
 
 private:
-  float velocityX;
-  float velocityY;
-  float velocityAbs;
+  std::atomic<float> velocityX;
+  std::atomic<float> velocityY;
+  std::atomic<float> velocityAbs;
   size_t currentPathStep;
   DataStructs::Coord2D currentPosition;
 };

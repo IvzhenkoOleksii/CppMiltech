@@ -7,6 +7,7 @@
 #include "Target/TargetsManager.h"
 #include "Threads/BaseLoop.h"
 
+#include <atomic>
 #include <memory>
 
 class DroneController : public BaseLoop {
@@ -15,10 +16,10 @@ public:
 
 public:
   void LockTargets(TargetsManager* targetsManager);
-  void OnStepEnd();
   DataStructs::DroneFullData GetDroneState();
   bool isBombDropped();
   void Finish();
+  std::function<void()> BombExplodedAction;
 
 protected:
   void OnLoopStepStart() override;
@@ -60,6 +61,8 @@ private:
   std::unique_ptr<ArmamentController> armamentController;
   std::unique_ptr<DronePhysicalController> physicalStateController;
   DataStructs::DroneOperationalState state;
+  std::atomic<bool> isFinished;
+  std::recursive_mutex droneMutex;
 
 private:
   float minAttackDistance;

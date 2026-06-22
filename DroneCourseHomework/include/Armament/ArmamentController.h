@@ -17,25 +17,13 @@ public:
                      const int& timeScale,
                      std::unique_ptr<IArmamentSolver> solver);
 
-  // messaging
-public:
-  using EventCallback = std::function<void(const DataStructs::Coord3D&)>;
-
-private:
-  static std::vector<EventCallback> subscribers;
-
   // public methods
 public:
-  void CalculateSimulationData(const float& simStep);
   void DropBomb(DataStructs::Coord3D startPosition, float direction);
   float GetFallDistance();
   float GetFallTime();
   bool GetIsFired();
   float CalculateBombFallDistance(DataStructs::Coord3D startPoint, float speed);
-
-public:
-  void OnStepStart(const float& simStep);
-  void OnStepEnd();
 
 protected:
   void OnLoopStepStart() override;
@@ -43,12 +31,15 @@ protected:
   void OnAfterStepEndAction() override;
 
 private:
+  void CalculateSimulationData();
   void UpdateFallPositionPartially();
   void UpdateFallPosition();
+  void UpdateFireFlag(bool newValue);
 
 private:
   std::unique_ptr<IArmamentSolver> solver;
   ArmamentDatabase::Data armData;
+  std::atomic<bool> isFiredGetter;
 
 private:
   ArmamentDatabase::FallResult fallResult;

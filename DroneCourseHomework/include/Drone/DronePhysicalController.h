@@ -26,6 +26,7 @@ protected:
   void OnAfterStepEndAction() override;
 
 private:
+  void ResetCommandToNull();
   void CalculateAcceleration(const float& accelerationPath);
   void Accelerate();
   void Decelerate();
@@ -36,6 +37,8 @@ private:
 private:
   DroneCalculator droneCalculator;
   DataStructs::DronePhysicalState state;
+  std::optional<DronePhysicalCommand> currentCommand;
+  std::mutex physicalMutex;
 
   // these are comes from constructor or calculate ones and just using, so no need to threat them specially
   float maxSpeed;

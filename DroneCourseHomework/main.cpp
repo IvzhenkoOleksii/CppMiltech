@@ -51,15 +51,9 @@ int main(int argc, char** argv)
     OnSimulationEnds(&targetsManager, &droneController);
   };
 
+  droneController.BombExplodedAction = [&]() { simulation.FinishLoopThread(); };
+
   simulation.LoopStepStartedAction = [&]() { outputController.AddData(droneController.GetDroneState()); };
-
-  simulation.LoopStepEndedAction = [&]() {
-    droneController.OnStepEnd();
-
-    if (droneController.isBombDropped()) {
-      simulation.FinishLoopThread();
-    }
-  };
 
   simulation.StartLoopThread();
   simulation.JoinThread();

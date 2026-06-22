@@ -1,5 +1,6 @@
 #include <cstddef>
 #include <iostream>
+#include <mutex>
 #include <ostream>
 #include <cmath>
 
@@ -11,8 +12,6 @@
 #include "Drone/DronePhysicalController.h"
 #include "MathCalculator.h"
 #include "Threads/BaseLoop.h"
-
-std::mutex stateMutex;
 
 DroneController::DroneController(const DataStructs::InputData& input, std::unique_ptr<IArmamentSolver> solver)
   : BaseLoop(input.SimStepTime, input.TimeScale)
@@ -27,18 +26,28 @@ DroneController::DroneController(const DataStructs::InputData& input, std::uniqu
                                                             std::move(solver)))
   , physicalStateController(std::make_unique<DronePhysicalController>(input.PhysicsStepTime, input.TimeScale, input.DroneData))
 {
-  armamentController->CalculateSimulationData(input.PhysicsStepTime);
-
+  isFinished.store(false);
   InitState();
   InitialCalculations();
 
   physicalStateController->DroneStoped = [&]() { DeselectTarget(); };
+
+  // sign on bomb exploded action
+  armamentController->LoopEndedAction = [&]() {
+    if (!isFinished) {
+      // means simulation isn`t ended, but bomb reached ground
+      if (BombExplodedAction) {
+        BombExplodedAction();
+      }
+    }
+  };
 
   StartLoopThread();
 }
 
 void DroneController::Finish()
 {
+  isFinished.store(true);
   this->FinishLoopThread();
   physicalStateController->FinishLoopThread();
   armamentController->FinishLoopThread();
@@ -49,7 +58,7 @@ DataStructs::DroneFullData DroneController::GetDroneState()
   DataStructs::DroneFullData dt;
   dt.physicalState = physicalStateController->GetState();
 
-  std::lock_guard<std::mutex> lock(stateMutex);
+  std::lock_guard<std::recursive_mutex> lock(droneMutex);
   dt.operationalState = state;
 
   return dt;
@@ -57,32 +66,32 @@ DataStructs::DroneFullData DroneController::GetDroneState()
 
 bool DroneController::IsTargetSelected()
 {
-  std::lock_guard<std::mutex> lock(stateMutex);
+  std::lock_guard<std::recursive_mutex> lock(droneMutex);
   return state.IsTargetSelected();
 }
 
 int DroneController::GetTargetIndex()
 {
-  std::lock_guard<std::mutex> lock(stateMutex);
+  std::lock_guard<std::recursive_mutex> lock(droneMutex);
   return state.CurrentTargetIndex;
 }
 
 void DroneController::SetTargetIndex(int index)
 {
-  std::lock_guard<std::mutex> lock(stateMutex);
-  state.CurrentTargetIndex = index;
   std::cout << "Selected target:   " << index << std::endl;
+  std::lock_guard<std::recursive_mutex> lock(droneMutex);
+  state.CurrentTargetIndex = index;
 }
 
 DataStructs::Coord2D DroneController::GetTargetedPosition()
 {
-  std::lock_guard<std::mutex> lock(stateMutex);
+  std::lock_guard<std::recursive_mutex> lock(droneMutex);
   return state.TargetedPosition;
 }
 
 void DroneController::SetTargetedPosition(const DataStructs::Coord2D& pos)
 {
-  std::lock_guard<std::mutex> lock(stateMutex);
+  std::lock_guard<std::recursive_mutex> lock(droneMutex);
   state.TargetedPosition = pos;
 }
 
@@ -93,7 +102,7 @@ bool DroneController::isBombDropped()
 
 void DroneController::InitState()
 {
-  std::lock_guard<std::mutex> lock(stateMutex);
+  std::lock_guard<std::recursive_mutex> lock(droneMutex);
   state.State = DataStructs::STOPPED;
   state.DeselectTarget();
 }
@@ -107,6 +116,7 @@ void DroneController::InitialCalculations()
 
 void DroneController::LockTargets(TargetsManager* targetsManager)
 {
+  std::lock_guard<std::recursive_mutex> lock(droneMutex);
   this->targetsManager = targetsManager;
 }
 
@@ -115,13 +125,11 @@ void DroneController::OnLoopStepStart()
   ChooseTarget();
   GetTargetSolution();
   CalculateThereToGo();
-
-  armamentController->OnStepStart(stepTime);
 };
 
 void DroneController::OnLoopStepEnd()
 {
-  std::lock_guard<std::mutex> lock(stateMutex);
+  std::lock_guard<std::recursive_mutex> lock(droneMutex);
   state.AimPoint = CalculateAimPoint();
   state.DropPoint = CalculateDropPoint();
 };
@@ -132,11 +140,6 @@ void DroneController::OnAfterStepEndAction() {};
 //
 //
 //
-
-void DroneController::OnStepEnd()
-{
-  armamentController->OnStepEnd();
-}
 
 void DroneController::ChooseTarget()
 {
@@ -153,6 +156,11 @@ void DroneController::ChooseTarget()
 
 void DroneController::GetClosestTarget()
 {
+  std::lock_guard<std::recursive_mutex> lock(droneMutex);
+  if (targetsManager == nullptr) {
+    return;
+  }
+
   int targetIndex = -1;
   float smallestReachTime = 0;
 
@@ -374,7 +382,7 @@ bool DroneController::IsNeedToAccelerate()
 
 void DroneController::DeselectTarget()
 {
-  std::lock_guard<std::mutex> lock(stateMutex);
+  std::lock_guard<std::mutex> lock(droneMutex);
   state.DeselectTarget();
 }
 

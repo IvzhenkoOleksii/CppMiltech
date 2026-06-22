@@ -4,16 +4,6 @@
 #include "DataStructs.h"
 #include "MathCalculator.h"
 
-// let in be almost private
-std::optional<DronePhysicalCommand> currentCommand;
-std::mutex mutex;
-
-void ResetCommandToNull()
-{
-  std::lock_guard<std::mutex> lock(mutex);
-  currentCommand = std::nullopt;
-}
-
 DronePhysicalController::DronePhysicalController(const float& stepTime, const int& timeScale, const DataStructs::DroneInputData& inputData)
   : BaseLoop(stepTime, timeScale)
 {
@@ -32,7 +22,13 @@ DronePhysicalController::DronePhysicalController(const float& stepTime, const in
   ResetCommandToNull();
   CalculateAcceleration(inputData.AccelerationPath);
 
-  StartLoopThread();
+  //  StartLoopThread();
+}
+
+void DronePhysicalController::ResetCommandToNull()
+{
+  std::lock_guard<std::mutex> lock(physicalMutex);
+  currentCommand = std::nullopt;
 }
 
 void DronePhysicalController::CalculateAcceleration(const float& accelerationPath)
@@ -44,7 +40,7 @@ void DronePhysicalController::CalculateAcceleration(const float& accelerationPat
 
 DataStructs::DronePhysicalState DronePhysicalController::GetState()
 {
-  std::lock_guard<std::mutex> lock(mutex);
+  std::lock_guard<std::mutex> lock(physicalMutex);
   return state;
 }
 
@@ -52,20 +48,20 @@ float DronePhysicalController::GetHalfStepDistance()
 {
   // half of a distance, that drone flyes on max speed - need for point of bomb drop calculation
   // half of distance max accuracy of bomb drops
-  std::lock_guard<std::mutex> lock(mutex);
+  std::lock_guard<std::mutex> lock(physicalMutex);
   float distanceToFly = state.Velocity * stepTime;
   return distanceToFly / 2;
 }
 
 void DronePhysicalController::ReceiveCommand(const DronePhysicalCommand& command)
 {
-  std::lock_guard<std::mutex> lock(mutex);
+  std::lock_guard<std::mutex> lock(physicalMutex);
   currentCommand = command;
 }
 
 void DronePhysicalController::Accelerate()
 {
-  std::lock_guard<std::mutex> lock(mutex);
+  std::lock_guard<std::mutex> lock(physicalMutex);
 
   if (state.Velocity < currentCommand->SpeedToReach) {
     state.Velocity += speedChangeStep;
@@ -82,7 +78,7 @@ void DronePhysicalController::Accelerate()
 
 void DronePhysicalController::Decelerate()
 {
-  std::lock_guard<std::mutex> lock(mutex);
+  std::lock_guard<std::mutex> lock(physicalMutex);
 
   if (state.Velocity > currentCommand->SpeedToReach) {
     state.Velocity -= speedChangeStep;
@@ -105,7 +101,7 @@ void DronePhysicalController::Decelerate()
 
 void DronePhysicalController::Rotate()
 {
-  std::lock_guard<std::mutex> lock(mutex);
+  std::lock_guard<std::mutex> lock(physicalMutex);
 
   if (currentCommand->AngleToRotate > 0) {
     state.Direction += rotateChangeStep;
@@ -124,7 +120,7 @@ void DronePhysicalController::Rotate()
 
 void DronePhysicalController::UpdatePosition()
 {
-  std::lock_guard<std::mutex> lock(mutex);
+  std::lock_guard<std::mutex> lock(physicalMutex);
   if (state.Velocity <= 0) {
     // dron stay in place
     return;
@@ -142,7 +138,7 @@ void DronePhysicalController::UpdatePosition()
 
 void DronePhysicalController::OnLoopStepStart()
 {
-  std::lock_guard<std::mutex> lock(mutex);
+  std::lock_guard<std::mutex> lock(physicalMutex);
 
   if (!currentCommand.has_value()) {
     // no commands, don`t do anything

@@ -5,9 +5,6 @@
 #include <cstdlib>
 #include <vector>
 
-std::atomic<DataStructs::Coord2D> currentPositionGetter;
-std::atomic<float> velocityAbsGetter;
-
 TargetController::TargetController(const float& stepTime, const int& timeScale)
   : BaseLoop(stepTime, timeScale)
 {
@@ -30,7 +27,7 @@ TargetController::TargetController(const float& stepTime,
 
 DataStructs::Coord2D TargetController::GetCurrentPosition()
 {
-  return currentPositionGetter.load();
+  return currentPosition;
 }
 
 DataStructs::Coord2D TargetController::GetPredictedPosition(const float& time)
@@ -44,7 +41,7 @@ DataStructs::Coord2D TargetController::GetPredictedPosition(const float& time)
 
 float TargetController::GetVelocityAbs()
 {
-  return velocityAbsGetter.load();
+  return velocityAbs.load();
 }
 
 void TargetController::OnLoopStepStart()
@@ -60,8 +57,6 @@ void TargetController::OnLoopStepEnd()
 {
   currentPosition.X += velocityX * stepTime;
   currentPosition.Y += velocityY * stepTime;
-
-  currentPositionGetter.store(currentPosition);
 }
 
 void TargetController::OnAfterStepEndAction() {}
@@ -87,7 +82,6 @@ void TargetController::CalculateVelocity()
   velocityX = vector.X / arrayTimeStep;
   velocityY = vector.Y / arrayTimeStep;
   velocityAbs = MathCalculator::VectorLength(velocityX, velocityY);
-  velocityAbsGetter.store(velocityAbs);
 }
 
 int TargetController::GetNextPathIndex()
