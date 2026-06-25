@@ -13,6 +13,7 @@ BaseLoop::BaseLoop(const float& stepT, const int& timeScale)
 
 BaseLoop::~BaseLoop()
 {
+  LoopEndedAction = nullptr;
   FinishLoopThread();
 
   if (!thread.joinable()) {
@@ -29,6 +30,10 @@ BaseLoop::~BaseLoop()
 
 void BaseLoop::StartLoopThread()
 {
+  if (thread.joinable()) {
+    return;
+  }
+
   isLoopActive.store(true);
   thread = std::thread(&BaseLoop::LoopFunction, this);
 }

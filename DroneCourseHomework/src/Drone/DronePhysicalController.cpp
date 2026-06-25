@@ -19,14 +19,8 @@ DronePhysicalController::DronePhysicalController(const float& stepTime, const in
 
   rotateChangeStep = inputData.AngularSpeed * stepTime;
 
-  ResetCommandToNull();
-  CalculateAcceleration(inputData.AccelerationPath);
-}
-
-void DronePhysicalController::ResetCommandToNull()
-{
-  std::lock_guard<std::mutex> lock(physicalMutex);
   currentCommand = std::nullopt;
+  CalculateAcceleration(inputData.AccelerationPath);
 }
 
 void DronePhysicalController::CalculateAcceleration(const float& accelerationPath)
@@ -155,7 +149,9 @@ void DronePhysicalController::ProcessCommand()
       break;
   }
 
-  CheckResetCommand();
+  if (isNeedToResetCommand.exchange(false)) {
+    currentCommand = std::nullopt;
+  }
 }
 
 void DronePhysicalController::CheckDroneStopped()
@@ -164,13 +160,6 @@ void DronePhysicalController::CheckDroneStopped()
     if (DroneStopedAction) {
       DroneStopedAction();
     }
-  }
-}
-
-void DronePhysicalController::CheckResetCommand()
-{
-  if (isNeedToResetCommand.exchange(false)) {
-    ResetCommandToNull();
   }
 }
 

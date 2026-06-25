@@ -27,7 +27,6 @@ protected:
   void OnAfterStepEndAction() override;
 
 private:
-  void ResetCommandToNull();
   void CalculateAcceleration(const float& accelerationPath);
   void Accelerate();
   void Decelerate();
@@ -35,7 +34,6 @@ private:
   void UpdatePosition();
   void ProcessCommand();
   void CheckDroneStopped();
-  void CheckResetCommand();
 
   // variables
 private:

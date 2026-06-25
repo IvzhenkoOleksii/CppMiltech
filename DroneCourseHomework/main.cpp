@@ -47,7 +47,6 @@ int main(int argc, char** argv)
   // create drone controller
   DroneController droneController = {inputData, std::move(armamentSolver)};
   droneController.LockTargets(&targetsManager);
-  droneController.Start();
 
   // prepare controller for output
   OutputController outputController;
@@ -67,6 +66,8 @@ int main(int argc, char** argv)
       simulation.FinishLoopThread();
     }
   };
+
+  droneController.Start();
 
   simulation.LoopStepStartedAction = [&]() { outputController.AddData(droneController.GetDroneState()); };
 
