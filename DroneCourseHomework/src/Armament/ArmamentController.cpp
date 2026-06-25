@@ -8,13 +8,12 @@
 
 bool ArmamentController::GetIsFired()
 {
-  return isFiredGetter;
+  return isFired.load();
 }
 
 void ArmamentController::UpdateFireFlag(bool value)
 {
-  isFired = value;
-  isFiredGetter.store(value);
+  isFired.store(value);
 }
 
 // these next 2 values are constant, no need std::atomic or mutex

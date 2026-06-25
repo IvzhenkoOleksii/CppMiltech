@@ -27,11 +27,13 @@ TargetController::TargetController(const float& stepTime,
 
 DataStructs::Coord2D TargetController::GetCurrentPosition()
 {
+  std::lock_guard<std::mutex> lock(mutex);
   return currentPosition;
 }
 
 DataStructs::Coord2D TargetController::GetPredictedPosition(const float& time)
 {
+  std::lock_guard<std::mutex> lock(mutex);
   DataStructs::Coord2D predictedPosition;
   predictedPosition.X = currentPosition.X + (velocityX * time);
   predictedPosition.Y = currentPosition.Y + (velocityY * time);
@@ -47,14 +49,23 @@ float TargetController::GetVelocityAbs()
 void TargetController::OnLoopStepStart()
 {
   int nextPathIndex = GetNextPathIndex();
-  if (MathCalculator::AreEqual(currentPosition, positionsData[nextPathIndex])) {
+
+  mutex.lock();
+  bool arePositionsEqual = MathCalculator::AreEqual(currentPosition, positionsData[nextPathIndex]);
+
+  if (arePositionsEqual) {
+    mutex.unlock();
     UpdateCurrentPathStep();
     CalculateVelocity();
+  }
+  else {
+    mutex.unlock();
   }
 }
 
 void TargetController::OnLoopStepEnd()
 {
+  std::lock_guard<std::mutex> lock(mutex);
   currentPosition.X += velocityX * stepTime;
   currentPosition.Y += velocityY * stepTime;
 }
@@ -63,6 +74,7 @@ void TargetController::OnAfterStepEndAction() {}
 
 void TargetController::UpdateCurrentPathStep()
 {
+  std::lock_guard<std::mutex> lock(mutex);
   ++currentPathStep;
   if (currentPathStep >= positionsData.size()) {
     // drop to start of array
@@ -72,6 +84,7 @@ void TargetController::UpdateCurrentPathStep()
 
 void TargetController::CalculateVelocity()
 {
+  std::lock_guard<std::mutex> lock(mutex);
   int nextPathIndex = GetNextPathIndex();
 
   DataStructs::Coord2D pathStartPosition = positionsData[currentPathStep];

@@ -3,6 +3,7 @@
 #include "TargetController.h"
 
 #include <cstddef>
+#include <mutex>
 #include <vector>
 
 class TargetsManager {
@@ -16,8 +17,10 @@ public:
   DataStructs::Coord2D GetTargetCurrentPosition(const int& index);
   DataStructs::Coord2D GetTargetPredictedPosition(const int& index, const float& time);
   void FinishTargetsThreads();
+  int ID;
 
 private:
+  std::mutex mutex;
   DataStructs::TargetData targetData;
   std::vector<std::unique_ptr<TargetController>> targets;
 };

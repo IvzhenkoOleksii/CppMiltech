@@ -57,7 +57,7 @@ private:
 private:
   DataStructs::DroneInputData inputData;
   DroneCalculator droneCalculator;
-  TargetsManager* targetsManager;
+  TargetsManager* targetsManager = nullptr;
   std::unique_ptr<ArmamentController> armamentController;
   std::unique_ptr<DronePhysicalController> physicalStateController;
   DataStructs::DroneOperationalState state;

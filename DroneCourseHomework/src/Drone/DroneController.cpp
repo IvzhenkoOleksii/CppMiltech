@@ -30,11 +30,11 @@ DroneController::DroneController(const DataStructs::InputData& input, std::uniqu
   InitState();
   InitialCalculations();
 
-  physicalStateController->DroneStoped = [&]() { DeselectTarget(); };
+  physicalStateController->DroneStopedAction = [this]() { DeselectTarget(); };
 
   // sign on bomb exploded action
-  armamentController->LoopEndedAction = [&]() {
-    if (!isFinished) {
+  armamentController->LoopEndedAction = [this]() {
+    if (isFinished.load() == false) {
       // means simulation isn`t ended, but bomb reached ground
       if (BombExplodedAction) {
         BombExplodedAction();
@@ -42,15 +42,18 @@ DroneController::DroneController(const DataStructs::InputData& input, std::uniqu
     }
   };
 
-  StartLoopThread();
+  physicalStateController->StartLoopThread();
 }
 
 void DroneController::Finish()
 {
   isFinished.store(true);
   this->FinishLoopThread();
+  this->JoinThread();
   physicalStateController->FinishLoopThread();
+  physicalStateController->JoinThread();
   armamentController->FinishLoopThread();
+  armamentController->JoinThread();
 }
 
 DataStructs::DroneFullData DroneController::GetDroneState()
@@ -157,9 +160,6 @@ void DroneController::ChooseTarget()
 void DroneController::GetClosestTarget()
 {
   std::lock_guard<std::recursive_mutex> lock(droneMutex);
-  if (targetsManager == nullptr) {
-    return;
-  }
 
   int targetIndex = -1;
   float smallestReachTime = 0;
@@ -190,6 +190,7 @@ void DroneController::GetClosestTarget()
 
 void DroneController::GetTargetSolution()
 {
+  std::lock_guard<std::recursive_mutex> lock(droneMutex);
   if (!IsTargetSelected()) {
     // need to select target first
     return;
@@ -244,6 +245,7 @@ void DroneController::GetTargetSolution()
 
 float DroneController::CalcDroneTimeToPoint(const DataStructs::Coord2D& point)
 {
+  std::lock_guard<std::recursive_mutex> lock(droneMutex);
   DataStructs::DronePhysicalState physicalState = physicalStateController->GetState();
 
   DataStructs::Coord2D dronePosition2D = DataStructs::Coord3D::GetPoint2D(physicalState.Position);
@@ -261,6 +263,7 @@ float DroneController::CalculateRotationTime(const float& angleToRotate)
 
 float DroneController::CalculateTimeToReach(const float& distanceToTarget)
 {
+  std::lock_guard<std::recursive_mutex> lock(droneMutex);
   float timeToMove;
   float distanceToFly = distanceToTarget - armamentController->GetFallDistance();
   if (distanceToFly < 0) {
@@ -298,6 +301,7 @@ void DroneController::CalculateThereToGo()
 
 void DroneController::CheckIfDroneReachedFirePosition()
 {
+  std::lock_guard<std::recursive_mutex> lock(droneMutex);
   if (armamentController->GetIsFired()) {
     // already fired
     return;
@@ -327,6 +331,7 @@ void DroneController::CheckIfDroneReachedFirePosition()
 
 bool DroneController::IsNeedToRotate()
 {
+  std::lock_guard<std::recursive_mutex> lock(droneMutex);
   if (!IsTargetSelected()) {
     // no need to rotate arbitrary, only on target
     return false;
@@ -382,7 +387,7 @@ bool DroneController::IsNeedToAccelerate()
 
 void DroneController::DeselectTarget()
 {
-  std::lock_guard<std::mutex> lock(droneMutex);
+  std::lock_guard<std::recursive_mutex> lock(droneMutex);
   state.DeselectTarget();
 }
 
@@ -390,7 +395,15 @@ DataStructs::Coord2D DroneController::CalculateAimPoint()
 {
   // point there bomb fall if drop it right now
   DataStructs::DronePhysicalState physicalState = physicalStateController->GetState();
-  float fallDistance = armamentController->CalculateBombFallDistance(physicalState.Position, physicalState.Velocity);
+
+  float fallDistance = 0;
+  if (physicalState.Velocity == inputData.AttackSpeed) {
+    fallDistance = armamentController->GetFallDistance();
+  }
+  else {
+    fallDistance = armamentController->CalculateBombFallDistance(physicalState.Position, physicalState.Velocity);
+  }
+
   return droneCalculator.CalculateAimPoint(physicalState, fallDistance);
 }
 

@@ -4,16 +4,16 @@
 #include <ostream>
 #include <thread>
 
-BaseLoop::BaseLoop(const float& stepTime, const int& timeScale)
+BaseLoop::BaseLoop(const float& stepT, const int& timeScale)
 {
-  this->stepTime = stepTime;
+  stepTime.store(stepT);
   this->duration = std::chrono::duration<float>{stepTime / timeScale};
-  isLoopActive = false;
+  isLoopActive.store(false);
 }
 
 void BaseLoop::StartLoopThread()
 {
-  isLoopActive = true;
+  isLoopActive.store(true);
   thread = std::thread(&BaseLoop::LoopFunction, this);
 }
 
@@ -31,7 +31,7 @@ void BaseLoop::JoinThread()
 
 void BaseLoop::LoopFunction()
 {
-  while (isLoopActive) {
+  while (isLoopActive.load() == true) {
     if (LoopStepStartedAction) {
       LoopStepStartedAction();
     }
@@ -52,9 +52,7 @@ void BaseLoop::LoopFunction()
 
 void BaseLoop::FinishLoopThread()
 {
-  isLoopActive = false;
-
-  JoinThread();
+  isLoopActive.store(false);
 
   if (LoopEndedAction) {
     LoopEndedAction();

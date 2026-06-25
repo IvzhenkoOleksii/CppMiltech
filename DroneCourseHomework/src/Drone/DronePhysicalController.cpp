@@ -21,8 +21,6 @@ DronePhysicalController::DronePhysicalController(const float& stepTime, const in
 
   ResetCommandToNull();
   CalculateAcceleration(inputData.AccelerationPath);
-
-  //  StartLoopThread();
 }
 
 void DronePhysicalController::ResetCommandToNull()
@@ -61,8 +59,8 @@ void DronePhysicalController::ReceiveCommand(const DronePhysicalCommand& command
 
 void DronePhysicalController::Accelerate()
 {
-  std::lock_guard<std::mutex> lock(physicalMutex);
-
+  // do not add mutex guard here -> have already at OnLoopStepStart
+  // if lock mutex here -> we will get self deadlock
   if (state.Velocity < currentCommand->SpeedToReach) {
     state.Velocity += speedChangeStep;
   }
@@ -72,13 +70,14 @@ void DronePhysicalController::Accelerate()
   }
 
   if (state.Velocity == currentCommand->SpeedToReach) {
-    ResetCommandToNull();
+    isNeedToResetCommand.store(true);
   }
 }
 
 void DronePhysicalController::Decelerate()
 {
-  std::lock_guard<std::mutex> lock(physicalMutex);
+  // do not add mutex guard here -> have already at OnLoopStepStart
+  // if lock mutex here -> we will get self deadlock
 
   if (state.Velocity > currentCommand->SpeedToReach) {
     state.Velocity -= speedChangeStep;
@@ -89,19 +88,18 @@ void DronePhysicalController::Decelerate()
   }
 
   if (state.Velocity == currentCommand->SpeedToReach) {
-    ResetCommandToNull();
+    isNeedToResetCommand.store(true);
   }
 
   if (state.Velocity == 0) {
-    if (DroneStoped) {
-      DroneStoped();
-    }
+    shouldNotifyStopped.store(true);
   }
 }
 
 void DronePhysicalController::Rotate()
 {
-  std::lock_guard<std::mutex> lock(physicalMutex);
+  // do not add mutex guard here -> have already at OnLoopStepStart
+  // if lock mutex here -> we will get self deadlock
 
   if (currentCommand->AngleToRotate > 0) {
     state.Direction += rotateChangeStep;
@@ -114,7 +112,7 @@ void DronePhysicalController::Rotate()
 
   if (MathCalculator::AreEqual(currentCommand->AngleToRotate, 0)) {
     // we made a rotation, remove command
-    ResetCommandToNull();
+    isNeedToResetCommand.store(true);
   }
 }
 
@@ -136,10 +134,9 @@ void DronePhysicalController::UpdatePosition()
   state.Position.Y += distanceY;
 }
 
-void DronePhysicalController::OnLoopStepStart()
+void DronePhysicalController::ProcessCommand()
 {
   std::lock_guard<std::mutex> lock(physicalMutex);
-
   if (!currentCommand.has_value()) {
     // no commands, don`t do anything
     return;
@@ -151,11 +148,37 @@ void DronePhysicalController::OnLoopStepStart()
       break;
     case DataStructs::DECELERATING:
       Decelerate();
+      break;
     case DataStructs::TURNING:
       Rotate();
     default:
       break;
   }
+}
+
+void DronePhysicalController::CheckDroneStopped()
+{
+  if (shouldNotifyStopped.load() == true) {
+    shouldNotifyStopped.store(false);
+    if (DroneStopedAction) {
+      DroneStopedAction();
+    }
+  }
+}
+
+void DronePhysicalController::CheckResetCommand()
+{
+  if (isNeedToResetCommand.load() == true) {
+    isNeedToResetCommand.store(false);
+    ResetCommandToNull();
+  }
+}
+
+void DronePhysicalController::OnLoopStepStart()
+{
+  ProcessCommand();
+  CheckDroneStopped();
+  CheckResetCommand();
 }
 
 void DronePhysicalController::OnLoopStepEnd()

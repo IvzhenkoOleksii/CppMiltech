@@ -1,3 +1,4 @@
+#include <atomic>
 #include <iostream>
 #include <ostream>
 #include <utility>
@@ -13,6 +14,9 @@
 #include "Target/TargetsManager.h"
 #include "MissionFactory.h"
 
+std::atomic<bool> isSimulationEnded;
+std::atomic<bool> isBombExploded;
+
 int main(int argc, char** argv)
 {
   // some functions definition
@@ -25,6 +29,9 @@ int main(int argc, char** argv)
     std::cerr << "usage: Need 2 additional arguments: for inputFile and Solver <input_path>\n";
     return 1;
   }
+
+  isSimulationEnded.store(false);
+  isBombExploded.store(false);
 
   // factory creates all needed additional classes
   MissionFactory missionFactory{};
@@ -40,6 +47,7 @@ int main(int argc, char** argv)
   // create drone controller
   DroneController droneController = {inputData, std::move(armamentSolver)};
   droneController.LockTargets(&targetsManager);
+  droneController.StartLoopThread();
 
   // prepare controller for output
   OutputController outputController;
@@ -47,11 +55,20 @@ int main(int argc, char** argv)
   // create simulation controller
   SimulationController simulation = {inputData.SimStepTime, inputData.TimeScale};  // previous sim step time
   simulation.LoopEndedAction = [&]() {
-    WriteDataToOutputFile(outputController);
-    OnSimulationEnds(&targetsManager, &droneController);
+    if (isSimulationEnded.load() == false) {
+      isSimulationEnded.store(true);
+      isBombExploded.store(true);
+      WriteDataToOutputFile(outputController);
+      OnSimulationEnds(&targetsManager, &droneController);
+    }
   };
 
-  droneController.BombExplodedAction = [&]() { simulation.FinishLoopThread(); };
+  droneController.BombExplodedAction = [&]() {
+    if (isBombExploded.load() == false) {
+      isBombExploded.store(true);
+      simulation.FinishLoopThread();
+    }
+  };
 
   simulation.LoopStepStartedAction = [&]() { outputController.AddData(droneController.GetDroneState()); };
 

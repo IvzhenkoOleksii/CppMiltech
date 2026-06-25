@@ -9,7 +9,8 @@ public:
   // constructors, destructors
   DronePhysicalController(const float& stepTime, const int& timeScale, const DataStructs::DroneInputData& inputData);
   virtual ~DronePhysicalController() = default;
-  std::function<void()> DroneStoped;
+
+  std::function<void()> DroneStopedAction;
 
   // getters
 public:
@@ -32,6 +33,9 @@ private:
   void Decelerate();
   void Rotate();
   void UpdatePosition();
+  void ProcessCommand();
+  void CheckDroneStopped();
+  void CheckResetCommand();
 
   // variables
 private:
@@ -39,6 +43,8 @@ private:
   DataStructs::DronePhysicalState state;
   std::optional<DronePhysicalCommand> currentCommand;
   std::mutex physicalMutex;
+  std::atomic<bool> shouldNotifyStopped;
+  std::atomic<bool> isNeedToResetCommand;
 
   // these are comes from constructor or calculate ones and just using, so no need to threat them specially
   float maxSpeed;

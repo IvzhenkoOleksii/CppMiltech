@@ -39,7 +39,6 @@ private:
 private:
   std::unique_ptr<IArmamentSolver> solver;
   ArmamentDatabase::Data armData;
-  std::atomic<bool> isFiredGetter;
 
 private:
   ArmamentDatabase::FallResult fallResult;
@@ -50,7 +49,7 @@ private:
 
   // data for simulation
 private:
-  bool isFired;
+  std::atomic<bool> isFired;
   DataStructs::Coord3D position;
   float fallDirection;
   float fallStepHeight;     // vertical step

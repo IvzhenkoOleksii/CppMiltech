@@ -39,6 +39,7 @@ private:
   std::vector<DataStructs::Coord2D> positionsData;
 
 private:
+  std::mutex mutex;
   std::atomic<float> velocityX;
   std::atomic<float> velocityY;
   std::atomic<float> velocityAbs;
