@@ -48,18 +48,16 @@ float TargetController::GetVelocityAbs()
 
 void TargetController::OnLoopStepStart()
 {
-  int nextPathIndex = GetNextPathIndex();
-
-  mutex.lock();
-  bool arePositionsEqual = MathCalculator::AreEqual(currentPosition, positionsData[nextPathIndex]);
+  bool arePositionsEqual = false;
+  {
+    std::lock_guard<std::mutex> lock(mutex);
+    int nextPathIndex = GetNextPathIndex();
+    arePositionsEqual = MathCalculator::AreEqual(currentPosition, positionsData[nextPathIndex]);
+  }
 
   if (arePositionsEqual) {
-    mutex.unlock();
     UpdateCurrentPathStep();
     CalculateVelocity();
-  }
-  else {
-    mutex.unlock();
   }
 }
 
@@ -99,6 +97,8 @@ void TargetController::CalculateVelocity()
 
 int TargetController::GetNextPathIndex()
 {
+  // GetNextPathIndex doesnt use mutex inside for currentPathStep
+  // so, beware to use lock/guard inside upper method - which will fire GetNextPathIndex
   size_t nextPathIndex = currentPathStep + 1;
   if (nextPathIndex >= positionsData.size()) {
     // move to the start of path. Target move by circled position

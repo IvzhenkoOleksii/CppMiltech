@@ -41,7 +41,11 @@ DroneController::DroneController(const DataStructs::InputData& input, std::uniqu
       }
     }
   };
+}
 
+void DroneController::Start()
+{
+  this->StartLoopThread();
   physicalStateController->StartLoopThread();
 }
 
@@ -136,13 +140,8 @@ void DroneController::OnLoopStepEnd()
   state.AimPoint = CalculateAimPoint();
   state.DropPoint = CalculateDropPoint();
 };
-//
+
 void DroneController::OnAfterStepEndAction() {};
-//
-//
-//
-//
-//
 
 void DroneController::ChooseTarget()
 {

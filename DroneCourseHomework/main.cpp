@@ -47,7 +47,7 @@ int main(int argc, char** argv)
   // create drone controller
   DroneController droneController = {inputData, std::move(armamentSolver)};
   droneController.LockTargets(&targetsManager);
-  droneController.StartLoopThread();
+  droneController.Start();
 
   // prepare controller for output
   OutputController outputController;
@@ -55,8 +55,7 @@ int main(int argc, char** argv)
   // create simulation controller
   SimulationController simulation = {inputData.SimStepTime, inputData.TimeScale};  // previous sim step time
   simulation.LoopEndedAction = [&]() {
-    if (isSimulationEnded.load() == false) {
-      isSimulationEnded.store(true);
+    if (!isSimulationEnded.exchange(true)) {
       isBombExploded.store(true);
       WriteDataToOutputFile(outputController);
       OnSimulationEnds(&targetsManager, &droneController);
@@ -64,8 +63,7 @@ int main(int argc, char** argv)
   };
 
   droneController.BombExplodedAction = [&]() {
-    if (isBombExploded.load() == false) {
-      isBombExploded.store(true);
+    if (!isBombExploded.exchange(true)) {
       simulation.FinishLoopThread();
     }
   };

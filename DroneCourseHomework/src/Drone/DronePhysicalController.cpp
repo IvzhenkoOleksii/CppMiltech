@@ -154,12 +154,13 @@ void DronePhysicalController::ProcessCommand()
     default:
       break;
   }
+
+  CheckResetCommand();
 }
 
 void DronePhysicalController::CheckDroneStopped()
 {
-  if (shouldNotifyStopped.load() == true) {
-    shouldNotifyStopped.store(false);
+  if (shouldNotifyStopped.exchange(false)) {
     if (DroneStopedAction) {
       DroneStopedAction();
     }
@@ -168,8 +169,7 @@ void DronePhysicalController::CheckDroneStopped()
 
 void DronePhysicalController::CheckResetCommand()
 {
-  if (isNeedToResetCommand.load() == true) {
-    isNeedToResetCommand.store(false);
+  if (isNeedToResetCommand.exchange(false)) {
     ResetCommandToNull();
   }
 }
@@ -178,7 +178,6 @@ void DronePhysicalController::OnLoopStepStart()
 {
   ProcessCommand();
   CheckDroneStopped();
-  CheckResetCommand();
 }
 
 void DronePhysicalController::OnLoopStepEnd()

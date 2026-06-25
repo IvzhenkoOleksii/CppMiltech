@@ -11,6 +11,22 @@ BaseLoop::BaseLoop(const float& stepT, const int& timeScale)
   isLoopActive.store(false);
 }
 
+BaseLoop::~BaseLoop()
+{
+  FinishLoopThread();
+
+  if (!thread.joinable()) {
+    return;
+  }
+
+  if (std::this_thread::get_id() == thread.get_id()) {
+    thread.detach();
+  }
+  else {
+    thread.join();
+  }
+}
+
 void BaseLoop::StartLoopThread()
 {
   isLoopActive.store(true);
@@ -48,15 +64,15 @@ void BaseLoop::LoopFunction()
 
     OnAfterStepEndAction();
   }
+
+  if (LoopEndedAction) {
+    LoopEndedAction();
+  }
 }
 
 void BaseLoop::FinishLoopThread()
 {
   isLoopActive.store(false);
-
-  if (LoopEndedAction) {
-    LoopEndedAction();
-  }
 }
 
 void BaseLoop::OnLoopStepStart() {};

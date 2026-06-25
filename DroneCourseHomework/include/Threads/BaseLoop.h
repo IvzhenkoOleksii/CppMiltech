@@ -26,7 +26,7 @@ protected:
 class BaseLoop : public IBaseLoop {
 public:
   BaseLoop(const float& stepT, const int& timeScale);
-  virtual ~BaseLoop() = default;
+  virtual ~BaseLoop();
   void StartLoopThread() override;
   void JoinThread() override;
   void FinishLoopThread() override;

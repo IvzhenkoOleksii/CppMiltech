@@ -18,6 +18,7 @@ public:
   void LockTargets(TargetsManager* targetsManager);
   DataStructs::DroneFullData GetDroneState();
   bool isBombDropped();
+  void Start();
   void Finish();
   std::function<void()> BombExplodedAction;
 
