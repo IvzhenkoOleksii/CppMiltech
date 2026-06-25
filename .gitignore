@@ -118,3 +118,6 @@ obj/
 *.swo
 *~
 .cache/
+
+*.Identifier
+*Zone.Identifier
