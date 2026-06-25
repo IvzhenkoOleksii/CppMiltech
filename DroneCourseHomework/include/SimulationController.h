@@ -2,7 +2,7 @@
 
 #include "Threads/BaseLoop.h"
 
-constexpr int MaxSimulationSteps = 1000;  // must be 10000
+constexpr int MaxSimulationSteps = 10;  // must be 10000
 
 class SimulationController : public BaseLoop {
 public:

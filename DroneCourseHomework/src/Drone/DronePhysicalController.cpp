@@ -1,6 +1,9 @@
 #include "Drone/DronePhysicalController.h"
+#include <cmath>
+#include <iostream>
 #include <mutex>
 #include <optional>
+#include <ostream>
 #include "DataStructs.h"
 #include "MathCalculator.h"
 
@@ -66,6 +69,8 @@ void DronePhysicalController::Accelerate()
   if (state.Velocity == currentCommand->SpeedToReach) {
     isNeedToResetCommand.store(true);
   }
+
+  std::cout << "Accelerate. state.Velocity: " << state.Velocity << std::endl;
 }
 
 void DronePhysicalController::Decelerate()
@@ -88,6 +93,8 @@ void DronePhysicalController::Decelerate()
   if (state.Velocity == 0) {
     shouldNotifyStopped.store(true);
   }
+
+  std::cout << "Decelerate. state.Velocity: " << state.Velocity << std::endl;
 }
 
 void DronePhysicalController::Rotate()
@@ -95,18 +102,35 @@ void DronePhysicalController::Rotate()
   // do not add mutex guard here -> have already at OnLoopStepStart
   // if lock mutex here -> we will get self deadlock
 
+  float angleToRotateAbs = std::fabs(currentCommand->AngleToRotate);
+
   if (currentCommand->AngleToRotate > 0) {
-    state.Direction += rotateChangeStep;
-    currentCommand->AngleToRotate -= rotateChangeStep;
+    //
+    if (angleToRotateAbs < rotateChangeStep) {
+      state.Direction -= angleToRotateAbs;
+      currentCommand->AngleToRotate = 0;
+      isNeedToResetCommand.store(true);
+    }
+    else {
+      state.Direction -= rotateChangeStep;
+      currentCommand->AngleToRotate -= rotateChangeStep;
+    }
+    //
+
+    std::cout << "Rotate. AngleToRotate: " << currentCommand->AngleToRotate << " ++++ " << std::endl;
   }
   else {
-    state.Direction -= rotateChangeStep;
-    currentCommand->AngleToRotate += rotateChangeStep;
-  }
+    if (angleToRotateAbs < rotateChangeStep) {
+      state.Direction += angleToRotateAbs;
+      currentCommand->AngleToRotate = 0;
+      isNeedToResetCommand.store(true);
+    }
+    else {
+      state.Direction += rotateChangeStep;
+      currentCommand->AngleToRotate += rotateChangeStep;
+    }
 
-  if (MathCalculator::AreEqual(currentCommand->AngleToRotate, 0)) {
-    // we made a rotation, remove command
-    isNeedToResetCommand.store(true);
+    std::cout << "Rotate. AngleToRotate: " << currentCommand->AngleToRotate << " ---- " << std::endl;
   }
 }
 
@@ -126,6 +150,8 @@ void DronePhysicalController::UpdatePosition()
 
   state.Position.X += distanceX;
   state.Position.Y += distanceY;
+
+  std::cout << "UpdatePosition. state.Position.X: " << state.Position.X << "   Y:   " << state.Position.Y << std::endl;
 }
 
 void DronePhysicalController::ProcessCommand()

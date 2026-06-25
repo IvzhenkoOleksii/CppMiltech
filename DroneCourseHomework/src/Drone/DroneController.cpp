@@ -343,7 +343,12 @@ bool DroneController::IsNeedToRotate()
 
   DataStructs::DronePhysicalState physicalState = physicalStateController->GetState();
   DataStructs::Coord2D dronePosition = DataStructs::Coord3D::GetPoint2D(physicalState.Position);
-  float angleToTarget = MathCalculator::AngleBetweenVectorAndPoint(dronePosition, physicalState.Direction, GetTargetedPosition());
+  DataStructs::Coord2D targetedPosition = GetTargetedPosition();
+  float angleToTarget = MathCalculator::AngleBetweenVectorAndPoint(dronePosition, physicalState.Direction, targetedPosition);
+
+  std::cout << "AngleToRotate: " << angleToTarget << "   DronePosition  X:   " << dronePosition.X << "  Y:  " << dronePosition.Y
+            << "  Direction:   " << physicalState.Direction << "  TargetPos  X:   " << targetedPosition.X << "   Y:  " << targetedPosition.Y
+            << std::endl;
 
   if (MathCalculator::AreEqual(angleToTarget, 0)) {
     // already rotated
