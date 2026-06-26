@@ -68,4 +68,5 @@ private:
 private:
   float minAttackDistance;
   float accelerationTime;
+  float halfStepDistance;
 };

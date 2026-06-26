@@ -39,13 +39,10 @@ DataStructs::DronePhysicalState DronePhysicalController::GetState()
   return state;
 }
 
-float DronePhysicalController::GetHalfStepDistance()
+DataStructs::Coord3D DronePhysicalController::GetPosition()
 {
-  // half of a distance, that drone flyes on max speed - need for point of bomb drop calculation
-  // half of distance max accuracy of bomb drops
   std::lock_guard<std::mutex> lock(physicalMutex);
-  float distanceToFly = state.Velocity * stepTime;
-  return distanceToFly / 2;
+  return state.Position;
 }
 
 void DronePhysicalController::ReceiveCommand(const DronePhysicalCommand& command)
@@ -58,6 +55,9 @@ void DronePhysicalController::Accelerate()
 {
   // do not add mutex guard here -> have already at OnLoopStepStart
   // if lock mutex here -> we will get self deadlock
+
+  Rotate();
+
   if (state.Velocity < currentCommand->SpeedToReach) {
     state.Velocity += speedChangeStep;
   }
@@ -70,7 +70,7 @@ void DronePhysicalController::Accelerate()
     isNeedToResetCommand.store(true);
   }
 
-  std::cout << "Accelerate. state.Velocity: " << state.Velocity << std::endl;
+  //  std::cout << "Accelerate. state.Velocity: " << state.Velocity << std::endl;
 }
 
 void DronePhysicalController::Decelerate()
@@ -94,7 +94,7 @@ void DronePhysicalController::Decelerate()
     shouldNotifyStopped.store(true);
   }
 
-  std::cout << "Decelerate. state.Velocity: " << state.Velocity << std::endl;
+  //  std::cout << "Decelerate. state.Velocity: " << state.Velocity << std::endl;
 }
 
 void DronePhysicalController::Rotate()
@@ -103,34 +103,46 @@ void DronePhysicalController::Rotate()
   // if lock mutex here -> we will get self deadlock
 
   float angleToRotateAbs = std::fabs(currentCommand->AngleToRotate);
+  if (angleToRotateAbs < rotateChangeStep) {
+    RotateOnSmallAngle(angleToRotateAbs);
+    return;
+  }
+
+  // if angleToRotateAbs > rotateChangeStep
+  RotateOnSignificantAngle();
+}
+
+void DronePhysicalController::RotateOnSmallAngle(float angleAbs)
+{
+  // do not add mutex guard here -> have already at OnLoopStepStart
+  // if lock mutex here -> we will get self deadlock
 
   if (currentCommand->AngleToRotate > 0) {
-    //
-    if (angleToRotateAbs < rotateChangeStep) {
-      state.Direction -= angleToRotateAbs;
-      currentCommand->AngleToRotate = 0;
-      isNeedToResetCommand.store(true);
-    }
-    else {
-      state.Direction -= rotateChangeStep;
-      currentCommand->AngleToRotate -= rotateChangeStep;
-    }
-    //
-
-    std::cout << "Rotate. AngleToRotate: " << currentCommand->AngleToRotate << " ++++ " << std::endl;
+    state.Direction += angleAbs;
   }
   else {
-    if (angleToRotateAbs < rotateChangeStep) {
-      state.Direction += angleToRotateAbs;
-      currentCommand->AngleToRotate = 0;
-      isNeedToResetCommand.store(true);
-    }
-    else {
-      state.Direction += rotateChangeStep;
-      currentCommand->AngleToRotate += rotateChangeStep;
-    }
+    state.Direction -= angleAbs;
+  }
 
-    std::cout << "Rotate. AngleToRotate: " << currentCommand->AngleToRotate << " ---- " << std::endl;
+  currentCommand->AngleToRotate = 0;
+  if (currentCommand->commandType == DataStructs::TURNING) {
+    isNeedToResetCommand.store(true);
+  }
+}
+void DronePhysicalController::RotateOnSignificantAngle()
+{
+  // do not add mutex guard here -> have already at OnLoopStepStart
+  // if lock mutex here -> we will get self deadlock
+
+  if (currentCommand->AngleToRotate > 0) {
+    state.Direction += rotateChangeStep;
+    currentCommand->AngleToRotate -= rotateChangeStep;
+    // std::cout << "Rotate. AngleToRotate: " << currentCommand->AngleToRotate << " ++++ " << std::endl;
+  }
+  else {
+    state.Direction -= rotateChangeStep;
+    currentCommand->AngleToRotate += rotateChangeStep;
+    // std::cout << "Rotate. AngleToRotate: " << currentCommand->AngleToRotate << " ---- " << std::endl;
   }
 }
 
@@ -151,7 +163,7 @@ void DronePhysicalController::UpdatePosition()
   state.Position.X += distanceX;
   state.Position.Y += distanceY;
 
-  std::cout << "UpdatePosition. state.Position.X: " << state.Position.X << "   Y:   " << state.Position.Y << std::endl;
+  //  std::cout << "UpdatePosition. state.Position.X: " << state.Position.X << "   Y:   " << state.Position.Y << std::endl;
 }
 
 void DronePhysicalController::ProcessCommand()

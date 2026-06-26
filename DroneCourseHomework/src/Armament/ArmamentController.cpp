@@ -27,6 +27,16 @@ float ArmamentController::GetFallTime()
   return fallResult.Time;
 }
 
+float ArmamentController::GetHitRadius()
+{
+  return hitRadius;
+}
+
+DataStructs::Coord3D ArmamentController::GetBombPosition()
+{
+  return position;
+}
+
 ArmamentController::ArmamentController(const std::string& ammoType,
                                        const float& droneAttackSpeed,
                                        const float& droneHeight,

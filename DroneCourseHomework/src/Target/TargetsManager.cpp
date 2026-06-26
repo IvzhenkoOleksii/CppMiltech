@@ -26,8 +26,6 @@ TargetsManager::TargetsManager(const float& stepTime, const float& arrayTimeStep
   for (const auto& target : targets) {
     target->StartLoopThread();
   }
-
-  ID = reinterpret_cast<uintptr_t>(this);
 }
 
 void TargetsManager::FinishTargetsThreads()

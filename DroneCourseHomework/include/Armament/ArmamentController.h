@@ -23,7 +23,9 @@ public:
   float GetFallDistance();
   float GetFallTime();
   bool GetIsFired();
+  float GetHitRadius();
   float CalculateBombFallDistance(DataStructs::Coord3D startPoint, float speed);
+  DataStructs::Coord3D GetBombPosition();
 
 protected:
   void OnLoopStepStart() override;

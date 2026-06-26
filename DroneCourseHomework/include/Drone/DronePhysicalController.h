@@ -15,7 +15,7 @@ public:
   // getters
 public:
   DataStructs::DronePhysicalState GetState();
-  float GetHalfStepDistance();
+  DataStructs::Coord3D GetPosition();
 
   // functions
 public:
@@ -31,6 +31,9 @@ private:
   void Accelerate();
   void Decelerate();
   void Rotate();
+  void RotateOnSmallAngle(float angleAbs);
+  void RotateOnSignificantAngle();
+
   void UpdatePosition();
   void ProcessCommand();
   void CheckDroneStopped();

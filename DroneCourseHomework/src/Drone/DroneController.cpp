@@ -36,6 +36,20 @@ DroneController::DroneController(const DataStructs::InputData& input, std::uniqu
   armamentController->LoopEndedAction = [this]() {
     if (isFinished.load() == false) {
       // means simulation isn`t ended, but bomb reached ground
+
+      DataStructs::Coord3D bombPosition = armamentController->GetBombPosition();
+      DataStructs::Coord2D bombPosition2D = DataStructs::Coord3D::GetPoint2D(bombPosition);
+      float hitRadius = armamentController->GetHitRadius();
+
+      for (size_t i = 0; i < targetsManager->GetSize(); ++i) {
+        DataStructs::Coord2D targetPosition = targetsManager->GetTargetCurrentPosition(i);
+        float distance = MathCalculator::DistanceBetweenPoints(targetPosition, bombPosition2D);
+        std::cout << "DTS:  " << distance << std::endl;
+        if (distance < hitRadius) {
+          std::cout << "HIT HIT HIT" << std::endl;
+        }
+      }
+
       if (BombExplodedAction) {
         BombExplodedAction();
       }
@@ -119,6 +133,7 @@ void DroneController::InitialCalculations()
   float acceleration = droneCalculator.CalculateDroneAcceleration(inputData.AttackSpeed, inputData.AccelerationPath);
   accelerationTime = inputData.AttackSpeed / acceleration;
   minAttackDistance = armamentController->GetFallDistance() + inputData.AccelerationPath;
+  halfStepDistance = inputData.AttackSpeed * stepTime / 2;
 }
 
 void DroneController::LockTargets(TargetsManager* targetsManager)
@@ -139,6 +154,8 @@ void DroneController::OnLoopStepEnd()
   std::lock_guard<std::recursive_mutex> lock(droneMutex);
   state.AimPoint = CalculateAimPoint();
   state.DropPoint = CalculateDropPoint();
+  DataStructs::Coord3D dronePos = physicalStateController->GetPosition();
+  //  std::cout << "Drone position:   " << dronePos.X << " " << dronePos.Y << std::endl;
 };
 
 void DroneController::OnAfterStepEndAction() {};
@@ -214,8 +231,8 @@ void DroneController::GetTargetSolution()
 
     if (timeDifference < stepTime) {
       SetTargetedPosition(targetPredictedPoint);
-      //  std::cout << "Found target solution by steps:  " << stepIndex << "  new targetet point: X   " << targetPredictedPoint.X
-      //            << " Y:  " << targetPredictedPoint.Y << std::endl;
+      //    std::cout << "Found target solution by steps:  " << stepIndex << "  new targetet point: X   " << targetPredictedPoint.X
+      //              << " Y:  " << targetPredictedPoint.Y << std::endl;
       return;
     }
 
@@ -317,12 +334,16 @@ void DroneController::CheckIfDroneReachedFirePosition()
     return;
   }
 
-  float halfStepDistance = physicalStateController->GetHalfStepDistance();
   DataStructs::Coord2D dronePosition = DataStructs::Coord3D::GetPoint2D(physicalState.Position);
   DataStructs::Coord2D targetPosition = GetTargetedPosition();
   float fallDistance = armamentController->GetFallDistance();
 
+  float currentDistance = MathCalculator::DistanceBetweenPoints(dronePosition, targetPosition);
   bool isReadyToFire = droneCalculator.IsDistanceBetweenPointSameAsNeeded(dronePosition, targetPosition, fallDistance, halfStepDistance);
+
+  std::cout << "isReadyToFire :    " << isReadyToFire << "  currentDistance: " << currentDistance << "  need distance: " << fallDistance
+            << " halfStepDisatnce: " << halfStepDistance << std::endl;
+
   if (isReadyToFire) {
     armamentController->DropBomb(physicalState.Position, physicalState.Direction);
   }
@@ -355,10 +376,18 @@ bool DroneController::IsNeedToRotate()
     return false;
   }
 
+  float angleToTargetAbs = std::fabs(angleToTarget);
+  if (angleToTargetAbs < inputData.TurnThreshold) {
+    // we can start/continue acceleration, cause angle to rotate is lesser, than inputData.TurnThreshold
+    DronePhysicalCommand accelearteCommand{DataStructs::ACCELERATING, angleToTarget, inputData.AttackSpeed};
+    physicalStateController->ReceiveCommand(accelearteCommand);
+    return true;
+  }
+
   if (physicalState.Velocity > 0) {
     // we can rotate only while stop, need to decelerate
-    DronePhysicalCommand rotateCommand{DataStructs::DECELERATING, angleToTarget, 0};
-    physicalStateController->ReceiveCommand(rotateCommand);
+    DronePhysicalCommand decelerateCommand{DataStructs::DECELERATING, angleToTarget, 0};
+    physicalStateController->ReceiveCommand(decelerateCommand);
     return true;
   }
 

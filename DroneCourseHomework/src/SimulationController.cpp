@@ -1,3 +1,4 @@
+#include <iostream>
 #include "SimulationController.h"
 
 SimulationController::SimulationController(const float& stepTime, const int& timeScale)
@@ -6,7 +7,10 @@ SimulationController::SimulationController(const float& stepTime, const int& tim
   currentStepIndex = 0;
 }
 
-void SimulationController::OnLoopStepStart() {}
+void SimulationController::OnLoopStepStart()
+{
+  std::cout << "STEP:   " << currentStepIndex << " STARTED " << std::endl;
+}
 
 void SimulationController::OnLoopStepEnd()
 {

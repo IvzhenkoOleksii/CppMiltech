@@ -17,7 +17,6 @@ public:
   DataStructs::Coord2D GetTargetCurrentPosition(const int& index);
   DataStructs::Coord2D GetTargetPredictedPosition(const int& index, const float& time);
   void FinishTargetsThreads();
-  int ID;
 
 private:
   std::mutex mutex;
