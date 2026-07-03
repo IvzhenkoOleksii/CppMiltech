@@ -17,6 +17,21 @@ FROM ubuntu:noble@sha256:c4a8d5503dfb2a3eb8ab5f807da5bc69a85730fb49b5cfca2330194
 # інтерактивного stdin немає - без цього build може зависнути назавжди.
 ARG DEBIAN_FRONTEND="noninteractive"
 
+
+ARG MAVSDK_VERSION=2.12.9
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    g++ cmake git make wget ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN wget -qO /tmp/mavsdk-dev.deb \
+    "https://github.com/mavlink/MAVSDK/releases/download/v${MAVSDK_VERSION}/libmavsdk-dev_${MAVSDK_VERSION}_ubuntu22.04_amd64.deb" \
+    && dpkg -i /tmp/mavsdk-dev.deb \
+    && rm /tmp/mavsdk-dev.deb
+
+
+
+
 # Пакети зі списку apt-packages.in (по одному на рядок, коментарі через #).
 #
 # Прапори й чистка:
