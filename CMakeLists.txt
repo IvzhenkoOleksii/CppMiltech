@@ -17,10 +17,9 @@ set(gtest_force_shared_crt
 FetchContent_MakeAvailable(googletest)
 enable_testing()
 
-add_subdirectory(DroneCourseHomework)
-add_subdirectory(homework_04_odometry)
-add_subdirectory(homework_05)
-add_subdirectory(homework_06_tests)
+# add_subdirectory(DroneCourseHomework) add_subdirectory(homework_04_odometry)
+# add_subdirectory(homework_05) add_subdirectory(homework_06_tests)
+add_subdirectory(homework_12/edge/c2)
 
 find_program(CLANG_TIDY_EXE NAMES "clang-tidy")
 if(CLANG_TIDY_EXE)
