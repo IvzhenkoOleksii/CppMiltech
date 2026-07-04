@@ -7,19 +7,13 @@
             "request": "launch",
             "program": "${workspaceFolder}/build/debug/DroneCourseHomework/executable",
             "args": ["Txt", "Analytical"],
-            "stopAtEntry": true,
+            "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
-            "miDebuggerPath": "/home/rty6061944/CppMiltech/.vscode/gdb-no-debuginfod.sh",
+            "miDebuggerPath": "/usr/bin/gdb",
             "preLaunchTask": "CMake: configure and build",
-            "internalConsoleOptions": "openOnSessionStart",
-            "logging": {
-                "engineLogging": true,
-                "trace": true,
-                "traceResponse": true
-            },
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing for gdb",
@@ -37,7 +31,7 @@
                     "ignoreFailures": true
                 },
                 {
-                    "description": "Disable debuginfod prompts in batch/debugger sessions",
+                    "description": "Disable debuginfod prompts in debugger sessions",
                     "text": "-gdb-set debuginfod enabled off",
                     "ignoreFailures": true
                 }
