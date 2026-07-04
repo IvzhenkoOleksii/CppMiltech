@@ -2,12 +2,12 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Work with Debugger",
+            "name": "Debug DroneCourseHomework (GDB)",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/debug/DroneCourseHomework/executable",
             "args": ["Txt", "Analytical"],
-            "stopAtEntry": false,
+            "stopAtEntry": true,
             "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
