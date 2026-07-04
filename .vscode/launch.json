@@ -12,11 +12,14 @@
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
-            "sourceFileMap": {
-                "${workspaceFolder}": "${workspaceFolder}"
-            },
-            "miDebuggerPath": "/usr/bin/gdb",
+            "miDebuggerPath": "/home/rty6061944/CppMiltech/.vscode/gdb-no-debuginfod.sh",
             "preLaunchTask": "CMake: configure and build",
+            "internalConsoleOptions": "openOnSessionStart",
+            "logging": {
+                "engineLogging": true,
+                "trace": true,
+                "traceResponse": true
+            },
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing for gdb",
@@ -30,7 +33,12 @@
                 },
                 {
                     "description": "Disable ASLR disabling in GDB",
-                    "text": "set disable-randomization off", // GDB: don`t start randomization
+                    "text": "-gdb-set disable-randomization off",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Disable debuginfod prompts in batch/debugger sessions",
+                    "text": "-gdb-set debuginfod enabled off",
                     "ignoreFailures": true
                 }
             ]
