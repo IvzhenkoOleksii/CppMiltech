@@ -9,7 +9,7 @@ SimulationController::SimulationController(const float& stepTime, const int& tim
 
 void SimulationController::OnLoopStepStart()
 {
-  std::cout << "STEP:   " << currentStepIndex << " STARTED " << std::endl;
+  //  std::cout << "STEP:   " << currentStepIndex << " STARTED " << std::endl;
 }
 
 void SimulationController::OnLoopStepEnd()

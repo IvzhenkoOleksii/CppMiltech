@@ -5,10 +5,10 @@
 
 #include "Drone/DroneController.h"
 #include "Drone/DroneCalculator.h"
+#include "Drone/DronePhysicalController.h"
 #include "Armament/ArmamentController.h"
 #include "Armament//Solver/IArmamentSolver.h"
 #include "DataStructs.h"
-#include "Drone/DronePhysicalController.h"
 #include "MathCalculator.h"
 #include "Threads/BaseLoop.h"
 
@@ -46,9 +46,9 @@ DroneController::DroneController(const DataStructs::InputData& input,
       for (size_t i = 0; i < targetsManager->GetSize(); ++i) {
         DataStructs::Coord2D targetPosition = targetsManager->GetTargetCurrentPosition(i);
         float distance = MathCalculator::DistanceBetweenPoints(targetPosition, bombPosition2D);
-        std::cout << "DTS:  " << distance << std::endl;
+        //    std::cout << "DTS:  " << distance << std::endl;
         if (distance < hitRadius) {
-          std::cout << "HIT HIT HIT" << std::endl;
+          //       std::cout << "HIT HIT HIT" << std::endl;
         }
       }
 
@@ -101,7 +101,7 @@ int DroneController::GetTargetIndex()
 
 void DroneController::SetTargetIndex(int index)
 {
-  std::cout << "Selected target:   " << index << std::endl;
+  //  std::cout << "Selected target:   " << index << std::endl;
   std::lock_guard<std::recursive_mutex> lock(droneMutex);
   state.CurrentTargetIndex = index;
 }
@@ -258,7 +258,7 @@ void DroneController::GetTargetSolution()
     }
   }
 
-  std::cout << "Didn`t found target solution" << std::endl;
+  // std::cout << "Didn`t found target solution" << std::endl;
 }
 
 float DroneController::CalcDroneTimeToPoint(const DataStructs::Coord2D& point)
@@ -343,8 +343,8 @@ void DroneController::CheckIfDroneReachedFirePosition()
   float currentDistance = MathCalculator::DistanceBetweenPoints(dronePosition, targetPosition);
   bool isReadyToFire = droneCalculator.IsDistanceBetweenPointSameAsNeeded(dronePosition, targetPosition, fallDistance, halfStepDistance);
 
-  std::cout << "isReadyToFire :    " << isReadyToFire << "  currentDistance: " << currentDistance << "  need distance: " << fallDistance
-            << " halfStepDisatnce: " << halfStepDistance << std::endl;
+  // std::cout << "isReadyToFire :    " << isReadyToFire << "  currentDistance: " << currentDistance << "  need distance: " << fallDistance
+  //           << " halfStepDisatnce: " << halfStepDistance << std::endl;
 
   if (isReadyToFire) {
     armamentController->DropBomb(physicalState.Position, physicalState.Direction);
@@ -369,9 +369,10 @@ bool DroneController::IsNeedToRotate()
   DataStructs::Coord2D targetedPosition = GetTargetedPosition();
   float angleToTarget = MathCalculator::AngleBetweenVectorAndPoint(dronePosition, physicalState.Direction, targetedPosition);
 
-  std::cout << "AngleToRotate: " << angleToTarget << "   DronePosition  X:   " << dronePosition.X << "  Y:  " << dronePosition.Y
-            << "  Direction:   " << physicalState.Direction << "  TargetPos  X:   " << targetedPosition.X << "   Y:  " << targetedPosition.Y
-            << std::endl;
+  // std::cout << "AngleToRotate: " << angleToTarget << "   DronePosition  X:   " << dronePosition.X << "  Y:  " << dronePosition.Y
+  //           << "  Direction:   " << physicalState.Direction << "  TargetPos  X:   " << targetedPosition.X << "   Y:  " <<
+  //           targetedPosition.Y
+  //           << std::endl;
 
   if (MathCalculator::AreEqual(angleToTarget, 0)) {
     // already rotated

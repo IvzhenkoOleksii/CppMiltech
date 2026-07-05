@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Files/Input/IInputFile.h"
 #include "Armament/Solver/IArmamentSolver.h"
 

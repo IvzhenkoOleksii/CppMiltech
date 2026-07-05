@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-#include <memory>
 
 #include "Armament/ArmamentDatabase.h"
 #include "Armament/Solver/IArmamentSolver.h"

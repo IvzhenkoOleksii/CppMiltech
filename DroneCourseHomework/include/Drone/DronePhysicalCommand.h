@@ -1,4 +1,4 @@
-
+#pragma once
 #include "DataStructs.h"
 
 struct DronePhysicalCommand {

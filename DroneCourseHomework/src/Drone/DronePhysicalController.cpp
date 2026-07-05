@@ -1,11 +1,11 @@
-#include "Drone/DronePhysicalController.h"
+
 #include <cmath>
-#include <iostream>
 #include <mutex>
 #include <optional>
-#include <ostream>
+
 #include "DataStructs.h"
 #include "MathCalculator.h"
+#include "Drone/DronePhysicalController.h"
 
 DronePhysicalController::DronePhysicalController(const float& stepTime, const int& timeScale, const DataStructs::DroneInputData& inputData)
   : BaseLoop(stepTime, timeScale)
