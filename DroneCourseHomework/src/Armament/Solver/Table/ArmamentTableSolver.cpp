@@ -1,9 +1,9 @@
 #include "Armament/ArmamentDatabase.h"
 #include "Armament/Solver/Table/ArmamentTableSolver.h"
 
-ArmamentTableSolver::ArmamentTableSolver()
+ArmamentTableSolver::ArmamentTableSolver(const std::string& pathToTable)
 {
-  tableController = {};
+  tableController = TableController(pathToTable);
 }
 
 ArmamentTableSolver::~ArmamentTableSolver() {}

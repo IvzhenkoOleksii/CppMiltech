@@ -1,16 +1,21 @@
-#include <iostream>
-#include <fstream>
-
+#include "Files/Input/IInputFile.h"
 #include "Files/Input/InputFileJson.h"
 #include "DataStructs.h"
 
+#include <iostream>
+#include <fstream>
 #include <nlohmann/json.hpp>
+
+InputFileJson::InputFileJson(const std::string& filePath)
+  : IInputFile(filePath)
+{
+}
 
 InputFileJson::~InputFileJson() {}
 
 DataStructs::InputData InputFileJson::ReadFile()
 {
-  std::ifstream file("./DroneCourseHomework/DataFiles/json/Input.json");
+  std::ifstream file(filePath);
   DataStructs::InputData inputData{};
   if (file.is_open()) {
     nlohmann::json json = nlohmann::json::parse(file);
@@ -27,7 +32,7 @@ DataStructs::InputData InputFileJson::ReadFile()
     json.at("turnThreshold").get_to(inputData.DroneData.TurnThreshold);
   }
   else {
-    std::cout << "Json Input file read error!  " << std::endl;
+    std::cerr << "Json Input file read error!  " << std::endl;
     exit(1);
   }
   file.close();

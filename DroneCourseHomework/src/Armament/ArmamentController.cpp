@@ -20,14 +20,18 @@ bool ArmamentController::GetIsFired()
   return isFired;
 }
 
-ArmamentController::ArmamentController(
-  std::string ammoType, float droneAttackSpeed, float droneHeight, float hitRadius, std::unique_ptr<IArmamentSolver> solver)
+ArmamentController::ArmamentController(std::string ammoType,
+                                       std::string filePath,
+                                       float droneAttackSpeed,
+                                       float droneHeight,
+                                       float hitRadius,
+                                       std::unique_ptr<IArmamentSolver> solver)
 {
   isFired = false;
   this->hitRadius = hitRadius;
   this->solver = std::move(solver);
 
-  armData = ArmamentDatabase::GetArmament(ammoType);
+  armData = ArmamentDatabase::GetArmament(ammoType, filePath);
 
   armamentFallHeight = droneHeight;
   fallResult = this->solver->Calculate(armData, droneAttackSpeed, armamentFallHeight);

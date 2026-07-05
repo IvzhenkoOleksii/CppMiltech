@@ -6,8 +6,8 @@
 
 class TargetsManager {
 public:
-  TargetsManager();
-  TargetsManager(const float& arrayTimeStep);
+  TargetsManager(const std::string& filePath);
+  TargetsManager(const std::string& filePath, const float& arrayTimeStep);
 
 public:
   void OnStepStart(const float& simStep);

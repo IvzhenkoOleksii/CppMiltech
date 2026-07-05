@@ -1,18 +1,14 @@
 #include "Armament/Solver/Table/TableController.h"
 #include "Armament/ArmamentDatabase.h"
-#include <asm-generic/errno.h>
 
-#include <cstddef>
-#include <cstdlib>
 #include <iostream>
 #include <fstream>
-#include <ostream>
 #include <vector>
 #include <cmath>
 
-TableSolver::TableController::TableController()
+TableSolver::TableController::TableController(std::string pathToTable)
 {
-  std::ifstream file("./DroneCourseHomework/DataFiles/txt/BallisticTable.txt");
+  std::ifstream file(pathToTable);
 
   if (file.is_open()) {
     table = {};

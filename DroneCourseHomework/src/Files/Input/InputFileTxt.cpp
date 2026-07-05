@@ -1,18 +1,23 @@
+
+#include "Files/Input/IInputFile.h"
 #include "Files/Input/InputFileTxt.h"
 #include "DataStructs.h"
 
 #include <iostream>
 #include <fstream>
-#include <sstream>
-#include <string>
 #include <vector>
+
+InputFileTxt::InputFileTxt(const std::string& filePath)
+  : IInputFile(filePath)
+{
+}
 
 InputFileTxt::~InputFileTxt() {}
 
 DataStructs::InputData InputFileTxt::ReadFile()
 {
   std::string line;
-  std::ifstream file("./DroneCourseHomework/DataFiles/txt/Input.txt");
+  std::ifstream file(filePath);
   DataStructs::InputData inputData{};
 
   if (file.is_open()) {
@@ -82,7 +87,7 @@ void InputFileTxt::SetupDronePosition(const std::string& line, DataStructs::Inpu
   }
 
   if (dataAsVector.size() < 3) {
-    std::cout << "Input data is not full. Check input file.Drone Position line! " << "\n";
+    std::cerr << "Input data is not full. Check input file.Drone Position line! " << "\n";
     exit(1);
   }
 
@@ -110,14 +115,14 @@ void InputFileTxt::SetFloatField(const std::string& input, int index, float* out
 {
   try {
     if (input.empty()) {
-      std::cout << "Empty input field at index: " << index << "\n";
+      std::cerr << "Empty input field at index: " << index << "\n";
       exit(1);
     }
 
     *output = std::stof(input);
   }
   catch (const std::exception&) {
-    std::cout << "   An Error inside Input file. Index of error field:   " << index << "\n";
+    std::cerr << "   An Error inside Input file. Index of error field:   " << index << "\n";
     exit(1);
   }
 }
