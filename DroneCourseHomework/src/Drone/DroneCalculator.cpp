@@ -2,7 +2,6 @@
 #include "MathCalculator.h"
 
 #include <cmath>
-#include <iostream>
 
 float DroneCalculator::CalculateDroneAcceleration(const float& droneAttackSpeed, const float& droneAccelerationPath)
 {
@@ -54,7 +53,7 @@ DataStructs::Coord2D DroneCalculator::CalculateManeuverPosition(float minAttackD
     y = targetPosition.Y;
   }
 
-  std::cout << "Maneuver position X: " << x << "    Y: " << y << std::endl;
+  //  std::cout << "Maneuver position X: " << x << "    Y: " << y << std::endl;
   return DataStructs::Coord2D(x, y);
 }
 
@@ -72,7 +71,7 @@ DataStructs::Coord2D DroneCalculator::CalculateFirePosition(float fallDistance,
   float fireY = dronePosition.Y + (targetPosition.Y - dronePosition.Y) * ratio;
 
   DataStructs::Coord2D firePosition = DataStructs::Coord2D(fireX, fireY);
-  std::cout << "Fire position X: " << fireX << "    Y: " << fireY << std::endl;
+  //  std::cout << "Fire position X: " << fireX << "    Y: " << fireY << std::endl;
 
   return firePosition;
 }

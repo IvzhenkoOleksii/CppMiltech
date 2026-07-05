@@ -1,6 +1,5 @@
 #include <cmath>
 #include <iostream>
-#include <ostream>
 
 #include "MathCalculator.h"
 
@@ -107,7 +106,6 @@ float MathCalculator::AngleBetweenVectorAndPoint(const DataStructs::Coord2D& poi
     //  std::cerr << "Something wrong here!  Cos alpha is greater than 1!" << std::endl;
     float difference = 1 - cosAlpha;
     if (difference < 0.000f) {
-      //   std::cerr << "Difference is too small!" << std::endl;
       cosAlpha = 1;
     }
   }
@@ -117,6 +115,5 @@ float MathCalculator::AngleBetweenVectorAndPoint(const DataStructs::Coord2D& poi
 
   float sign = -GetSign(crossProduct);
   angle *= sign;
-  // std::cout << "Angle between drone and target are:  " << angle << std::endl;
   return angle;
 }

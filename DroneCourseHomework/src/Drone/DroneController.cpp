@@ -1,6 +1,5 @@
 #include <cstddef>
 #include <iostream>
-#include <ostream>
 #include <cmath>
 
 #include "Drone/DroneController.h"
@@ -11,11 +10,13 @@
 #include "Target/TargetController.h"
 #include "MathCalculator.h"
 
-DroneController::DroneController(const DataStructs::InputData& input, std::unique_ptr<IArmamentSolver> solver)
+DroneController::DroneController(const DataStructs::InputData& input,
+                                 const std::string& ammoFilePath,
+                                 std::unique_ptr<IArmamentSolver> solver)
   : inputData(input.DroneData)
   , simStep(input.SimTestStep)
   , droneCalculator({})
-  , armamentController({inputData.AmmoType, inputData.AttackSpeed, inputData.Position.Z, input.HitRadius, std::move(solver)})
+  , armamentController({inputData.AmmoType, ammoFilePath, inputData.AttackSpeed, inputData.Position.Z, input.HitRadius, std::move(solver)})
 {
   armamentController.CalculateSimulationData(input.SimTestStep);
 
@@ -114,7 +115,7 @@ void DroneController::GetClosestTarget()
   }
 
   droneState.CurrentTargetIndex = targetIndex;
-  std::cout << "Selected target:   " << targetIndex << std::endl;
+  // std::cout << "Selected target:   " << targetIndex << std::endl;
 }
 
 void DroneController::GetTargetSolution()
@@ -168,7 +169,7 @@ void DroneController::GetTargetSolution()
     }
   }
 
-  std::cout << "Didn`t found target solution" << std::endl;
+  std::cerr << "Didn`t found target solution" << std::endl;
 }
 
 float DroneController::CalcDroneTimeToPoint(const DataStructs::Coord2D& point)
@@ -341,7 +342,7 @@ void DroneController::UpdateDroneVelocity()
     }
     else {
       droneState.State = DataStructs::MOVING;
-      std::cout << "Drone reach max velocity" << std::endl;
+      //  std::cout << "Drone reach max velocity" << std::endl;
     }
 
     return;

@@ -5,15 +5,15 @@
 
 #include <vector>
 
-TargetsManager::TargetsManager()
+TargetsManager::TargetsManager(const std::string& filePath)
 {
   // read target file
   TargetFile targetFile;
-  targetData = targetFile.ReadJsonFile();
+  targetData = targetFile.ReadJsonFile(filePath);
 }
 
-TargetsManager::TargetsManager(const float& arrayTimeStep)
-  : TargetsManager()
+TargetsManager::TargetsManager(const std::string& filePath, const float& arrayTimeStep)
+  : TargetsManager(filePath)
 {
   for (const auto& targetPosition : targetData.Positions) {
     targets.push_back(TargetController{targetPosition, arrayTimeStep});

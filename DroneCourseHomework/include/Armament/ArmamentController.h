@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-#include <memory>
 
 #include "Armament/ArmamentDatabase.h"
 #include "Armament/Solver/IArmamentSolver.h"
@@ -8,8 +7,12 @@
 
 class ArmamentController {
 public:
-  ArmamentController(
-    std::string ammoType, float droneAttackSpeed, float droneHeight, float hitRadius, std::unique_ptr<IArmamentSolver> solver);
+  ArmamentController(std::string ammoType,
+                     std::string filePath,
+                     float droneAttackSpeed,
+                     float droneHeight,
+                     float hitRadius,
+                     std::unique_ptr<IArmamentSolver> solver);
 
   // messaging
 public:

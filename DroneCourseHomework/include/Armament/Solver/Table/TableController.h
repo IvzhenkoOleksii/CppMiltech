@@ -1,3 +1,4 @@
+#include <string>
 #include <vector>
 #include "Armament/Solver/Table/Table.h"
 #include "Armament/ArmamentDatabase.h"
@@ -6,7 +7,8 @@ namespace TableSolver {
 
 class TableController {
 public:
-  TableController();
+  TableController() = default;
+  TableController(std::string pathToTable);
 
 public:
   Table table;

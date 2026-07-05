@@ -48,10 +48,10 @@ public:
   };
 
 public:
-  static Data GetArmament(const std::string& name);
+  static Data GetArmament(const std::string& name, const std::string& filePath);
 
 private:
   // data map, use only as getter
   static std::map<std::string, Data> sArmaData;
-  static void ReadAmmoFile();
+  static void ReadAmmoFile(const std::string& filePath);
 };

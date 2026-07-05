@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <nlohmann/json.hpp>
-#include <ostream>
 
 // DroneData struct methods
 DataStructs::Coord2D DataStructs::Coord2D::operator/(const DataStructs::Coord2D& other) const
