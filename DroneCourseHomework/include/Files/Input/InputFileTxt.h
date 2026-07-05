@@ -1,12 +1,11 @@
 #pragma once
 
-#include <string>
-
 #include "DataStructs.h"
 #include "Files/Input/IInputFile.h"
 
 class InputFileTxt : public IInputFile {
 public:
+  InputFileTxt(const std::string& filename);
   ~InputFileTxt();
   DataStructs::InputData ReadFile() override;
 

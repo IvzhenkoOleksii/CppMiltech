@@ -10,6 +10,7 @@
 class ArmamentController : public BaseLoop {
 public:
   ArmamentController(const std::string& ammoType,
+                     std::string filePath,
                      const float& droneAttackSpeed,
                      const float& droneHeight,
                      const float& hitRadius,

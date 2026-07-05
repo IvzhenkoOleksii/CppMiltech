@@ -34,10 +34,10 @@ void from_json(const nlohmann::json& j, JsonData& armData)
 
 std::map<std::string, ArmamentDatabase::Data> ArmamentDatabase::sArmaData;
 
-ArmamentDatabase::Data ArmamentDatabase::GetArmament(const std::string& name)
+ArmamentDatabase::Data ArmamentDatabase::GetArmament(const std::string& name, const std::string& filePath)
 {
   if (sArmaData.empty()) {
-    ReadAmmoFile();
+    ReadAmmoFile(filePath);
   }
 
   auto search = sArmaData.find(name);
@@ -53,9 +53,9 @@ ArmamentDatabase::Data ArmamentDatabase::GetArmament(const std::string& name)
   }
 }
 
-void ArmamentDatabase::ReadAmmoFile()
+void ArmamentDatabase::ReadAmmoFile(const std::string& filePath)
 {
-  std::ifstream file("./DroneCourseHomework/DataFiles/json/Ammo.json");
+  std::ifstream file(filePath);
 
   if (file.is_open()) {
     nlohmann::json json = nlohmann::json::parse(file);

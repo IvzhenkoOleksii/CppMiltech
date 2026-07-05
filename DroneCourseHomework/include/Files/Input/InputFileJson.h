@@ -5,6 +5,7 @@
 
 class InputFileJson : public IInputFile {
 public:
+  InputFileJson(const std::string& filename);
   ~InputFileJson();
   DataStructs::InputData ReadFile() override;
 };

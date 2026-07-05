@@ -7,12 +7,9 @@
 #include "Target/TargetsManager.h"
 #include "Threads/BaseLoop.h"
 
-#include <atomic>
-#include <memory>
-
 class DroneController : public BaseLoop {
 public:
-  DroneController(const DataStructs::InputData& data, std::unique_ptr<IArmamentSolver> solver);
+  DroneController(const DataStructs::InputData& data, const std::string& ammoFilePath, std::unique_ptr<IArmamentSolver> solver);
 
 public:
   void LockTargets(TargetsManager* targetsManager);

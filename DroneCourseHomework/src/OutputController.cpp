@@ -28,16 +28,22 @@ void OutputController::AddData(const DataStructs::DroneFullData& data)
 
 void to_json(nlohmann::json& j, const OutputController::OutputStep& outputStep)
 {
-  j = nlohmann::json{outputStep.pos,
-                     outputStep.direction,
-                     outputStep.state,
-                     outputStep.targetIdx,
-                     outputStep.dropPoint,
-                     outputStep.aimPoint,
-                     outputStep.predictedTarget};
+  nlohmann::json j_step;
+
+  j_step["position"] = {{"x", outputStep.pos.X}, {"y", outputStep.pos.Y}};
+  j_step["direction"] = outputStep.direction;
+  j_step["state"] = outputStep.state;
+  j_step["targetIdx"] = outputStep.targetIdx;
+  j_step["dropPoint"] = {{"x", outputStep.dropPoint.X}, {"y", outputStep.dropPoint.Y}};
+  j_step["aimPoint"] = {{"x", outputStep.aimPoint.X}, {"y", outputStep.aimPoint.Y}};
+  j_step["predictedTarget"] = {{"x", outputStep.predictedTarget.X}, {"y", outputStep.predictedTarget.Y}};
+
+  j = j_step;
 }
 
 void to_json(nlohmann::json& j, const OutputController::Output& output)
 {
-  j = nlohmann::json{output.numberOfSteps, output.steps};
+  nlohmann::json j_steps;
+  j_steps["steps"] = output.steps;
+  j = nlohmann::json{j_steps};
 }

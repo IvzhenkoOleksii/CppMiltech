@@ -1,12 +1,13 @@
 #include <iostream>
 #include <fstream>
+#include <string>
 
 #include "Files/TargetFile.h"
 #include "DataStructs.h"
 
-DataStructs::TargetData TargetFile::ReadJsonFile()
+DataStructs::TargetData TargetFile::ReadJsonFile(const std::string& filePath)
 {
-  std::ifstream file("./DroneCourseHomework/DataFiles/json/Targets.json");
+  std::ifstream file(filePath);
   DataStructs::TargetData targetData{};
 
   if (file.is_open()) {
@@ -14,7 +15,7 @@ DataStructs::TargetData TargetFile::ReadJsonFile()
     json.at("paths").get_to(targetData.Positions);
   }
   else {
-    std::cout << "Json Targets file read error!  " << std::endl;
+    std::cerr << "Json Targets file read error!  " << std::endl;
     exit(1);
   }
   file.close();

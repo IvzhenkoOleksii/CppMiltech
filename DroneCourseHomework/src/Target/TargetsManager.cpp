@@ -3,19 +3,18 @@
 #include "Files/TargetFile.h"
 #include "DataStructs.h"
 
-#include <memory>
 #include <mutex>
 #include <vector>
 
-TargetsManager::TargetsManager()
+TargetsManager::TargetsManager(const std::string& filePath)
 {
   // read target file
   TargetFile targetFile;
-  targetData = targetFile.ReadJsonFile();
+  targetData = targetFile.ReadJsonFile(filePath);
 }
 
-TargetsManager::TargetsManager(const float& stepTime, const float& arrayTimeStep, const int& timeScale)
-  : TargetsManager()
+TargetsManager::TargetsManager(const std::string& filePath, const float& stepTime, const float& arrayTimeStep, const int& timeScale)
+  : TargetsManager(filePath)
 {
   std::lock_guard<std::mutex> lock(mutex);
   for (const auto& targetPosition : targetData.Positions) {

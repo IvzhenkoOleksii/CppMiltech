@@ -2,14 +2,13 @@
 #include "DataStructs.h"
 #include "TargetController.h"
 
-#include <cstddef>
 #include <mutex>
 #include <vector>
 
 class TargetsManager {
 public:
-  TargetsManager();
-  TargetsManager(const float& stepTime, const float& arrayTimeStep, const int& timeScale);
+  TargetsManager(const std::string& filePath);
+  TargetsManager(const std::string& filePath, const float& stepTime, const float& arrayTimeStep, const int& timeScale);
 
 public:
   size_t GetSize();

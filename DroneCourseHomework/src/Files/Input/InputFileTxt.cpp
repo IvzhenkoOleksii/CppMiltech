@@ -7,12 +7,17 @@
 #include <string>
 #include <vector>
 
+InputFileTxt::InputFileTxt(const std::string& filePath)
+  : IInputFile(filePath)
+{
+}
+
 InputFileTxt::~InputFileTxt() {}
 
 DataStructs::InputData InputFileTxt::ReadFile()
 {
   std::string line;
-  std::ifstream file("./DroneCourseHomework/DataFiles/txt/Input.txt");
+  std::ifstream file(filePath);
   DataStructs::InputData inputData{};
 
   if (file.is_open()) {

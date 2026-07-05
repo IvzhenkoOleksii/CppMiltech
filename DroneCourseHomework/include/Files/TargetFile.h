@@ -3,5 +3,5 @@
 
 class TargetFile {
 public:
-  DataStructs::TargetData ReadJsonFile();
+  DataStructs::TargetData ReadJsonFile(const std::string& filePath);
 };

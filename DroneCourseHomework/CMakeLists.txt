@@ -14,3 +14,4 @@ target_include_directories(
                        "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/NlohmannJson/single_include")
 
 target_compile_options(executable PRIVATE -Wall -Wextra -pedantic)
+target_compile_definitions(executable PRIVATE PROJECT_ROOT_DIR="${CMAKE_CURRENT_SOURCE_DIR}")

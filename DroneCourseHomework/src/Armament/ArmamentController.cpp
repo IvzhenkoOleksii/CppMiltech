@@ -38,6 +38,7 @@ DataStructs::Coord3D ArmamentController::GetBombPosition()
 }
 
 ArmamentController::ArmamentController(const std::string& ammoType,
+                                       std::string filePath,
                                        const float& droneAttackSpeed,
                                        const float& droneHeight,
                                        const float& hitRadius,
@@ -51,7 +52,7 @@ ArmamentController::ArmamentController(const std::string& ammoType,
   this->hitRadius = hitRadius;
   this->solver = std::move(solver);
 
-  armData = ArmamentDatabase::GetArmament(ammoType);
+  armData = ArmamentDatabase::GetArmament(ammoType, filePath);
 
   armamentFallHeight = droneHeight;
   fallResult = this->solver->Calculate(armData, droneAttackSpeed, armamentFallHeight);

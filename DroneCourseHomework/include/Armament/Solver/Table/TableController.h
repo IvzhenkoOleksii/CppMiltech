@@ -6,7 +6,8 @@ namespace TableSolver {
 
 class TableController {
 public:
-  TableController();
+  TableController() = default;
+  TableController(std::string pathToTable);
 
 public:
   Table table;

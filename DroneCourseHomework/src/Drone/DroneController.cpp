@@ -1,4 +1,3 @@
-#include <cstddef>
 #include <iostream>
 #include <mutex>
 #include <ostream>
@@ -13,11 +12,14 @@
 #include "MathCalculator.h"
 #include "Threads/BaseLoop.h"
 
-DroneController::DroneController(const DataStructs::InputData& input, std::unique_ptr<IArmamentSolver> solver)
+DroneController::DroneController(const DataStructs::InputData& input,
+                                 const std::string& ammoFilePath,
+                                 std::unique_ptr<IArmamentSolver> solver)
   : BaseLoop(input.SimStepTime, input.TimeScale)
   , inputData(input.DroneData)
   , droneCalculator({})
   , armamentController(std::make_unique<ArmamentController>(inputData.AmmoType,
+                                                            ammoFilePath,
                                                             inputData.AttackSpeed,
                                                             inputData.Position.Z,
                                                             input.HitRadius,
