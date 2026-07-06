@@ -166,6 +166,18 @@ void to_json(nlohmann::json& j, const DataStructs::Coord2D& position)
 
 void from_json(const nlohmann::json& j, DataStructs::Coord2D& position)
 {
+  if (j.contains("x") && j.contains("y")) {
+    j.at("x").get_to(position.X);
+    j.at("y").get_to(position.Y);
+    return;
+  }
+
+  if (j.contains("X") && j.contains("Y")) {
+    j.at("X").get_to(position.X);
+    j.at("Y").get_to(position.Y);
+    return;
+  }
+
   j.at(0).get_to(position.X);
   j.at(1).get_to(position.Y);
 }
