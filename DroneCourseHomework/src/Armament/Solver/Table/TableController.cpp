@@ -1,6 +1,7 @@
 #include "Armament/Solver/Table/TableController.h"
 #include "Armament/ArmamentDatabase.h"
 
+#include <cstddef>
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -61,29 +62,32 @@ ArmamentDatabase::FallResult TableSolver::TableController::GetNearestResult(int 
 
 TableSolver::Interp TableSolver::TableController::GetNearestTableIndex(float value, const std::vector<float>& table)
 {
-  int diffIndex = 0;
-  float diffFraction = 0;
-  float minDiffence;
-  for (size_t i = 0; i < table.size(); ++i) {
+  if (value <= table[0]) {
+    return {0, 0};
+  }
+
+  size_t tableSize = table.size();
+  if (value >= table[tableSize - 1]) {
+    int prevToSizeIndex = (int)(tableSize - 2);
+    return {prevToSizeIndex, 1};
+  }
+
+  for (size_t i = 0; i < tableSize; ++i) {
     float tableValue = table[i];
-    float difference = std::fabs(value - tableValue);
 
-    if (i == 0) {
-      diffIndex = i;
-      minDiffence = difference;
-      continue;
-    }
-
-    if (difference < minDiffence) {
-      diffIndex = i;
-      minDiffence = difference;
-    }
-    else if (difference == minDiffence) {
-      diffFraction = 0.5;
+    if (value < tableValue) {
+      int diffIndex = i - 1;
+      float prevValue = table[diffIndex];
+      float length = tableValue - prevValue;
+      float difference = value - prevValue;
+      float diffFraction = difference / length;
+      return {diffIndex, diffFraction};
     }
   }
 
-  return {diffIndex, diffFraction};
+  // must be unreachable
+  std::cerr << "This is unreachable part!" << std::endl;
+  return {-1, -1};
 }
 
 int TableSolver::TableController::GetResultsIndex(int heightIndex, int velocityIndex, int massIndex, int dragIndex, int liftIndex)
