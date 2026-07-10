@@ -6,7 +6,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/debug/DroneCourseHomework/executable",
-            "args": ["DataFiles/json/Input.json", "./DroneCourseHomework/DataFiles/json/Ammo.json", "DataFiles/json/Targets.json", "Output.json", "Table", "DataFiles/txt/BallisticTable.txt"],
+            "args": ["DataFiles/json/config.json", "./DroneCourseHomework/DataFiles/json/ammo.json", "DataFiles/json/targets.json", "output.json", "Analitical", "DataFiles/txt/BallisticTable.txt"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],

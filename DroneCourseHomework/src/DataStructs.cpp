@@ -177,3 +177,20 @@ void from_json(const nlohmann::json& j, DataStructs::Coord3D& position)
   j.at(1).get_to(position.Y);
   j.at(2).get_to(position.Z);
 }
+
+void from_json(const nlohmann::json& j, DataStructs::DroneJsonState& droneState)
+{
+  j.at("altitude").get_to(droneState.altitude);
+  j.at("initialDirection").get_to(droneState.initialDirection);
+  j.at("attackSpeed").get_to(droneState.attackSpeed);
+  j.at("accelerationPath").get_to(droneState.accelerationPath);
+  j.at("angularSpeed").get_to(droneState.angularSpeed);
+  j.at("turnThreshold").get_to(droneState.turnThreshold);
+  j.at("position").get_to(droneState.position);
+}
+
+void from_json(const nlohmann::json& j, DataStructs::SimulationJsonState& simState)
+{
+  j.at("timeStep").get_to(simState.timeStep);
+  j.at("hitRadius").get_to(simState.hitRadius);
+}
