@@ -139,6 +139,9 @@ public:
   struct SimulationJsonState {
     float timeStep;
     float hitRadius;
+    float physicsTimeStep;
+    float timeScale;
+    float targetTimeStep;
   };
 };
 

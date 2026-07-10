@@ -20,12 +20,6 @@ DataStructs::InputData InputFileJson::ReadFile()
   if (file.is_open()) {
     nlohmann::json json = nlohmann::json::parse(file);
 
-//
-    json.at("targetTimeStep").get_to(inputData.TargetStepTime);
-    json.at("physicsTimeStep").get_to(inputData.PhysicsStepTime);
-    json.at("timeScale").get_to(inputData.TimeScale);
-//
-
     json.at("ammo").get_to(inputData.DroneData.AmmoType);
     json.at("targetArrayTimeStep").get_to(inputData.ArrayTimeStep);
 
@@ -42,8 +36,11 @@ DataStructs::InputData InputFileJson::ReadFile()
     inputData.DroneData.AttackSpeed = droneJsonState.attackSpeed;
     inputData.DroneData.TurnThreshold = droneJsonState.turnThreshold;
 
-    inputData.SimTestStep = simJsonState.timeStep;
+    inputData.SimStepTime = simJsonState.timeStep;
+    inputData.TargetStepTime = simJsonState.targetTimeStep;
+    inputData.PhysicsStepTime = simJsonState.physicsTimeStep;
     inputData.HitRadius = simJsonState.hitRadius;
+    inputData.TimeScale = simJsonState.timeScale;
   }
   else {
     std::cout << "Json Input file read error!  " << std::endl;

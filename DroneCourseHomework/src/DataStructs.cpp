@@ -209,4 +209,7 @@ void from_json(const nlohmann::json& j, DataStructs::SimulationJsonState& simSta
 {
   j.at("timeStep").get_to(simState.timeStep);
   j.at("hitRadius").get_to(simState.hitRadius);
+  j.at("physicsTimeStep").get_to(simState.physicsTimeStep);
+  j.at("timeScale").get_to(simState.timeScale);
+  j.at("targetTimeStep").get_to(simState.targetTimeStep);
 }
