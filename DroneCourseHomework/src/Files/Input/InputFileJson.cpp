@@ -20,19 +20,30 @@ DataStructs::InputData InputFileJson::ReadFile()
   if (file.is_open()) {
     nlohmann::json json = nlohmann::json::parse(file);
 
-    json.at("position").get_to<DataStructs::Coord3D>(inputData.DroneData.Position);
-    json.at("initialDirection").get_to(inputData.DroneData.InitialDirection);
-    json.at("attackSpeed").get_to(inputData.DroneData.AttackSpeed);
-    json.at("accelerationPath").get_to(inputData.DroneData.AccelerationPath);
-    json.at("ammoType").get_to(inputData.DroneData.AmmoType);
-    json.at("arrayTimeStep").get_to(inputData.ArrayTimeStep);
-    json.at("simTimeStep").get_to(inputData.SimStepTime);
-    json.at("hitRadius").get_to(inputData.HitRadius);
-    json.at("angularSpeed").get_to(inputData.DroneData.AngularSpeed);
-    json.at("turnThreshold").get_to(inputData.DroneData.TurnThreshold);
+//
     json.at("targetTimeStep").get_to(inputData.TargetStepTime);
     json.at("physicsTimeStep").get_to(inputData.PhysicsStepTime);
     json.at("timeScale").get_to(inputData.TimeScale);
+//
+
+    json.at("ammo").get_to(inputData.DroneData.AmmoType);
+    json.at("targetArrayTimeStep").get_to(inputData.ArrayTimeStep);
+
+    DataStructs::DroneJsonState droneJsonState;
+    json.at("drone").get_to(droneJsonState);
+
+    DataStructs::SimulationJsonState simJsonState;
+    json.at("simulation").get_to(simJsonState);
+
+    inputData.DroneData.Position = {droneJsonState.position.X, droneJsonState.position.Y, droneJsonState.altitude};
+    inputData.DroneData.InitialDirection = droneJsonState.initialDirection;
+    inputData.DroneData.AngularSpeed = droneJsonState.angularSpeed;
+    inputData.DroneData.AccelerationPath = droneJsonState.accelerationPath;
+    inputData.DroneData.AttackSpeed = droneJsonState.attackSpeed;
+    inputData.DroneData.TurnThreshold = droneJsonState.turnThreshold;
+
+    inputData.SimTestStep = simJsonState.timeStep;
+    inputData.HitRadius = simJsonState.hitRadius;
   }
   else {
     std::cout << "Json Input file read error!  " << std::endl;

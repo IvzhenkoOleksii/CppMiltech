@@ -125,6 +125,21 @@ public:
     DronePhysicalState physicalState;
     DroneOperationalState operationalState;
   };
+
+  struct DroneJsonState {
+    float altitude;
+    float initialDirection;
+    float attackSpeed;
+    float accelerationPath;
+    float angularSpeed;
+    float turnThreshold;
+    Coord2D position;
+  };
+
+  struct SimulationJsonState {
+    float timeStep;
+    float hitRadius;
+  };
 };
 
 void to_json(nlohmann::json& j, const DataStructs::Coord2D& position);
@@ -132,3 +147,6 @@ void from_json(const nlohmann::json& j, DataStructs::Coord2D& position);
 
 void to_json(nlohmann::json& j, const DataStructs::Coord3D& position);
 void from_json(const nlohmann::json& j, DataStructs::Coord3D& position);
+
+void from_json(const nlohmann::json& j, DataStructs::DroneJsonState& droneState);
+void from_json(const nlohmann::json& j, DataStructs::SimulationJsonState& simState);
