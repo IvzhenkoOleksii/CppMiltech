@@ -7,6 +7,7 @@ class ArmamentDatabase {
 public:
   struct Data {
   public:
+    std::string Name;
     float Mass;
     float Drag;
     float Lift;
@@ -14,14 +15,16 @@ public:
 
     Data()
     {
+      Name = "";
       Mass = 0;
       Drag = 0;
       Lift = 0;
       Type = 0;
     }
 
-    Data(float mass, float drag, float lift, uint8_t type)
+    Data(std::string name, float mass, float drag, float lift, uint8_t type)
     {
+      Name = name;
       Mass = mass;
       Drag = drag;
       Lift = lift;

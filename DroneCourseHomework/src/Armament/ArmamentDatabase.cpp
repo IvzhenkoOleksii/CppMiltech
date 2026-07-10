@@ -3,19 +3,13 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-
-#include <nlohmann/json.hpp>
 #include <vector>
 
-// this structure need only to parse JSON
-struct JsonData {
-public:
-  std::string Name;
-  ArmamentDatabase::Data Data;
-};
+#include <nlohmann/json.hpp>
 
 void from_json(const nlohmann::json& j, ArmamentDatabase::Data& data)
 {
+  j.at("name").get_to(data.Name);
   j.at("mass").get_to(data.Mass);
   j.at("drag").get_to(data.Drag);
   j.at("lift").get_to(data.Lift);
@@ -24,12 +18,6 @@ void from_json(const nlohmann::json& j, ArmamentDatabase::Data& data)
   if (data.Lift > 0) {
     data.Type = 1;
   }
-}
-
-void from_json(const nlohmann::json& j, JsonData& armData)
-{
-  j.at("name").get_to(armData.Name);
-  armData.Data = j.get<ArmamentDatabase::Data>();
 }
 
 std::map<std::string, ArmamentDatabase::Data> ArmamentDatabase::sArmaData;
@@ -47,8 +35,8 @@ ArmamentDatabase::Data ArmamentDatabase::GetArmament(const std::string& name, co
   }
   else {
     ArmamentDatabase::Data searchedData = search->second;
-    std::cout << "Data about " << name << "  mass: " << searchedData.Mass << "  drag: " << searchedData.Drag
-              << "  lift: " << searchedData.Lift << std::endl;
+    // std::cout << "Data about " << name << "  mass: " << searchedData.Mass << "  drag: " << searchedData.Drag
+    //           << "  lift: " << searchedData.Lift << std::endl;
     return searchedData;
   }
 }
@@ -60,10 +48,10 @@ void ArmamentDatabase::ReadAmmoFile(const std::string& filePath)
   if (file.is_open()) {
     nlohmann::json json = nlohmann::json::parse(file);
 
-    std::vector<JsonData> jsonData = json.at("ammo").get<std::vector<JsonData>>();
+    std::vector<ArmamentDatabase::Data> jsonData = json.get<std::vector<ArmamentDatabase::Data>>();
 
     for (const auto& entity : jsonData) {
-      sArmaData.insert({entity.Name, entity.Data});
+      sArmaData.insert({entity.Name, entity});
     }
   }
   else {
