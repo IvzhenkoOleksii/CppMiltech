@@ -92,11 +92,18 @@ TableSolver::Interp TableSolver::TableController::GetNearestTableIndex(float val
 
 int TableSolver::TableController::GetResultsIndex(int heightIndex, int velocityIndex, int massIndex, int dragIndex, int liftIndex)
 {
-  return ((((size_t)heightIndex * table.tableVelocity.size() + velocityIndex) * table.tableMass.size() + massIndex) *
-            table.tableDrag.size() +
-          dragIndex) *
-           table.tableLift.size() +
-         liftIndex;
+  size_t heightSize_t = (size_t)heightIndex;
+  size_t velocityTableSize = table.tableVelocity.size();
+  size_t massTableSize = table.tableMass.size();
+  size_t dragTableSize = table.tableDrag.size();
+  size_t liftTableSize = table.tableLift.size();
+
+  size_t firstCoeff = heightSize_t * velocityTableSize + velocityIndex;
+  size_t secondCoeff = firstCoeff * massTableSize + massIndex;
+  size_t thirdCoeff = secondCoeff * dragTableSize + dragIndex;
+  size_t fourthCoeff = thirdCoeff * liftTableSize + liftIndex;
+
+  return fourthCoeff;
 }
 
 ArmamentDatabase::FallResult TableSolver::TableController::Lerp(const ArmamentDatabase::FallResult& first,

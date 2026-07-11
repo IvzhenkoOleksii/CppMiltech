@@ -27,7 +27,7 @@ private:
 
   // variables
 private:
-  float arrayStepTime;
+  float arrayTimeStep;
   float currentStepTime;
 
 private:

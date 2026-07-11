@@ -12,7 +12,7 @@ TargetController::TargetController(const std::vector<DataStructs::Coord2D> posit
   calculator = {};
 
   this->positionsData = positionsData;
-  arrayStepTime = stepTimeData;
+  arrayTimeStep = stepTimeData;
 
   currentPosition = this->positionsData[currentPathStep];
 
@@ -42,8 +42,8 @@ void TargetController::OnStepStart(const float& simStep)
 {
   currentStepTime += simStep;
 
-  if (currentStepTime >= arrayStepTime) {
-    currentStepTime -= arrayStepTime;
+  if (currentStepTime >= arrayTimeStep) {
+    currentStepTime -= arrayTimeStep;
     UpdateCurrentPathStep();
     currentPosition = positionsData[currentPathStep];
     CalculateVelocity();
@@ -78,7 +78,7 @@ void TargetController::CalculateVelocity()
 
   DataStructs::Coord2D vector = calculator.GetDirectionVector(pathStartPosition, pathEndPosition);
 
-  velocityX = vector.X / arrayStepTime;
-  velocityY = vector.Y / arrayStepTime;
+  velocityX = vector.X / arrayTimeStep;
+  velocityY = vector.Y / arrayTimeStep;
   velocity = calculator.VectorLength(velocityX, velocityY);
 }

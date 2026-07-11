@@ -23,13 +23,13 @@ ArmamentDatabase::FallResult ArmamentTableSolver::Calculate(const ArmamentDataba
     for (int b = 0; b < 2; b++)
       for (int c = 0; c < 2; c++)
         for (int e = 0; e < 2; e++) {
-          int resultIndex1 = tableController.GetResultsIndex(
+          int loverIndex = tableController.GetResultsIndex(
             heightIndex.index + a, velocityIndex.index + b, massIndex.index + c, dragIndex.index + e, liftIndex.index);
-          ArmamentDatabase::FallResult lower = tableController.GetNearestResult(resultIndex1);
+          ArmamentDatabase::FallResult lower = tableController.GetNearestResult(loverIndex);
 
-          int resultIndex2 = tableController.GetResultsIndex(
+          int upperIndex = tableController.GetResultsIndex(
             heightIndex.index + a, velocityIndex.index + b, massIndex.index + c, dragIndex.index + e, liftIndex.index + 1);
-          ArmamentDatabase::FallResult upper = tableController.GetNearestResult(resultIndex2);
+          ArmamentDatabase::FallResult upper = tableController.GetNearestResult(upperIndex);
           v[a * 8 + b * 4 + c * 2 + e] = tableController.Lerp(lower, upper, liftIndex.fraction);
         }
 
