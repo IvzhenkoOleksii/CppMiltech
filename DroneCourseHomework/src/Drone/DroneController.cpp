@@ -296,6 +296,7 @@ bool DroneController::UpdadeDroneRotation()
       return false;
     case DataStructs::STOPPED:
     case DataStructs::TURNING:
+    default:
       // rotation in progress
       droneState.State = DataStructs::TURNING;
       float angleToRotate = rotateChangeStep;
@@ -305,7 +306,6 @@ bool DroneController::UpdadeDroneRotation()
       }
 
       Rotate(angleToTarget, angleToRotate);
-
       return true;
   }
 }
