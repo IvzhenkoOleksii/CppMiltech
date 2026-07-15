@@ -1,7 +1,10 @@
 
+#include <chrono>
 #include <cmath>
+#include <iostream>
 #include <mutex>
 #include <optional>
+#include <ostream>
 
 #include "DataStructs.h"
 #include "MathCalculator.h"
@@ -13,8 +16,14 @@ DronePhysicalController::DronePhysicalController(const float& stepTime, const in
   droneCalculator = {};
 
   state.Velocity = 0;
+  state.TempVelocity = 0;
   state.Position = inputData.Position;
   state.Direction = inputData.InitialDirection;
+  state.DroneStateType = DataStructs::STOPPED;
+
+  startClock = std::chrono::steady_clock::now();
+  ticksCounter = 0;
+  state.TimeSecSinceStart = 0;
 
   maxSpeed = inputData.AttackSpeed;
   angularSpeed = inputData.AngularSpeed;
@@ -36,6 +45,15 @@ void DronePhysicalController::CalculateAcceleration(const float& accelerationPat
 DataStructs::DronePhysicalState DronePhysicalController::GetState()
 {
   std::lock_guard<std::mutex> lock(physicalMutex);
+
+  auto currentTime = std::chrono::steady_clock::now();
+  auto passedTime = currentTime - startClock;
+  auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(passedTime).count();
+  double millisecondsD = (double)milliseconds;
+  double seconds = millisecondsD / 1000;
+
+  state.TimeSecSinceStart = seconds;
+  state.tickCounter = ticksCounter;
   return state;
 }
 
@@ -58,15 +76,22 @@ void DronePhysicalController::Accelerate()
 
   Rotate();
 
-  if (state.Velocity < currentCommand->SpeedToReach) {
-    state.Velocity += speedChangeStep;
+  //  std::cout << "Accelerate function. Velocity at start:   " << state.Velocity << std::endl;
+
+  if (state.TempVelocity < currentCommand->SpeedToReach) {
+    state.TempVelocity += speedChangeStep;
+    state.DroneStateType = DataStructs::ACCELERATING;
+
+    //   std::cout << "Accelerate function. Velocity became:   " << state.Velocity << "  speedChangeStep:  " << speedChangeStep <<
+    //   std::endl;
   }
 
-  if (state.Velocity > currentCommand->SpeedToReach) {
-    state.Velocity = currentCommand->SpeedToReach;
+  if (state.TempVelocity > currentCommand->SpeedToReach) {
+    state.TempVelocity = currentCommand->SpeedToReach;
   }
 
-  if (state.Velocity == currentCommand->SpeedToReach) {
+  if (state.TempVelocity == currentCommand->SpeedToReach) {
+    state.DroneStateType = DataStructs::MOVING;
     isNeedToResetCommand.store(true);
   }
 
@@ -80,6 +105,7 @@ void DronePhysicalController::Decelerate()
 
   if (state.Velocity > currentCommand->SpeedToReach) {
     state.Velocity -= speedChangeStep;
+    state.DroneStateType = DataStructs::DECELERATING;
   }
 
   if (state.Velocity < currentCommand->SpeedToReach) {
@@ -91,6 +117,7 @@ void DronePhysicalController::Decelerate()
   }
 
   if (state.Velocity == 0) {
+    state.DroneStateType = DataStructs::STOPPED;
     shouldNotifyStopped.store(true);
   }
 
@@ -129,6 +156,7 @@ void DronePhysicalController::RotateOnSmallAngle(float angleAbs)
     isNeedToResetCommand.store(true);
   }
 }
+
 void DronePhysicalController::RotateOnSignificantAngle()
 {
   // do not add mutex guard here -> have already at OnLoopStepStart
@@ -144,11 +172,17 @@ void DronePhysicalController::RotateOnSignificantAngle()
     currentCommand->AngleToRotate += rotateChangeStep;
     // std::cout << "Rotate. AngleToRotate: " << currentCommand->AngleToRotate << " ---- " << std::endl;
   }
+
+  state.DroneStateType = DataStructs::TURNING;
 }
 
 void DronePhysicalController::UpdatePosition()
 {
   std::lock_guard<std::mutex> lock(physicalMutex);
+
+  ticksCounter++;
+  state.Velocity = state.TempVelocity;
+
   if (state.Velocity <= 0) {
     // dron stay in place
     return;
@@ -156,14 +190,23 @@ void DronePhysicalController::UpdatePosition()
 
   float distanceToFly = state.Velocity * stepTime;
 
+  // std::cout << "UpdatePosition function. Velocity:   " << state.Velocity << "  stepTime:  " << stepTime
+  //           << "  distanceChange:  " << distanceToFly << std::endl;
+
   DataStructs::Coord2D directionVector = MathCalculator::GetDirectionVector(state.Direction);
   float distanceX = directionVector.X * distanceToFly;
   float distanceY = directionVector.Y * distanceToFly;
 
+  // std::cout << "UpdatePosition function. distanceX:   " << distanceX << "  distanceY:  " << distanceY << std::endl;
+  // std::cout << "UpdatePosition function. state.Position.X before:   " << state.Position.X
+  //           << "  state.Position.Y before:  " << state.Position.Y << std::endl;
+
   state.Position.X += distanceX;
   state.Position.Y += distanceY;
 
-  //  std::cout << "UpdatePosition. state.Position.X: " << state.Position.X << "   Y:   " << state.Position.Y << std::endl;
+  // std::cout << "UpdatePosition function. state.Position.X after:   " << state.Position.X
+  //           << "  state.Position.Y after:  " << state.Position.Y << std::endl
+  //           << "//////////" << std::endl;
 }
 
 void DronePhysicalController::ProcessCommand()

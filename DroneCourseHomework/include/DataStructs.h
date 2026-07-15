@@ -101,13 +101,17 @@ public:
   // structs for drone
   struct DronePhysicalState {
     float Direction;
+    float TempDirection;
     float Velocity;
+    float TempVelocity;
     Coord3D Position;
+    float TimeSecSinceStart;
+    DroneState DroneStateType;
+    int tickCounter;
   };
 
 public:
   struct DroneOperationalState {
-    DroneState State;
     int CurrentTargetIndex = -1;
     Coord2D TargetedPosition;
 

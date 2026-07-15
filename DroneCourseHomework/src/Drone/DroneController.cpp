@@ -126,7 +126,6 @@ bool DroneController::isBombDropped()
 void DroneController::InitState()
 {
   std::lock_guard<std::recursive_mutex> lock(droneMutex);
-  state.State = DataStructs::STOPPED;
   state.DeselectTarget();
 }
 

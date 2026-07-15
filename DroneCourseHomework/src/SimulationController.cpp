@@ -1,4 +1,3 @@
-#include <iostream>
 #include "SimulationController.h"
 
 SimulationController::SimulationController(const float& stepTime, const int& timeScale)

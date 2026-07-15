@@ -15,6 +15,10 @@ public:
     DataStructs::Coord2D dropPoint;
     DataStructs::Coord2D aimPoint;
     DataStructs::Coord2D predictedTarget;
+    float timeSecSinceStart;
+    int stepIndex;
+    int physicalTickCounter;
+    float velocityDelta;
   };
 
   struct Output {
