@@ -1,8 +1,4 @@
 #include <cmath>
-<<<<<<<< HEAD:homework_9/src/MathCalculator.cpp
-#include <iostream>
-========
->>>>>>>> Homework10:homework_10/src/MathCalculator.cpp
 
 #include "MathCalculator.h"
 

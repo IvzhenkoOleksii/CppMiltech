@@ -3,11 +3,7 @@
 
 ArmamentTableSolver::ArmamentTableSolver(const std::string& pathToTable)
 {
-<<<<<<<< HEAD:homework_9/src/Armament/Solver/Table/ArmamentTableSolver.cpp
-  tableController = TableController(pathToTable);
-========
   tableController = {pathToTable};
->>>>>>>> Homework10:homework_10/src/Armament/Solver/Table/ArmamentTableSolver.cpp
 }
 
 ArmamentTableSolver::~ArmamentTableSolver() {}

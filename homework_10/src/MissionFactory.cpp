@@ -8,11 +8,6 @@
 #include "Armament/Solver/ArmamentAnalyticalSolver.h"
 #include "Armament/Solver/Table/ArmamentTableSolver.h"
 
-<<<<<<<< HEAD:homework_9/src/MissionFactory.cpp
-#include <string>
-
-========
->>>>>>>> Homework10:homework_10/src/MissionFactory.cpp
 std::unique_ptr<IInputFile> MissionFactory::CreateInputFile(const std::string& filePath)
 {
   fileTypeCode code = ConvertArgumentIntoFileTypeCode(filePath);

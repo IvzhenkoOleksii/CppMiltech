@@ -151,22 +151,3 @@ void InputFileTxt::SetupDronePosition(const std::string& line, DataStructs::Inpu
 
   data->DroneData.Position = {x, y, z};
 }
-<<<<<<<< HEAD:homework_9/src/Files/Input/InputFileTxt.cpp
-
-void InputFileTxt::SetFloatField(const std::string& input, int index, float* output)
-{
-  try {
-    if (input.empty()) {
-      std::cerr << "Empty input field at index: " << index << "\n";
-      exit(1);
-    }
-
-    *output = std::stof(input);
-  }
-  catch (const std::exception&) {
-    std::cerr << "   An Error inside Input file. Index of error field:   " << index << "\n";
-    exit(1);
-  }
-}
-========
->>>>>>>> Homework10:homework_10/src/Files/Input/InputFileTxt.cpp

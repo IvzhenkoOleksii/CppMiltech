@@ -125,14 +125,11 @@ public:
   };
 
 public:
-<<<<<<<< HEAD:homework_9/include/DataStructs.h
-========
   struct DroneFullData {
     DronePhysicalState physicalState;
     DroneOperationalState operationalState;
   };
 
->>>>>>>> Homework10:homework_10/include/DataStructs.h
   struct DroneJsonState {
     float altitude;
     float initialDirection;
@@ -146,12 +143,9 @@ public:
   struct SimulationJsonState {
     float timeStep;
     float hitRadius;
-<<<<<<<< HEAD:homework_9/include/DataStructs.h
-========
     float physicsTimeStep;
     float timeScale;
     float targetTimeStep;
->>>>>>>> Homework10:homework_10/include/DataStructs.h
   };
 };
 

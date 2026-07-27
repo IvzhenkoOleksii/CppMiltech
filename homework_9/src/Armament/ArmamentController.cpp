@@ -1,6 +1,5 @@
 #include "Armament/ArmamentController.h"
 #include "DataStructs.h"
-#include "Threads/BaseLoop.h"
 
 #include <string>
 #include <cmath>
@@ -32,29 +31,17 @@ float ArmamentController::GetHitRadius()
   return hitRadius;
 }
 
-<<<<<<<< HEAD:homework_9/src/Armament/ArmamentController.cpp
+DataStructs::Coord3D ArmamentController::GetBombPosition()
+{
+  return position;
+}
+
 ArmamentController::ArmamentController(std::string ammoType,
                                        std::string filePath,
                                        float droneAttackSpeed,
                                        float droneHeight,
                                        float hitRadius,
                                        std::unique_ptr<IArmamentSolver> solver)
-========
-DataStructs::Coord3D ArmamentController::GetBombPosition()
->>>>>>>> Homework10:homework_10/src/Armament/ArmamentController.cpp
-{
-  return position;
-}
-
-ArmamentController::ArmamentController(const std::string& ammoType,
-                                       std::string filePath,
-                                       const float& droneAttackSpeed,
-                                       const float& droneHeight,
-                                       const float& hitRadius,
-                                       const float& stepTime,
-                                       const int& timeScale,
-                                       std::unique_ptr<IArmamentSolver> solver)
-  : BaseLoop(stepTime, timeScale)
 {
   UpdateFireFlag(false);
 

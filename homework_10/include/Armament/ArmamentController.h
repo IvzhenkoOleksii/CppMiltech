@@ -8,21 +8,6 @@
 
 class ArmamentController : public BaseLoop {
 public:
-<<<<<<<< HEAD:homework_9/include/Armament/ArmamentController.h
-  ArmamentController(std::string ammoType,
-                     std::string filePath,
-                     float droneAttackSpeed,
-                     float droneHeight,
-                     float hitRadius,
-                     std::unique_ptr<IArmamentSolver> solver);
-
-  // messaging
-public:
-  using EventCallback = std::function<void(const DataStructs::Coord3D&)>;
-
-private:
-  static std::vector<EventCallback> subscribers;
-========
   ArmamentController(const std::string& ammoType,
                      std::string filePath,
                      const float& droneAttackSpeed,
@@ -31,7 +16,6 @@ private:
                      const float& stepTime,
                      const int& timeScale,
                      std::unique_ptr<IArmamentSolver> solver);
->>>>>>>> Homework10:homework_10/include/Armament/ArmamentController.h
 
   // public methods
 public:

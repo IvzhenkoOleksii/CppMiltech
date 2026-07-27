@@ -1,9 +1,5 @@
-<<<<<<<< HEAD:homework_9/include/Armament/Solver/Table/ArmamentTableSolver.h
-#include <string>
-========
 #pragma once
 
->>>>>>>> Homework10:homework_10/include/Armament/Solver/Table/ArmamentTableSolver.h
 #include "Armament/Solver/IArmamentSolver.h"
 #include "Armament/Solver/Table/TableController.h"
 #include "Armament/ArmamentDatabase.h"

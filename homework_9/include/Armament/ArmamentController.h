@@ -8,7 +8,6 @@
 
 class ArmamentController : public BaseLoop {
 public:
-<<<<<<<< HEAD:homework_9/include/Armament/ArmamentController.h
   ArmamentController(std::string ammoType,
                      std::string filePath,
                      float droneAttackSpeed,
@@ -22,16 +21,6 @@ public:
 
 private:
   static std::vector<EventCallback> subscribers;
-========
-  ArmamentController(const std::string& ammoType,
-                     std::string filePath,
-                     const float& droneAttackSpeed,
-                     const float& droneHeight,
-                     const float& hitRadius,
-                     const float& stepTime,
-                     const int& timeScale,
-                     std::unique_ptr<IArmamentSolver> solver);
->>>>>>>> Homework10:homework_10/include/Armament/ArmamentController.h
 
   // public methods
 public:

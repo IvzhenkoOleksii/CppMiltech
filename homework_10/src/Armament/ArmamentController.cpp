@@ -32,16 +32,7 @@ float ArmamentController::GetHitRadius()
   return hitRadius;
 }
 
-<<<<<<<< HEAD:homework_9/src/Armament/ArmamentController.cpp
-ArmamentController::ArmamentController(std::string ammoType,
-                                       std::string filePath,
-                                       float droneAttackSpeed,
-                                       float droneHeight,
-                                       float hitRadius,
-                                       std::unique_ptr<IArmamentSolver> solver)
-========
 DataStructs::Coord3D ArmamentController::GetBombPosition()
->>>>>>>> Homework10:homework_10/src/Armament/ArmamentController.cpp
 {
   return position;
 }
