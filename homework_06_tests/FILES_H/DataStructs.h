@@ -109,7 +109,7 @@ public:
   };
 
 public:
-  struct DroneOperationalData {
+  struct DroneOperationalState {
     DroneState State;
     int CurrentTargetIndex = -1;
     DronePhysicalState transform;

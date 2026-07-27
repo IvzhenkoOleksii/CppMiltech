@@ -61,7 +61,7 @@ private:
   DataStructs::DronePhysicalState
     calculatedState;  // temp state, which will be at the end of simStep, -> will be copied into operationalData
 private:
-  DataStructs::DroneOperationalData operationalData;
+  DataStructs::DroneOperationalState operationalData;
 
   // targets store as referncies, so drone will get updated data of targets, ie -> updated position, speed, etc
 private:

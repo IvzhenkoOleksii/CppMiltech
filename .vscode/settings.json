@@ -1,3 +1,6 @@
 {
-    "editor.defaultFoldingRangeProvider": "ms-vscode.cmake-tools"
+    "editor.defaultFoldingRangeProvider": "ms-vscode.cmake-tools",
+    "terminal.integrated.env.linux": {
+        "DEBUGINFOD_URLS": ""
+    }
 }

@@ -2,19 +2,16 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Work with Debugger",
+            "name": "Debug DroneCourseHomework (GDB)",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/debug/DroneCourseHomework/executable",
-            "args": ["Txt", "Table"],
+            "program": "${workspaceFolder}/build/debug/homework_10/executable",
+            "args": ["DataFiles/json/config.json", "./homework_10/DataFiles/json/ammo.json", "DataFiles/json/targets.json", "./homework_10/DataFiles/json/output.json", "Table", "DataFiles/txt/BallisticTable.txt"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
-            "sourceFileMap": {
-                "${workspaceFolder}": "${workspaceFolder}"
-            },
             "miDebuggerPath": "/usr/bin/gdb",
             "preLaunchTask": "CMake: configure and build",
             "setupCommands": [
@@ -30,7 +27,12 @@
                 },
                 {
                     "description": "Disable ASLR disabling in GDB",
-                    "text": "set disable-randomization off", // GDB: don`t start randomization
+                    "text": "-gdb-set disable-randomization off",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Disable debuginfod prompts in debugger sessions",
+                    "text": "-gdb-set debuginfod enabled off",
                     "ignoreFailures": true
                 }
             ]
