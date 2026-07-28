@@ -17,6 +17,11 @@ FROM ubuntu:noble@sha256:c4a8d5503dfb2a3eb8ab5f807da5bc69a85730fb49b5cfca2330194
 # інтерактивного stdin немає - без цього build може зависнути назавжди.
 ARG DEBIAN_FRONTEND="noninteractive"
 
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libgpiod-dev \
+    && rm -rf /var/lib/apt/lists/*
+
 # Пакети зі списку apt-packages.in (по одному на рядок, коментарі через #).
 #
 # Прапори й чистка:
