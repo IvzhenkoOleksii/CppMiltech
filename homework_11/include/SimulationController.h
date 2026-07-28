@@ -1,23 +1,21 @@
 #pragma once
 
-#include "Threads/BaseLoop.h"
+constexpr int MaxSimulationSteps = 10000;
 
-constexpr int MaxSimulationSteps = 20;  // must be 10000
-
-class SimulationController : public BaseLoop {
+class SimulationController {
 public:
-  SimulationController(const float& stepTime, const int& timeScale);
-  virtual ~SimulationController() = default;
-
-protected:
-  // functions
-  void OnLoopStepStart() override;
-  void OnLoopStepEnd() override;
-  void OnAfterStepEndAction() override;
+  SimulationController(const float& simStepTime);
 
 public:
-  float GetStepTime();
+  bool IsWorking();
+  void Update();
+  float GetSimulationStepTime();
+  void Stop();
+  int GetCurrentStep();
 
 private:
-  int currentStepIndex;
+  bool isActive;
+  int currentSimulationStep;
+  float simulationStepTime;
+  float currentSimulationTime;
 };

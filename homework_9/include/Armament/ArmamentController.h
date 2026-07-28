@@ -4,9 +4,8 @@
 #include "Armament/ArmamentDatabase.h"
 #include "Armament/Solver/IArmamentSolver.h"
 #include "DataStructs.h"
-#include "Threads/BaseLoop.h"
 
-class ArmamentController : public BaseLoop {
+class ArmamentController {
 public:
   ArmamentController(std::string ammoType,
                      std::string filePath,
@@ -24,24 +23,20 @@ private:
 
   // public methods
 public:
+  void CalculateSimulationData(const float& simStep);
   void DropBomb(DataStructs::Coord3D startPosition, float direction);
   float GetFallDistance();
   float GetFallTime();
   bool GetIsFired();
-  float GetHitRadius();
   float CalculateBombFallDistance(DataStructs::Coord3D startPoint, float speed);
-  DataStructs::Coord3D GetBombPosition();
 
-protected:
-  void OnLoopStepStart() override;
-  void OnLoopStepEnd() override;
-  void OnAfterStepEndAction() override;
+public:
+  void OnStepStart(const float& simStep);
+  void OnStepEnd();
 
 private:
-  void CalculateSimulationData();
   void UpdateFallPositionPartially();
   void UpdateFallPosition();
-  void UpdateFireFlag(bool newValue);
 
 private:
   std::unique_ptr<IArmamentSolver> solver;
@@ -56,7 +51,7 @@ private:
 
   // data for simulation
 private:
-  std::atomic<bool> isFired;
+  bool isFired;
   DataStructs::Coord3D position;
   float fallDirection;
   float fallStepHeight;     // vertical step

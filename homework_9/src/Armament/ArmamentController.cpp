@@ -5,17 +5,6 @@
 #include <cmath>
 #include <iostream>
 
-bool ArmamentController::GetIsFired()
-{
-  return isFired.load();
-}
-
-void ArmamentController::UpdateFireFlag(bool value)
-{
-  isFired.store(value);
-}
-
-// these next 2 values are constant, no need std::atomic or mutex
 float ArmamentController::GetFallDistance()
 {
   return fallResult.Distance;
@@ -26,14 +15,9 @@ float ArmamentController::GetFallTime()
   return fallResult.Time;
 }
 
-float ArmamentController::GetHitRadius()
+bool ArmamentController::GetIsFired()
 {
-  return hitRadius;
-}
-
-DataStructs::Coord3D ArmamentController::GetBombPosition()
-{
-  return position;
+  return isFired;
 }
 
 ArmamentController::ArmamentController(std::string ammoType,
@@ -43,8 +27,7 @@ ArmamentController::ArmamentController(std::string ammoType,
                                        float hitRadius,
                                        std::unique_ptr<IArmamentSolver> solver)
 {
-  UpdateFireFlag(false);
-
+  isFired = false;
   this->hitRadius = hitRadius;
   this->solver = std::move(solver);
 
@@ -52,16 +35,6 @@ ArmamentController::ArmamentController(std::string ammoType,
 
   armamentFallHeight = droneHeight;
   fallResult = this->solver->Calculate(armData, droneAttackSpeed, armamentFallHeight);
-  CalculateSimulationData();
-}
-
-// this is doing one time at start
-void ArmamentController::CalculateSimulationData()
-{
-  numberOfFallSteps = fallResult.Time / stepTime;
-  currentFallStepIndex = numberOfFallSteps;
-  fallStepHeight = armamentFallHeight / numberOfFallSteps;
-  fallStepDistance = fallResult.Distance / numberOfFallSteps;
 }
 
 float ArmamentController::CalculateBombFallDistance(DataStructs::Coord3D startPoint, float speed)
@@ -74,9 +47,35 @@ void ArmamentController::DropBomb(DataStructs::Coord3D startPosition, float dire
 {
   position = startPosition;
   fallDirection = direction;
+  isFired = true;
+}
 
-  UpdateFireFlag(true);
-  StartLoopThread();
+void ArmamentController::CalculateSimulationData(const float& simStep)
+{
+  numberOfFallSteps = fallResult.Time / simStep;
+  currentFallStepIndex = numberOfFallSteps;
+  fallStepHeight = armamentFallHeight / numberOfFallSteps;
+  fallStepDistance = fallResult.Distance / numberOfFallSteps;
+}
+
+void ArmamentController::OnStepStart(const float& simStep)
+{
+  if (!isFired) {
+    return;
+  }
+
+  if (currentFallStepIndex > 1) {
+    currentFallStepIndex--;
+    UpdateFallPosition();
+  }
+  else if (currentFallStepIndex < 1 && currentFallStepIndex > 0) {
+    UpdateFallPositionPartially();
+    currentFallStepIndex = 0;
+  }
+  else {
+    isFired = false;
+    std::cout << "Bomb exploded. Position X:   " << position.X << "   Y:   " << position.Y << "   Z:  " << position.Z << std::endl;
+  }
 }
 
 void ArmamentController::UpdateFallPosition()
@@ -101,22 +100,4 @@ void ArmamentController::UpdateFallPositionPartially()
   position.Y += yStep;
 }
 
-void ArmamentController::OnLoopStepStart() {}
-
-void ArmamentController::OnLoopStepEnd()
-{
-  if (currentFallStepIndex > 1) {
-    currentFallStepIndex--;
-    UpdateFallPosition();
-  }
-  else if (currentFallStepIndex < 1 && currentFallStepIndex > 0) {
-    UpdateFallPositionPartially();
-    currentFallStepIndex = 0;
-  }
-  else {
-    std::cout << "Bomb exploded. Position X:   " << position.X << "   Y:   " << position.Y << "   Z:  " << position.Z << std::endl;
-    FinishLoopThread();
-  }
-}
-
-void ArmamentController::OnAfterStepEndAction() {}
+void ArmamentController::OnStepEnd() {}

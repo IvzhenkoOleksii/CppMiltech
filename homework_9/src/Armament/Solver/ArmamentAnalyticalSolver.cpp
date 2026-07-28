@@ -39,19 +39,23 @@ float ArmamentAnalitycalSolver::CalculateFallDistance(const ArmamentDatabase::Da
 
   float first = fallTime * droneAttackSpeed;
   float second = (powf(fallTime, 2) * armData.Drag * droneAttackSpeed) / (2 * armData.Mass);
+
   float third_1 = 6 * armData.Drag * GRAVITY * armData.Lift * armData.Mass;
   float third_2 = 6 * dragPower2 * (liftPower2 - 1) * droneAttackSpeed;
   float third_down = 36 * powf(armData.Mass, 2);
   float third = (powf(fallTime, 3) * (third_1 - third_2)) / third_down;
+
   float fourth_1 = 3 * dragPower3 * liftPower2 * liftPower2Plus1 * droneAttackSpeed;
   float fourth_2 = 6 * dragPower3 * liftPower2Plus1 * liftPower4 * droneAttackSpeed;
   float fourth_3 = 6 * dragPower2 * GRAVITY * armData.Lift * armData.Mass * (liftPower4 + liftPower2Plus1);
   float fourth_down = 36 * powf(armData.Mass, 3) * powf(liftPower2Plus1, 2);
   float fourth = (powf(fallTime, 4) * (fourth_1 + fourth_2 - fourth_3)) / fourth_down;
+
   float fifth_1 = 3 * dragPower3 * GRAVITY * powf(armData.Lift, 3) * armData.Mass;
   float fifth_2 = 3 * powf(armData.Drag, 4) * liftPower2 * liftPower2Plus1 * droneAttackSpeed;
   float fifth_down = 36 * liftPower2Plus1 * powf(armData.Mass, 4);
   float fifth = (powf(fallTime, 5) * (fifth_1 - fifth_2)) / fifth_down;
+
   float fallDistance = first - second + third + fourth + fifth;
 
   if (fallDistance <= 0) {
@@ -105,6 +109,7 @@ float ArmamentAnalitycalSolver::CalculateCoefficientA(const ArmamentDatabase::Da
   float leftPart = armData.Drag * GRAVITY * armData.Mass;
   float rightPart = 2 * powf(armData.Drag, 2) * armData.Lift * droneAttackSpeed;
   float coefA = leftPart - rightPart;
+
   return coefA;
 }
 
@@ -113,12 +118,14 @@ float ArmamentAnalitycalSolver::CalculateCoefficientB(const ArmamentDatabase::Da
   float leftPart = 3 * GRAVITY * powf(armData.Mass, 2);
   float rightPart = 3 * armData.Drag * armData.Lift * armData.Mass * droneAttackSpeed;
   float coefB = -leftPart + rightPart;
+
   return coefB;
 }
 
 float ArmamentAnalitycalSolver::CalculateCoefficientC(const ArmamentDatabase::Data& armData, float droneZPosition)
 {
   float coefC = 6 * powf(armData.Mass, 2) * droneZPosition;
+
   return coefC;
 }
 
@@ -150,6 +157,7 @@ float ArmamentAnalitycalSolver::CalculateCardanoQ(float a, float b, float c)
   }
 
   float cardanoQ = first + second;
+
   return cardanoQ;
 }
 
@@ -164,5 +172,6 @@ float ArmamentAnalitycalSolver::CalculateCardanoPHI(float p, float q)
 
   float value = first * second;
   float phi = acosf(value);
+
   return phi;
 }

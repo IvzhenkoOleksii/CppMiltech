@@ -1,5 +1,4 @@
-#pragma once
-
+#include <string>
 #include "Armament/Solver/IArmamentSolver.h"
 #include "Armament/Solver/Table/TableController.h"
 #include "Armament/ArmamentDatabase.h"

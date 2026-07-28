@@ -36,14 +36,11 @@ DataStructs::InputData InputFileJson::ReadFile()
     inputData.DroneData.AttackSpeed = droneJsonState.attackSpeed;
     inputData.DroneData.TurnThreshold = droneJsonState.turnThreshold;
 
-    inputData.SimStepTime = simJsonState.timeStep;
-    inputData.TargetStepTime = simJsonState.targetTimeStep;
-    inputData.PhysicsStepTime = simJsonState.physicsTimeStep;
+    inputData.SimTestStep = simJsonState.timeStep;
     inputData.HitRadius = simJsonState.hitRadius;
-    inputData.TimeScale = simJsonState.timeScale;
   }
   else {
-    std::cout << "Json Input file read error!  " << std::endl;
+    std::cerr << "Json Input file read error!  " << std::endl;
     exit(1);
   }
   file.close();

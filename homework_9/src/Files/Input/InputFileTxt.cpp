@@ -38,38 +38,6 @@ DataStructs::InputData InputFileTxt::ReadFile()
   return inputData;
 }
 
-void SetFloatField(const std::string& input, int index, float* output)
-{
-  try {
-    if (input.empty()) {
-      std::cout << "Empty input field at index: " << index << "\n";
-      exit(1);
-    }
-
-    *output = std::stof(input);
-  }
-  catch (const std::exception&) {
-    std::cout << "   An Error inside float Input file. Index of error field:   " << index << "\n";
-    exit(1);
-  }
-}
-
-void SetIntField(const std::string& input, int index, int* output)
-{
-  try {
-    if (input.empty()) {
-      std::cout << "Empty input field at index: " << index << "\n";
-      exit(1);
-    }
-
-    *output = std::stoi(input);
-  }
-  catch (const std::exception&) {
-    std::cout << "   An Error inside integer Input file. Index of error field:   " << index << "\n";
-    exit(1);
-  }
-}
-
 void InputFileTxt::ReadLine(std::string line, int lineIndex, DataStructs::InputData* data)
 {
   switch (lineIndex) {
@@ -92,7 +60,7 @@ void InputFileTxt::ReadLine(std::string line, int lineIndex, DataStructs::InputD
       SetFloatField(line, lineIndex, &data->ArrayTimeStep);
       break;
     case 6:
-      SetFloatField(line, lineIndex, &data->SimStepTime);
+      SetFloatField(line, lineIndex, &data->SimTestStep);
       break;
     case 7:
       SetFloatField(line, lineIndex, &data->HitRadius);
@@ -102,15 +70,6 @@ void InputFileTxt::ReadLine(std::string line, int lineIndex, DataStructs::InputD
       break;
     case 9:
       SetFloatField(line, lineIndex, &data->DroneData.TurnThreshold);
-      break;
-    case 10:
-      SetFloatField(line, lineIndex, &data->TargetStepTime);
-      break;
-    case 11:
-      SetFloatField(line, lineIndex, &data->PhysicsStepTime);
-      break;
-    case 12:
-      SetIntField(line, lineIndex, &data->TimeScale);
       break;
     default:
       break;
@@ -150,4 +109,20 @@ void InputFileTxt::SetupDronePosition(const std::string& line, DataStructs::Inpu
   }
 
   data->DroneData.Position = {x, y, z};
+}
+
+void InputFileTxt::SetFloatField(const std::string& input, int index, float* output)
+{
+  try {
+    if (input.empty()) {
+      std::cerr << "Empty input field at index: " << index << "\n";
+      exit(1);
+    }
+
+    *output = std::stof(input);
+  }
+  catch (const std::exception&) {
+    std::cerr << "   An Error inside Input file. Index of error field:   " << index << "\n";
+    exit(1);
+  }
 }

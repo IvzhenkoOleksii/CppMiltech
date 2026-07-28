@@ -5,7 +5,6 @@
 class MathCalculator {
 public:
   static bool AreEqual(float a, float b);
-  static bool AreEqual(const DataStructs::Coord2D& a, const DataStructs::Coord2D& b);
   static float GetSign(float value);
 
   static DataStructs::Coord2D GetDirectionVector(const DataStructs::Coord2D& start, const DataStructs::Coord2D& end);

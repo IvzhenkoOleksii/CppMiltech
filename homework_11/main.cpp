@@ -1,12 +1,19 @@
+#include <iostream>
+
 #include <atomic>
 #include <iostream>
 #include <ostream>
 #include <string>
+#include <gpiod.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <termios.h>
+#include <unistd.h>
+#include <cstring>
 
 #include "Files/FileHelper.h"
 #include "Files/Input/IInputFile.h"
 #include "Files/OutputFile.h"
-
 #include "OutputController.h"
 #include "DataStructs.h"
 #include "SimulationController.h"
@@ -63,74 +70,46 @@ Arguments ArgumentsHandler(int argc, char** argv)
   return arguments;
 }
 
-std::atomic<bool> isSimulationEnded;
-std::atomic<bool> isBombExploded;
-
 int main(int argc, char** argv)
 {
-  // some functions definition
-  void OnSimulationEnds(TargetsManager * targetsManager, DroneController * drone);
-  void OnSimulationStepStarted(std::unique_ptr<SimulationController> simulation, std::unique_ptr<DroneController> droneController);
-  void WriteDataToOutputFile(const std::string& filePath, const OutputController& controller);
-
-  // here is main starts actually
   Arguments arguments = ArgumentsHandler(argc, argv);
 
-  isSimulationEnded.store(false);
-  isBombExploded.store(false);
-
-  // factory creates all needed additional classes
   MissionFactory missionFactory{};
+
   auto inputFile = missionFactory.CreateInputFile(arguments.inputFilePath);
   auto armamentSolver = missionFactory.CreateArmamentSolver(arguments.solverType, arguments.tableSolverFilePath);
-
-  // start work. Read input file
   DataStructs::InputData inputData = inputFile->ReadFile();
 
   // create targets
-  TargetsManager targetsManager{arguments.targetsFilePath, inputData.TargetStepTime, inputData.ArrayTimeStep, inputData.TimeScale};
+  TargetsManager targetsManager{arguments.targetsFilePath, inputData.ArrayTimeStep};
 
   // create drone controller
   DroneController droneController = {inputData, arguments.ammoFilePath, std::move(armamentSolver)};
-  droneController.LockTargets(&targetsManager);
+  droneController.LockTargets(targetsManager.GetTargetReferencies());
+
+  // create simulation controller
+  SimulationController simulation = {inputData.SimTestStep};
+  float simulationStepTime = simulation.GetSimulationStepTime();
 
   // prepare controller for output
   OutputController outputController;
+  while (simulation.IsWorking()) {
+    droneController.OnStepStart(simulationStepTime);
+    targetsManager.OnStepStart(simulationStepTime);
 
-  // create simulation controller
-  SimulationController simulation = {inputData.SimStepTime, inputData.TimeScale};  // previous sim step time
-  simulation.LoopEndedAction = [&]() {
-    if (!isSimulationEnded.exchange(true)) {
-      isBombExploded.store(true);
-      WriteDataToOutputFile(arguments.outputFilePath, outputController);
-      OnSimulationEnds(&targetsManager, &droneController);
+    outputController.AddData(droneController.GetDroneState());
+
+    simulation.Update();
+
+    targetsManager.OnStepEnd();
+    droneController.OnStepEnd();
+
+    if (droneController.isBombDropped()) {
+      OutputFile output{arguments.outputFilePath};
+      output.WriteToFile(outputController.Outputs);
+      return 0;
     }
-  };
-
-  droneController.BombExplodedAction = [&]() {
-    if (!isBombExploded.exchange(true)) {
-      simulation.FinishLoopThread();
-    }
-  };
-
-  droneController.Start();
-
-  simulation.LoopStepStartedAction = [&]() { outputController.AddData(droneController.GetDroneState()); };
-
-  simulation.StartLoopThread();
-  simulation.JoinThread();
+  }
 
   return 0;
-}
-
-void WriteDataToOutputFile(const std::string& filePath, const OutputController& controller)
-{
-  OutputFile output{filePath};
-  output.WriteToFile(controller.Outputs);
-}
-
-void OnSimulationEnds(TargetsManager* targetsManager, DroneController* drone)
-{
-  targetsManager->FinishTargetsThreads();
-  drone->Finish();
 }

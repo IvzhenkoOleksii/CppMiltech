@@ -14,10 +14,7 @@
   "ammo": "VOG-17",
   "simulation": {
     "timeStep": 0.1,
-    "physicsTimeStep": 0.01,
-    "hitRadius": 3,
-    "timeScale": 1,
-    "targetTimeStep": 0.05
+    "hitRadius": 3
   },
   "targetArrayTimeStep": 10
 }

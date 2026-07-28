@@ -15,10 +15,6 @@ public:
     DataStructs::Coord2D dropPoint;
     DataStructs::Coord2D aimPoint;
     DataStructs::Coord2D predictedTarget;
-    float timeSecSinceStart;
-    int stepIndex;
-    int physicalTickCounter;
-    float velocityDelta;
   };
 
   struct Output {
@@ -32,7 +28,7 @@ public:
   Output Outputs;
 
 public:
-  void AddData(const DataStructs::DroneFullData& data);
+  void AddData(const DataStructs::DroneOperationalData& operationalData);
 };
 
 // since it`s an output -> I didn`t create from_json methods

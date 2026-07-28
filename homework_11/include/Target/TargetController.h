@@ -1,47 +1,43 @@
 #pragma once
-#include <mutex>
+
 #include <vector>
 
 #include "DataStructs.h"
-#include "Threads/BaseLoop.h"
+#include "MathCalculator.h"
 
-class TargetController : public BaseLoop {
+class TargetController {
 public:
-  // constructors ans destructors
-  TargetController(const float& stepTime, const int& timeScale);
-  TargetController(const float& stepTime,
-                   const int& timeScale,
-                   const float& arrayTimeStep,
-                   const std::vector<DataStructs::Coord2D> positionsData);
-  virtual ~TargetController() = default;
+  TargetController();
+  TargetController(const std::vector<DataStructs::Coord2D> positionsData, const float& stepTimeData);
 
-  // getters
 public:
   DataStructs::Coord2D GetCurrentPosition();
   DataStructs::Coord2D GetPredictedPosition(const float& time);
-  float GetVelocityAbs();
+  float GetVelocity();
 
-  // functions
-protected:
-  void OnLoopStepStart() override;
-  void OnLoopStepEnd() override;
-  void OnAfterStepEndAction() override;
+public:
+  void OnStepStart(const float& simStep);
+  void OnStepEnd();
 
 private:
   void CalculateVelocity();
+
+private:
   void UpdateCurrentPathStep();
-  int GetNextPathIndex();
 
   // variables
 private:
   float arrayTimeStep;
-  std::vector<DataStructs::Coord2D> positionsData;
+  float currentStepTime;
 
 private:
-  std::mutex mutex;
-  std::atomic<float> velocityX;
-  std::atomic<float> velocityY;
-  std::atomic<float> velocityAbs;
+  float velocityX;
+  float velocityY;
+  float velocity;
   size_t currentPathStep;
   DataStructs::Coord2D currentPosition;
+
+private:
+  MathCalculator calculator;
+  std::vector<DataStructs::Coord2D> positionsData;
 };

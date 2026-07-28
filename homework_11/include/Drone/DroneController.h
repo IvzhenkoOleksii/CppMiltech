@@ -1,69 +1,63 @@
 #pragma once
 #include "DataStructs.h"
+#include "Target/TargetController.h"
 #include "Armament/ArmamentController.h"
 #include "Armament//Solver/IArmamentSolver.h"
-#include "Drone/DronePhysicalController.h"
 #include "DroneCalculator.h"
-#include "Target/TargetsManager.h"
-#include "Threads/BaseLoop.h"
 
-class DroneController : public BaseLoop {
+#include <string>
+
+class DroneController {
 public:
   DroneController(const DataStructs::InputData& data, const std::string& ammoFilePath, std::unique_ptr<IArmamentSolver> solver);
 
 public:
-  void LockTargets(TargetsManager* targetsManager);
-  DataStructs::DroneFullData GetDroneState();
+  void LockTargets(std::vector<TargetController*> targetRefs);
+  void OnStepStart(const float& simStep);
+  void OnStepEnd();
+  DataStructs::DroneOperationalData GetDroneState();
   bool isBombDropped();
-  void Start();
-  void Finish();
-  std::function<void()> BombExplodedAction;
-
-protected:
-  void OnLoopStepStart() override;
-  void OnLoopStepEnd() override;
-  void OnAfterStepEndAction() override;
 
 private:
-  bool IsTargetSelected();
-  int GetTargetIndex();
-  void SetTargetIndex(int index);
-  DataStructs::Coord2D GetTargetedPosition();
-  void SetTargetedPosition(const DataStructs::Coord2D& pos);
-
   void ChooseTarget();
   void GetTargetSolution();
-  void CalculateThereToGo();
+  void UpdateDroneState();
   float CalculateRotationTime(const float& angleToRotate);
   float CalcDroneTimeToPoint(const DataStructs::Coord2D& point);
   float CalculateTimeToReach(const float& distanceToTarget);
-  bool IsNeedToRotate();
-  bool IsNeedToAccelerate();
-
+  bool UpdadeDroneRotation();
+  void UpdateDroneVelocity();
+  void UpdateDronePosition();
   void CheckIfDroneReachedFirePosition();
   void GetClosestTarget();
-  void DeselectTarget();
-  DataStructs::Coord2D CalculateAimPoint();
-  DataStructs::Coord2D CalculateDropPoint();
+  void StopDroneAndDeselectTarget();
+  DataStructs::Coord2D WhereBombDrop();
+  DataStructs::Coord2D WhereDroneHeading();
 
 private:
   // do on the start/constructor/once
   void InitState();
-  void InitialCalculations();
+  void CalculateAcceleration();
 
-  // variables
 private:
+  // variables
   DataStructs::DroneInputData inputData;
+  float simStep;
+
+private:
   DroneCalculator droneCalculator;
-  TargetsManager* targetsManager = nullptr;
-  std::unique_ptr<ArmamentController> armamentController;
-  std::unique_ptr<DronePhysicalController> physicalStateController;
-  DataStructs::DroneOperationalState state;
-  std::atomic<bool> isFinished;
-  std::recursive_mutex droneMutex;
+  ArmamentController armamentController;
 
 private:
   float minAttackDistance;
   float accelerationTime;
-  float halfStepDistance;
+  float velocityChangeStep;  // how velocity can change during single step time
+  float rotateChangeStep;    // how drone can rotate during single step time
+
+private:
+  DataStructs::DroneOperationalData droneState;
+
+  // targets store as referencies, so drone will get updated data of targets, ie -> updated position, speed, etc
+private:
+  std::vector<TargetController*> targets{};
 };

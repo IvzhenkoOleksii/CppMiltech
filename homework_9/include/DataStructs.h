@@ -7,9 +7,9 @@
 
 class DataStructs {
 public:
-  // general-overall structs
   enum DroneState { STOPPED, ACCELERATING, DECELERATING, TURNING, MOVING };
 
+public:
   struct Coord2D {
     float X = 0.0f;
     float Y = 0.0f;
@@ -28,6 +28,7 @@ public:
     bool operator==(const Coord2D& other) const;
   };
 
+public:
   struct Coord3D {
     float X = 0.0f;
     float Y = 0.0f;
@@ -55,7 +56,6 @@ public:
   };
 
 public:
-  // input files structs: Input, Target
   struct DroneInputData {
     // fields
     Coord3D Position = {0.0f, 0.0f, 0.0f};
@@ -75,13 +75,11 @@ public:
     //	public:void SetPosition(float X, float Y, float Z);
   };
 
+public:
   struct InputData {
     // fields
     DroneInputData DroneData{};
-    float SimStepTime = {0.0f};
-    float PhysicsStepTime = {0.0f};
-    float TargetStepTime = {0.0f};
-    int TimeScale = {1};
+    float SimTestStep = {0.0f};
     float ArrayTimeStep = {0.0f};
     float HitRadius = {0.0f};
 
@@ -93,31 +91,28 @@ public:
     void CheckData();
   };
 
+public:
   struct TargetData {
     std::vector<std::vector<DataStructs::Coord2D>> Positions;
   };
 
 public:
-  // structs for drone
   struct DronePhysicalState {
     float Direction;
-    float TempDirection;
     float Velocity;
-    float TempVelocity;
     Coord3D Position;
-    float TimeSecSinceStart;
-    DroneState DroneStateType;
-    int tickCounter;
   };
 
 public:
-  struct DroneOperationalState {
+  struct DroneOperationalData {
+    DroneState State;
+    DronePhysicalState transform;
     int CurrentTargetIndex = -1;
     Coord2D TargetedPosition;
 
     // added only for output, not use it actually
-    Coord2D DropPoint;  // there drone heading to drop a bomb
-    Coord2D AimPoint;   // ther will drop bomb if drop right now
+    Coord2D DropPoint;      // there drone heading to drop a bomb
+    Coord2D BombDropPoint;  // ther will drop bomb if drop right now
 
   public:
     bool IsTargetSelected();
@@ -125,11 +120,6 @@ public:
   };
 
 public:
-  struct DroneFullData {
-    DronePhysicalState physicalState;
-    DroneOperationalState operationalState;
-  };
-
   struct DroneJsonState {
     float altitude;
     float initialDirection;
@@ -143,9 +133,6 @@ public:
   struct SimulationJsonState {
     float timeStep;
     float hitRadius;
-    float physicsTimeStep;
-    float timeScale;
-    float targetTimeStep;
   };
 };
 

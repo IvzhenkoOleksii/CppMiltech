@@ -1,30 +1,35 @@
 #include "SimulationController.h"
 
-SimulationController::SimulationController(const float& stepTime, const int& timeScale)
-  : BaseLoop(stepTime, timeScale)
+SimulationController::SimulationController(const float& simStepTime)
 {
-  currentStepIndex = 0;
+  currentSimulationStep = 0;
+  currentSimulationTime = 0;
+  simulationStepTime = simStepTime;
+  isActive = true;
 }
 
-void SimulationController::OnLoopStepStart()
+bool SimulationController::IsWorking()
 {
-  //  std::cout << "STEP:   " << currentStepIndex << " STARTED " << std::endl;
+  return isActive && currentSimulationStep < MaxSimulationSteps;
 }
 
-void SimulationController::OnLoopStepEnd()
+int SimulationController::GetCurrentStep()
 {
-  ++currentStepIndex;
+  return currentSimulationStep;
 }
 
-void SimulationController::OnAfterStepEndAction()
+float SimulationController::GetSimulationStepTime()
 {
-  // check if we out of steps
-  if (currentStepIndex > MaxSimulationSteps) {
-    FinishLoopThread();
-  }
+  return simulationStepTime;
 }
 
-float SimulationController::GetStepTime()
+void SimulationController::Update()
 {
-  return stepTime;
+  ++currentSimulationStep;
+  currentSimulationTime += simulationStepTime;
+}
+
+void SimulationController::Stop()
+{
+  isActive = false;
 }

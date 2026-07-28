@@ -3,7 +3,6 @@
 #include "Files/TargetFile.h"
 #include "DataStructs.h"
 
-#include <mutex>
 #include <vector>
 
 TargetsManager::TargetsManager(const std::string& filePath)
@@ -13,52 +12,36 @@ TargetsManager::TargetsManager(const std::string& filePath)
   targetData = targetFile.ReadJsonFile(filePath);
 }
 
-TargetsManager::TargetsManager(const std::string& filePath, const float& stepTime, const float& arrayTimeStep, const int& timeScale)
+TargetsManager::TargetsManager(const std::string& filePath, const float& arrayTimeStep)
   : TargetsManager(filePath)
 {
-  std::lock_guard<std::mutex> lock(mutex);
   for (const auto& targetPosition : targetData.Positions) {
-    std::unique_ptr<TargetController> target = std::make_unique<TargetController>(stepTime, timeScale, arrayTimeStep, targetPosition);
-    targets.push_back(std::move(target));
-  }
-
-  for (const auto& target : targets) {
-    target->StartLoopThread();
+    targets.push_back(TargetController{targetPosition, arrayTimeStep});
   }
 }
 
-void TargetsManager::FinishTargetsThreads()
+void TargetsManager::OnStepStart(const float& simStep)
 {
-  std::lock_guard<std::mutex> lock(mutex);
-  for (const auto& target : targets) {
-    target->FinishLoopThread();
-  }
-
-  for (const auto& target : targets) {
-    target->JoinThread();
+  for (auto& target : targets) {
+    target.OnStepStart(simStep);
   }
 }
 
-size_t TargetsManager::GetSize()
+void TargetsManager::OnStepEnd()
 {
-  std::lock_guard<std::mutex> lock(mutex);
-  return targets.size();
+  for (auto& target : targets) {
+    target.OnStepEnd();
+  }
 }
 
-float TargetsManager::GetTargetVelocityAbs(const int& index)
+std::vector<TargetController*> TargetsManager::GetTargetReferencies()
 {
-  std::lock_guard<std::mutex> lock(mutex);
-  return targets[index]->GetVelocityAbs();
-}
+  std::vector<TargetController*> targetReferencies;
+  targetReferencies.reserve(targets.size());
 
-DataStructs::Coord2D TargetsManager::GetTargetCurrentPosition(const int& index)
-{
-  std::lock_guard<std::mutex> lock(mutex);
-  return targets[index]->GetCurrentPosition();
-}
+  for (auto& target : targets) {
+    targetReferencies.push_back(&target);
+  }
 
-DataStructs::Coord2D TargetsManager::GetTargetPredictedPosition(const int& index, const float& time)
-{
-  std::lock_guard<std::mutex> lock(mutex);
-  return targets[index]->GetPredictedPosition(time);
+  return targetReferencies;
 }

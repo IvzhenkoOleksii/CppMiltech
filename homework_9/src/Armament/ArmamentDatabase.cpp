@@ -13,7 +13,6 @@ void from_json(const nlohmann::json& j, ArmamentDatabase::Data& data)
   j.at("mass").get_to(data.Mass);
   j.at("drag").get_to(data.Drag);
   j.at("lift").get_to(data.Lift);
-  j.at("lift").get_to(data.Type);
 
   data.Type = 0;
   if (data.Lift > 0) {

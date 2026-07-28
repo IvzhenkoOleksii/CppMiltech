@@ -1,4 +1,5 @@
 #include <cmath>
+#include <iostream>
 
 #include "MathCalculator.h"
 
@@ -15,19 +16,6 @@ bool MathCalculator::AreEqual(float a, float b)
 
   // 2. Check relative difference (scales automatically for large numbers)
   return std::abs(a - b) <= (std::max(std::abs(a), std::abs(b)) * rel_epsilon);
-}
-
-bool MathCalculator::AreEqual(const DataStructs::Coord2D& a, const DataStructs::Coord2D& b)
-{
-  if (!MathCalculator::AreEqual(a.X, b.X)) {
-    return false;
-  }
-
-  if (!MathCalculator::AreEqual(a.Y, b.Y)) {
-    return false;
-  }
-
-  return true;
 }
 
 float MathCalculator::GetSign(float value)

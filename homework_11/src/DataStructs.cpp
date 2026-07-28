@@ -116,23 +116,8 @@ void DataStructs::InputData::CheckData()
 {
   DroneData.CheckData();
 
-  if (SimStepTime <= 0) {
-    std::cout << "DroneControllerStepTime <= 0" << "\n";
-    exit(1);
-  }
-
-  if (PhysicsStepTime <= 0) {
-    std::cout << "DronePhysicsStepTime <= 0" << "\n";
-    exit(1);
-  }
-
-  if (TargetStepTime <= 0) {
-    std::cout << "TargetStepTime <= 0" << "\n";
-    exit(1);
-  }
-
-  if (TimeScale <= 0) {
-    std::cout << "TimeScale <= 0" << "\n";
+  if (SimTestStep <= 0) {
+    std::cout << "SimTestStep <= 0" << "\n";
     exit(1);
   }
 
@@ -147,12 +132,12 @@ void DataStructs::InputData::CheckData()
   }
 }
 
-bool DataStructs::DroneOperationalState::IsTargetSelected()
+bool DataStructs::DroneOperationalData::IsTargetSelected()
 {
   return CurrentTargetIndex != -1;
 }
 
-void DataStructs::DroneOperationalState::DeselectTarget()
+void DataStructs::DroneOperationalData::DeselectTarget()
 {
   CurrentTargetIndex = -1;
 }
@@ -208,7 +193,4 @@ void from_json(const nlohmann::json& j, DataStructs::SimulationJsonState& simSta
 {
   j.at("timeStep").get_to(simState.timeStep);
   j.at("hitRadius").get_to(simState.hitRadius);
-  j.at("physicsTimeStep").get_to(simState.physicsTimeStep);
-  j.at("timeScale").get_to(simState.timeScale);
-  j.at("targetTimeStep").get_to(simState.targetTimeStep);
 }

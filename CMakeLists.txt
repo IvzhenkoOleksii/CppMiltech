@@ -17,7 +17,7 @@ set(gtest_force_shared_crt
 FetchContent_MakeAvailable(googletest)
 enable_testing()
 
-add_subdirectory(homework_10)
+add_subdirectory(homework_11)
 # add_subdirectory(homework_04_odometry) add_subdirectory(homework_05)
 # add_subdirectory(homework_06_tests)
 
