@@ -1,13 +1,10 @@
 #include <iostream>
 
-#include <atomic>
 #include <iostream>
 #include <ostream>
 #include <string>
 #include <gpiod.h>
 #include <unistd.h>
-#include <fcntl.h>
-#include <termios.h>
 #include <unistd.h>
 #include <cstring>
 
@@ -20,6 +17,7 @@
 #include "Drone/DroneController.h"
 #include "Target/TargetsManager.h"
 #include "MissionFactory.h"
+#include "UART/UartController.h"
 
 struct Arguments {
   // order of arguments of build is same as here:
@@ -72,44 +70,66 @@ Arguments ArgumentsHandler(int argc, char** argv)
 
 int main(int argc, char** argv)
 {
-  Arguments arguments = ArgumentsHandler(argc, argv);
+  UartController testController;
+  int answerCode = testController.OpenUart("/tmp/ttyA");
 
-  MissionFactory missionFactory{};
+  SimulationController simulation = {0.05f};
 
-  auto inputFile = missionFactory.CreateInputFile(arguments.inputFilePath);
-  auto armamentSolver = missionFactory.CreateArmamentSolver(arguments.solverType, arguments.tableSolverFilePath);
-  DataStructs::InputData inputData = inputFile->ReadFile();
-
-  // create targets
-  TargetsManager targetsManager{arguments.targetsFilePath, inputData.ArrayTimeStep};
-
-  // create drone controller
-  DroneController droneController = {inputData, arguments.ammoFilePath, std::move(armamentSolver)};
-  droneController.LockTargets(targetsManager.GetTargetReferencies());
-
-  // create simulation controller
-  SimulationController simulation = {inputData.SimTestStep};
-  float simulationStepTime = simulation.GetSimulationStepTime();
-
-  // prepare controller for output
-  OutputController outputController;
   while (simulation.IsWorking()) {
-    droneController.OnStepStart(simulationStepTime);
-    targetsManager.OnStepStart(simulationStepTime);
-
-    outputController.AddData(droneController.GetDroneState());
-
+    testController.ReadFrame();
     simulation.Update();
-
-    targetsManager.OnStepEnd();
-    droneController.OnStepEnd();
-
-    if (droneController.isBombDropped()) {
-      OutputFile output{arguments.outputFilePath};
-      output.WriteToFile(outputController.Outputs);
-      return 0;
-    }
   }
 
   return 0;
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  // Arguments arguments = ArgumentsHandler(argc, argv);
+
+  // MissionFactory missionFactory{};
+
+  // auto inputFile = missionFactory.CreateInputFile(arguments.inputFilePath);
+  // auto armamentSolver = missionFactory.CreateArmamentSolver(arguments.solverType, arguments.tableSolverFilePath);
+  // DataStructs::InputData inputData = inputFile->ReadFile();
+
+  // // create targets
+  // TargetsManager targetsManager{arguments.targetsFilePath, inputData.ArrayTimeStep};
+
+  // // create drone controller
+  // DroneController droneController = {inputData, arguments.ammoFilePath, std::move(armamentSolver)};
+  // droneController.LockTargets(targetsManager.GetTargetReferencies());
+
+  // // create simulation controller
+  // SimulationController simulation = {inputData.SimTestStep};
+  // float simulationStepTime = simulation.GetSimulationStepTime();
+
+  // // prepare controller for output
+  // OutputController outputController;
+  // while (simulation.IsWorking()) {
+  //   droneController.OnStepStart(simulationStepTime);
+  //   targetsManager.OnStepStart(simulationStepTime);
+
+  //   outputController.AddData(droneController.GetDroneState());
+
+  //   simulation.Update();
+
+  //   targetsManager.OnStepEnd();
+  //   droneController.OnStepEnd();
+
+  //   if (droneController.isBombDropped()) {
+  //     OutputFile output{arguments.outputFilePath};
+  //     output.WriteToFile(outputController.Outputs);
+  //     return 0;
+  //   }
+  // }
+
+  // return 0;
 }

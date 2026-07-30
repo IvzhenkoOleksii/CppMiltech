@@ -1,6 +1,6 @@
 #pragma once
 
-constexpr int MaxSimulationSteps = 10000;
+constexpr int MaxSimulationSteps = 2000;
 
 class SimulationController {
 public:

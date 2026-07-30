@@ -1,4 +1,5 @@
 #include "SimulationController.h"
+#include <iostream>
 
 SimulationController::SimulationController(const float& simStepTime)
 {
