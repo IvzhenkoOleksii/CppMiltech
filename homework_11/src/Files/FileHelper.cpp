@@ -3,12 +3,21 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <string>
 #include <vector>
+#include <filesystem>
 
-std::string FileHelper::CreateGlobalFilePath(const std::string& localFilePath)
+std::string FileHelper::CreateProjectRootFilePath(const std::string& localFilePath)
 {
   std::string inputFilePath = PROJECT_ROOT_DIR + std::string{"/"};
   std::string fullPath = inputFilePath + localFilePath;
+  return fullPath;
+}
+
+std::string FileHelper::CreateSystemRootFilePath(const std::string& localFilePath)
+{
+  std::string systemRootPath = std::filesystem::current_path().root_path();
+  std::string fullPath = systemRootPath + localFilePath;
   return fullPath;
 }
 
@@ -25,14 +34,21 @@ std::string FileHelper::CheckFilePath(const std::string& filePath)
     return filePath;
   }
 
-  std::string fullPath = FileHelper::CreateGlobalFilePath(filePath);
-  file.open(fullPath);
+  std::string projectRootPath = FileHelper::CreateProjectRootFilePath(filePath);
+  file.open(projectRootPath);
   if (file.is_open()) {
     file.close();
-    return fullPath;
+    return projectRootPath;
   }
 
-  std::cerr << "There is no file at path: " << filePath << " nor at: " << fullPath << std::endl;
+  std::string systemFullPath = FileHelper::CreateSystemRootFilePath(filePath);
+  file.open(systemFullPath);
+  if (file.is_open()) {
+    file.close();
+    return systemFullPath;
+  }
+
+  std::cerr << "There is no file at path: " << filePath << " nor at: " << projectRootPath << " nor at: " << systemFullPath << std::endl;
   std::exit(1);
 }
 
