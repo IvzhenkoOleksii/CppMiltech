@@ -10,6 +10,7 @@
   "remoteUser": "${localEnv:USER}",
   "workspaceMount": "source=${localWorkspaceFolder},target=${localEnv:HOME}/${localWorkspaceFolderBasename},type=bind",
   "workspaceFolder": "${localEnv:HOME}/${localWorkspaceFolderBasename}",
+  //"workspaceFolder": "/workspace",
   "mounts": [
     "source=${localEnv:HOME}/.ssh,target=/home/${localEnv:USER}/.ssh,type=bind,readonly,consistency=cached",
     "source=${localEnv:HOME}/.devcontainers/${localWorkspaceFolderBasename}/.bash_history,target=/home/${localEnv:USER}/.bash_history,type=bind,consistency=delegated",
@@ -18,7 +19,9 @@
   "runArgs": [
     "--network=host",
     "--hostname=devcontainer",
-    "--add-host=devcontainer:127.0.1.1"
+    "--privileged",
+    "--add-host=devcontainer:127.0.1.1",
+    "-v", "/dev:/dev"
   ],
   "customizations": {
     "vscode": {
@@ -61,5 +64,6 @@
         "overrideName": true
       }
     }
-  }
+  },
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y gpiod"
 }
