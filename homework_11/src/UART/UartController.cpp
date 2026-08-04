@@ -11,7 +11,7 @@ int UartController::OpenUart(const char* dev)
 {
   fileD = open(dev, O_RDWR | O_NOCTTY | O_NONBLOCK);
   if (fileD < 0) {
-    std::perror("open");
+    std::perror("uart open error");
     return -1;
   }
   termios tio{};

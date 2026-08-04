@@ -8,6 +8,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 file(GLOB_RECURSE PROJECT_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
 add_executable(executable main.cpp ${PROJECT_SOURCES})
+target_link_libraries(executable PRIVATE gpiod)
 
 target_include_directories(
     executable PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/include"

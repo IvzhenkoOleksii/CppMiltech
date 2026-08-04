@@ -13,9 +13,9 @@
   //"workspaceFolder": "/workspace",
   "mounts": [
     "source=${localEnv:HOME}/.ssh,target=/home/${localEnv:USER}/.ssh,type=bind,readonly,consistency=cached",
-    "source=${localEnv:HOME}/.devcontainers/${localWorkspaceFolderBasename}/.bash_history,target=/home/${localEnv:USER}/.bash_history,type=bind,consistency=delegated",
+    "source=${localEnv:HOME}/.devcontainers/${localWorkspaceFolderBasename}/.bash_history,target=/home/${localEnv:USER}/.bash_history,type=bind,consistency=delegated"
   ],
-  "initializeCommand": "chmod +x .devcontainer/scripts/initialize && .devcontainer/scripts/initialize",
+ // "initializeCommand": "chmod +x .devcontainer/scripts/initialize && .devcontainer/scripts/initialize",
   "runArgs": [
     "--network=host",
     "--hostname=devcontainer",
@@ -55,15 +55,16 @@
           "--config-file=/.cmake-format.json"
         ],
         "cmakeFormat.exePath": "/usr/bin/cmake-format"
-      }
-    },
-    "terminal.integrated.shell.linux": "bash",
-    "terminal.integrated.profiles.linux": {
-      "bash (container default)": {
-        "path": "/bin/bash",
-        "overrideName": true
+      },
+      "terminal.integrated.shell.linux": "bash",
+      "terminal.integrated.profiles.linux": {
+        "bash (container default)": {
+          "path": "/bin/bash",
+          "overrideName": true
+        }
       }
     }
   },
-  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y gpiod"
+  "postCreateCommand": "sudo DEBIAN_FRONTEND=noninteractive apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y gpiod socat",
+  "postStartCommand": "sudo sh -c 'chmod 666 /dev/gpiochip* 2>/dev/null || true'"
 }

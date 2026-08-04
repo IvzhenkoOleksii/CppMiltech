@@ -18,6 +18,8 @@
 #include "Target/TargetsManager.h"
 #include "MissionFactory.h"
 #include "UART/UartController.h"
+#include "Tests/GpioTest.h"
+#include "Tests/UartTest.h"
 
 struct Arguments {
   // order of arguments of build is same as here:
@@ -70,8 +72,21 @@ Arguments ArgumentsHandler(int argc, char** argv)
 
 int main(int argc, char** argv)
 {
+  UartTest uartTest;
+  uartTest.Test();
+  //
+  //
+  //
+  //
+  GpioTest gpioTest;
+  gpioTest.Test();
+  //
+  //
+  //
+  //
   UartController testController;
   int answerCode = testController.OpenUart("/tmp/ttyA");
+  std::cout << "Uart port opened:   " << answerCode << std::endl;
 
   SimulationController simulation = {0.05f};
 
